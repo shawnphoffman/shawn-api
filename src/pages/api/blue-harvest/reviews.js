@@ -4,10 +4,15 @@ import * as cheerio from "cheerio";
 const dataUrl =
   "https://podcasts.apple.com/us/podcast/blue-harvest-a-star-wars-podcast/id1009917662?see-all=reviews";
 
-async function scrapeReviewData(data) {
+export default async function handler(req, res) {
+  const requestOptions = {
+    method: "GET",
+  };
+  const data = await fetchHtmlWithCache(dataUrl, requestOptions, 60 * 24);
+
   const $ = cheerio.load(data);
 
-  const pageTitle = $("h1 span:first").text();
+  const pageTitle = $("h1 span:first").text().trim();
 
   console.log(`Title: ${pageTitle}`);
 
@@ -40,21 +45,12 @@ async function scrapeReviewData(data) {
 
   console.log(`Review Count: ${reviews.length}`);
 
-  return {
+  const response = {
     rating,
     ratingString,
     ratingsUrl: dataUrl,
     reviews,
   };
-}
 
-export default async function handler(req, res) {
-  const requestOptions = {
-    method: "GET",
-  };
-  const data = await fetchHtmlWithCache(dataUrl, requestOptions);
-
-  const responseData = await scrapeReviewData(data);
-
-  res.status(200).send(responseData);
+  res.status(200).send(response);
 }

@@ -1,5 +1,11 @@
 import { fetchHtmlWithCache } from "@/utils/fetchWithCache";
 import * as cheerio from "cheerio";
+import Cors from "cors";
+
+const cors = Cors({
+  methods: ["GET", "HEAD"],
+  origin: [/\.shawn\.party$/],
+});
 
 const rootUrl = "https://thetvdb.com/lists/13864";
 

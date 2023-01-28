@@ -35,7 +35,7 @@ function properName(name) {
 export default async function handler(req, res) {
   await Cors(req, res, {
     methods: ["POST", "HEAD"],
-    origin: [/\.shawn\.party$/, "*"],
+    // origin: [/\.shawn\.party$/, "*"],
   });
 
   if (req.method !== "POST") {

@@ -45,7 +45,7 @@ export default async function handler(req, res) {
 
   const { first, last, maiden, town } = req.body;
 
-  const outFirst = properName(`${first.substr(0, 3)}${last.substr(0, 2)}`);
+  const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`);
   const outLast = properName(`${maiden.substr(0, 2)}${town.substr(0, 3)}`);
 
   // Set Cache Headers
@@ -66,5 +66,5 @@ export default async function handler(req, res) {
 
 //
 // 3 last. 2 first
-// 3 maiden. ?
+// 2 maiden. 3 hometown
 //

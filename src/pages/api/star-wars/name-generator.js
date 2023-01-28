@@ -1,4 +1,4 @@
-import Cors from "src/utils/cors";
+import Cors from 'src/utils/cors'
 
 /*
 
@@ -17,51 +17,48 @@ Output: "Micjo Hital"
 
 */
 function properName(name) {
-  return (
-    "" +
-    name
-      .replace(/[^\s\-\']+[\s\-\']*/g, function (word) {
-        return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase();
-      })
-      .replace(/\b(Van|De|Der|Da|Von)\b/g, function (wat) {
-        return wat.toLowerCase();
-      })
-      .replace(/Mc(.)/g, function (match, letter3) {
-        return "Mc" + letter3.toUpperCase();
-      })
-  );
+	return (
+		'' +
+		name
+			.replace(/[^\s\-\']+[\s\-\']*/g, function (word) {
+				return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
+			})
+			.replace(/\b(Van|De|Der|Da|Von)\b/g, function (wat) {
+				return wat.toLowerCase()
+			})
+			.replace(/Mc(.)/g, function (match, letter3) {
+				return 'Mc' + letter3.toUpperCase()
+			})
+	)
 }
 
 export default async function handler(req, res) {
-  await Cors(req, res, {
-    methods: ["POST", "HEAD"],
-    // origin: [/\.shawn\.party$/, "*"],
-  });
+	await Cors(req, res, {
+		methods: ['POST', 'HEAD'],
+		// origin: [/\.shawn\.party$/, "*"],
+	})
 
-  if (req.method !== "POST") {
-    res.status(405).send({ message: "Only POST requests allowed" });
-    return;
-  }
+	if (req.method !== 'POST') {
+		res.status(405).send({ message: 'Only POST requests allowed' })
+		return
+	}
 
-  const { first, last, maiden, town } = req.body;
+	const { first, last, maiden, town } = req.body
 
-  const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`);
-  const outLast = properName(`${maiden.substr(0, 2)}${town.substr(0, 3)}`);
+	const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`)
+	const outLast = properName(`${maiden.substr(0, 2)}${town.substr(0, 3)}`)
 
-  // Set Cache Headers
-  res.setHeader(
-    "Cache-Control",
-    "public, s-maxage=300, stale-while-revalidate=599"
-  );
+	// Set Cache Headers
+	res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=599')
 
-  res.json({
-    // in: { first, last, maiden, town },
-    // out: {
-    first: outFirst,
-    last: outLast,
-    full: `${outFirst} ${outLast}`,
-    // },
-  });
+	res.json({
+		// in: { first, last, maiden, town },
+		// out: {
+		first: outFirst,
+		last: outLast,
+		full: `${outFirst} ${outLast}`,
+		// },
+	})
 }
 
 //

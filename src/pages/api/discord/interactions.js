@@ -14,8 +14,6 @@ function runMiddleware(req, res, fn) {
 }
 
 export default async function handler(req, res) {
-	console.log('WOW')
-
 	if (req.method !== 'POST') {
 		res.status(401).end('invalid method')
 		return
@@ -23,14 +21,12 @@ export default async function handler(req, res) {
 
 	await runMiddleware(req, res, verifyKeyMiddleware(PUBLIC_KEY))
 
-	console.log(req.body)
-
 	const interaction = req.body
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
 		res.send({
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {
-				content: "Hello! I'm RoboHawes!.",
+				content: `Hello, I'm RoboHawes! It's currently ${new Date().toUTCString()}`,
 			},
 		})
 		return

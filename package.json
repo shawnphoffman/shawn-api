@@ -6,7 +6,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"commands": "node ./scripts/discord-commands.js"
 	},
 	"dependencies": {
 		"@next/font": "13.1.5",
@@ -14,6 +15,7 @@
 		"cheerio": "^1.0.0-rc.12",
 		"cors": "^2.8.5",
 		"discord-interactions": "^3.3.0",
+		"dotenv": "^16.0.3",
 		"eslint": "8.32.0",
 		"eslint-config-next": "13.1.5",
 		"memory-cache": "^0.2.0",
@@ -21,6 +23,7 @@
 		"raw-body": "^2.5.1",
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
+		"slash-commands": "^1.5.0",
 		"swr": "^2.0.2"
 	}
 }

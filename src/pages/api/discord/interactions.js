@@ -14,12 +14,16 @@ function runMiddleware(req, res, fn) {
 }
 
 export default async function handler(req, res) {
+	console.log('WOW')
+
 	if (req.method !== 'POST') {
 		res.status(401).end('invalid method')
 		return
 	}
 
 	await runMiddleware(req, res, verifyKeyMiddleware(PUBLIC_KEY))
+
+	console.log(req.body)
 
 	const interaction = req.body
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
@@ -29,6 +33,7 @@ export default async function handler(req, res) {
 				content: "Hello! I'm RoboHawes!.",
 			},
 		})
+		return
 	}
 
 	res.status(400).end('use case not met')

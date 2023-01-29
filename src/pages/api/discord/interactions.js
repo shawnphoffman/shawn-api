@@ -62,8 +62,6 @@ export default async function handler(req, res) {
 				return memo
 			}, {})
 
-			console.log({ options, og: JSON.stringify(interaction.data.options, null, 2) })
-
 			const { first, last, maiden, hometown } = options
 			const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`)
 			const outLast = properName(`${maiden.substr(0, 2)}${hometown.substr(0, 3)}`)
@@ -80,7 +78,7 @@ export default async function handler(req, res) {
 									type: 2,
 									label: 'Web Version',
 									style: 5,
-									url: 'https://shawn.party/star-wars/names',
+									url: `https://shawn.party/star-wars/names?first=${first}&last=${last}&maiden=${maiden}&town=${hometown}`,
 								},
 							],
 						},

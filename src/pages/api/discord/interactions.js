@@ -22,8 +22,14 @@ export default async function handler(req, res) {
 	await runMiddleware(req, res, verifyKeyMiddleware(PUBLIC_KEY))
 
 	const interaction = req.body
+
+	console.log(interaction)
+
+	// Slash Commands
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
+		// /hello
 		if (interaction.id === process.env.DISCORD_COMMAND_ID_HELLO) {
+			console.log('hello')
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 				data: {
@@ -33,7 +39,9 @@ export default async function handler(req, res) {
 			return
 		}
 
+		// /generate
 		if (interaction.id === process.env.DISCORD_COMMAND_ID_NAMES) {
+			console.log('generate')
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 				components: [
@@ -53,7 +61,8 @@ export default async function handler(req, res) {
 			return
 		}
 
-		res.status(401).send('bad request')
+		console.log('whoops')
+		res.status(400).send('bad request')
 		return
 	}
 

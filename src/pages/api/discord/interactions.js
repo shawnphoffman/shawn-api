@@ -30,7 +30,10 @@ export default async function handler(req, res) {
 					content: `Hello, I'm RoboHawes! It's currently <t:${Math.round(Date.now() / 1000)}:F>.`,
 				},
 			})
-		} else if (interaction.id === process.env.DISCORD_COMMAND_ID_NAMES) {
+			return
+		}
+
+		if (interaction.id === process.env.DISCORD_COMMAND_ID_NAMES) {
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 				components: [
@@ -47,8 +50,10 @@ export default async function handler(req, res) {
 					},
 				],
 			})
+			return
 		}
 
+		res.status(401).send('bad request')
 		return
 	}
 

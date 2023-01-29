@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 		res.send({
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {
-				content: `Hello, I'm RoboHawes! It's currently <t:${Date.now()}:F>.`,
+				content: `Hello, I'm RoboHawes! It's currently <t:${Math.round(Date.now() / 1000)}:F>.`,
 			},
 		})
 		return

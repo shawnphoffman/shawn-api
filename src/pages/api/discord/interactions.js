@@ -23,6 +23,11 @@ export default async function handler(req, res) {
 
 	const interaction = req.body
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
+		console.log('-------')
+		console.log('INPUT')
+		console.log(req.body)
+		console.log('-------')
+
 		res.send({
 			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 			data: {

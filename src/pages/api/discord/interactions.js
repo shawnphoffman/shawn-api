@@ -45,19 +45,22 @@ export default async function handler(req, res) {
 			console.log('generate')
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-				components: [
-					{
-						type: 1,
-						components: [
-							{
-								type: 2,
-								label: 'Click me!',
-								style: 5,
-								url: 'https://blueharvest.rocks',
-							},
-						],
-					},
-				],
+				data: {
+					content: 'Bleep blorp!',
+					components: [
+						{
+							type: 1,
+							components: [
+								{
+									type: 2,
+									label: 'Click me!',
+									style: 5,
+									url: 'https://blueharvest.rocks',
+								},
+							],
+						},
+					],
+				},
 			})
 			return
 		}

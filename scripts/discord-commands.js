@@ -95,5 +95,5 @@ async function getCommands() {
 	await interaction.getApplicationCommands(guildId).then(console.log).catch(console.error)
 }
 
-createCommand()
-// getCommands()
+// createCommand()
+getCommands()

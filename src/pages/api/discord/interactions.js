@@ -23,17 +23,32 @@ export default async function handler(req, res) {
 
 	const interaction = req.body
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {
-		console.log('-------')
-		console.log('INPUT')
-		console.log(req.body)
-		console.log('-------')
+		if (interaction.id === process.env.DISCORD_COMMAND_ID_HELLO) {
+			res.send({
+				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+				data: {
+					content: `Hello, I'm RoboHawes! It's currently <t:${Math.round(Date.now() / 1000)}:F>.`,
+				},
+			})
+		} else if (interaction.id === process.env.DISCORD_COMMAND_ID_NAMES) {
+			res.send({
+				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+				components: [
+					{
+						type: 1,
+						components: [
+							{
+								type: 2,
+								label: 'Click me!',
+								style: 5,
+								url: 'https://blueharvest.rocks',
+							},
+						],
+					},
+				],
+			})
+		}
 
-		res.send({
-			type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-			data: {
-				content: `Hello, I'm RoboHawes! It's currently <t:${Math.round(Date.now() / 1000)}:F>.`,
-			},
-		})
 		return
 	}
 

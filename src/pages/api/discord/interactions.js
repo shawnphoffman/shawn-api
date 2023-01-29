@@ -42,20 +42,30 @@ export default async function handler(req, res) {
 
 		// /generate
 		if (commandId === process.env.DISCORD_COMMAND_ID_NAMES) {
-			console.log('generate')
+			const options = interaction.data.options.reduce((el, memo) => {
+				memo[el.name] = el.value
+				return memo
+			}, {})
+
+			console.log({ options, og: JSON.stringify(interaction.data.options, null, 2) })
+
+			const { first, last, maiden, town } = options
+			const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`)
+			const outLast = properName(`${maiden.substr(0, 2)}${town.substr(0, 3)}`)
+
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 				data: {
-					content: 'Bleep blorp!',
+					content: `Your Star Wars name is **${outFirst} ${outLast}**`,
 					components: [
 						{
 							type: 1,
 							components: [
 								{
 									type: 2,
-									label: 'Click me!',
+									label: 'Web Version',
 									style: 5,
-									url: 'https://blueharvest.rocks',
+									url: 'https://shawn.party/star-wars/names',
 								},
 							],
 						},

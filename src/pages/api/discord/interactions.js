@@ -12,6 +12,21 @@ function runMiddleware(req, res, fn) {
 		})
 	})
 }
+function properName(name) {
+	return (
+		'' +
+		name
+			.replace(/[^\s\-\']+[\s\-\']*/g, function (word) {
+				return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
+			})
+			.replace(/\b(Van|De|Der|Da|Von)\b/g, function (wat) {
+				return wat.toLowerCase()
+			})
+			.replace(/Mc(.)/g, function (match, letter3) {
+				return 'Mc' + letter3.toUpperCase()
+			})
+	)
+}
 
 export default async function handler(req, res) {
 	if (req.method !== 'POST') {
@@ -42,16 +57,16 @@ export default async function handler(req, res) {
 
 		// /generate
 		if (commandId === process.env.DISCORD_COMMAND_ID_NAMES) {
-			const options = interaction.data.options.reduce((el, memo) => {
+			const options = interaction.data.options.reduce((memo, el) => {
 				memo[el.name] = el.value
 				return memo
 			}, {})
 
 			console.log({ options, og: JSON.stringify(interaction.data.options, null, 2) })
 
-			const { first, last, maiden, town } = options
+			const { first, last, maiden, hometown } = options
 			const outFirst = properName(`${last.substr(0, 3)}${first.substr(0, 2)}`)
-			const outLast = properName(`${maiden.substr(0, 2)}${town.substr(0, 3)}`)
+			const outLast = properName(`${maiden.substr(0, 2)}${hometown.substr(0, 3)}`)
 
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

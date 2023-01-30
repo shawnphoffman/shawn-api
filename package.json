@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"commands": "node ./scripts/discord-commands.js"
+		"commands": "node ./scripts/discord-commands.js",
+		"server": "node ./server/index.js"
 	},
 	"dependencies": {
 		"@next/font": "13.1.5",
@@ -15,6 +16,7 @@
 		"cheerio": "^1.0.0-rc.12",
 		"cors": "^2.8.5",
 		"discord-interactions": "^3.3.0",
+		"discord.js": "^14.7.1",
 		"dotenv": "^16.0.3",
 		"eslint": "8.32.0",
 		"eslint-config-next": "13.1.5",

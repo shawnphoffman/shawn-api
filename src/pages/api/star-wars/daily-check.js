@@ -27,7 +27,7 @@ async function sendWebhook(url, content) {
 }
 
 async function handler(req, res) {
-	const today = new Date('2023-01-31T08:00:00.000Z').setHours(0, 0, 0, 0)
+	const today = new Date().setHours(0, 0, 0, 0)
 
 	// Comics
 	const comics = await getComics()

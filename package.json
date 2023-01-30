@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"start": "next start",
+		"web": "next start",
+		"start": "node ./server/index.js",
 		"lint": "next lint",
 		"commands": "node ./scripts/discord-commands.js",
 		"server": "node ./server/index.js"

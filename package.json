@@ -10,6 +10,9 @@
 		"commands": "node ./scripts/discord-commands.js",
 		"server": "node ./server/index.js"
 	},
+	"engines": {
+		"node": "18.x"
+	},
 	"dependencies": {
 		"@next/font": "13.1.5",
 		"axios": "^1.2.5",

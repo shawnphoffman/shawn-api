@@ -1,1 +1,1 @@
-worker: npm run server
+worker: yarn server

@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 
 const url = 'https://starwars.fandom.com/wiki/List_of_future_comics'
 
-export default async function handler(req, res) {
+export async function getComics() {
 	const requestOptions = {
 		method: 'GET',
 	}
@@ -51,6 +51,12 @@ export default async function handler(req, res) {
 	// Return an object with the data extracted from the page.
 	// It will be stored to the resulting dataset.
 	const response = comics.sort((a, b) => a.pubDate - b.pubDate)
+
+	return response
+}
+
+export default async function handler(req, res) {
+	const response = await getComics()
 
 	res.status(200).send(response)
 }

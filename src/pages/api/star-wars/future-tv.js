@@ -63,7 +63,7 @@ const fetchChild = async childUrl => {
 	return episodes
 }
 
-export default async function handler(req, res) {
+export async function getTV() {
 	// Response is an array of future TV episodes
 	var response = []
 	const data = await fetchHtmlWithCache(rootUrl, requestOptions, 60 * 24)
@@ -96,5 +96,11 @@ export default async function handler(req, res) {
 
 	// console.log("RETURNING");
 
-	res.status(200).send(response.sort((a, b) => a.pubDate - b.pubDate))
+	return response.sort((a, b) => a.pubDate - b.pubDate)
+}
+
+export default async function handler(req, res) {
+	const response = await getTV()
+
+	res.status(200).send(response)
 }

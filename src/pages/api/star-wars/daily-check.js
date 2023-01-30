@@ -2,13 +2,20 @@
 // import * as cheerio from 'cheerio'
 import { verifySignature } from '@upstash/qstash/nextjs'
 import { getComics } from './future-comics'
+import { getBooks } from './future-books'
+// import { getTV } from './future-tv'
 
 const processComic = comic => {
-	// const pubDate = new Date(comic.pubDate).toLocaleDateString('en-US', options)
-	// - Release Date: ${pubDate}
 	return `
 **${comic.title}**
 https://starwars.fandom.com${comic.url}`
+}
+
+const processBook = book => {
+	return `
+**${book.title} (${book.author})**
+- ${book.format}
+https://starwars.fandom.com${book.url}`
 }
 
 async function sendWebhook(url, content) {
@@ -41,7 +48,19 @@ async function handler(req, res) {
 		content: todayComics.map(processComic).join('\n'),
 	})
 
-	res.status(200).json({ success: true, todayComics })
+	// Books
+	const books = await getBooks()
+	const todayBooks = comics.filter(c => {
+		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
+		return today === pubDate
+	})
+
+	await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
+		username: 'Books Releasing Today',
+		content: todayBooks.map(processBook).join('\n'),
+	})
+
+	res.status(200).json({ success: true })
 }
 
 const isLocal = process.env.LOCAL || false

@@ -50,7 +50,7 @@ async function handler(req, res) {
 
 	// Books
 	const books = await getBooks()
-	const todayBooks = comics.filter(c => {
+	const todayBooks = books.filter(c => {
 		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
 		return today === pubDate
 	})

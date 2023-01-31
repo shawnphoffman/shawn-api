@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@next/font": "13.1.5",
 		"@upstash/qstash": "^0.3.4",
+		"@upstash/redis": "^1.19.3",
 		"axios": "^1.2.5",
 		"cheerio": "^1.0.0-rc.12",
 		"cors": "^2.8.5",

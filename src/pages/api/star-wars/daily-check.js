@@ -5,9 +5,8 @@ import { getComics } from './future-comics'
 import { getBooks } from './future-books'
 // import { getTV } from './future-tv'
 
-const dateString = () => {
-	const today = new Date().setHours(0, 0, 0, 0)
-	return new Date(today).toDateString()
+const dateString = d => {
+	return new Date(d).toDateString()
 }
 
 const processComic = comic => {
@@ -39,33 +38,41 @@ async function sendWebhook(url, content) {
 }
 
 async function handler(req, res) {
-	const today = new Date().setHours(0, 0, 0, 0)
+	// const today = new Date().setDate(1).setHours(0, 0, 0, 0)
+	var tomorrow = new Date()
+	tomorrow.setDate(tomorrow.getDate() + 1)
 
 	// Comics
 	const comics = await getComics()
-	const todayComics = comics.filter(c => {
+	const outComics = comics.filter(c => {
 		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
-		return today === pubDate
+		return tomorrow === pubDate
+		// return today === pubDate
 	})
 
-	await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
-		username: `Comics Releasing Today (${dateString()})`,
-		content: todayComics.map(processComic).join('\n'),
-	})
+	if (outComics.length) {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
+			username: `Comics Releasing (${dateString(tomorrow)})`,
+			content: outComics.map(processComic).join('\n'),
+		})
+	}
 
 	// Books
 	const books = await getBooks()
-	const todayBooks = books.filter(c => {
+	const outBooks = books.filter(c => {
 		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
-		return today === pubDate
+		return tomorrow === pubDate
+		// return today === pubDate
 	})
 
-	await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
-		username: `Books Releasing Today (${dateString()})`,
-		content: todayBooks.map(processBook).join('\n'),
-	})
+	if (outBooks) {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
+			username: `Books Releasing (${dateString(tomorrow)})`,
+			content: outBooks.map(processBook).join('\n'),
+		})
+	}
 
-	res.status(200).json({ success: true })
+	res.status(200).json({ success: true, bookCount: outBooks.length, comicCount: outComics.length })
 }
 
 const isLocal = process.env.LOCAL || false

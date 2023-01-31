@@ -6,8 +6,8 @@ import { getBooks } from './future-books'
 // import { getTV } from './future-tv'
 
 const dateString = () => {
-	// <t:1675124097:d>
-	return `<t:${Math.round(Date.now() / 1000)}:d>.`
+	const today = new Date().setHours(0, 0, 0, 0)
+	return new Date(today).toDateString()
 }
 
 const processComic = comic => {

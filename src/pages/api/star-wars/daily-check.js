@@ -5,6 +5,11 @@ import { getComics } from './future-comics'
 import { getBooks } from './future-books'
 // import { getTV } from './future-tv'
 
+const dateString = () => {
+	// <t:1675124097:d>
+	return `<t:${Math.round(Date.now() / 1000)}:d>.`
+}
+
 const processComic = comic => {
 	return `
 **${comic.title}**
@@ -44,7 +49,7 @@ async function handler(req, res) {
 	})
 
 	await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
-		username: 'Comics Releasing Today',
+		username: `Comics Releasing Today (${dateString()})`,
 		content: todayComics.map(processComic).join('\n'),
 	})
 
@@ -56,7 +61,7 @@ async function handler(req, res) {
 	})
 
 	await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
-		username: 'Books Releasing Today',
+		username: `Books Releasing Today (${dateString()})`,
 		content: todayBooks.map(processBook).join('\n'),
 	})
 

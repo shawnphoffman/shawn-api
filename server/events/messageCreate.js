@@ -11,27 +11,34 @@ module.exports = {
 
 		try {
 			if (!m.author.bot) {
-				if (m.content.toLowerCase().includes('clean')) {
+				const message = m.content.toLowerCase()
+				if (message.includes('clean')) {
 					await m.reply('You know I keep it clean!')
-					const reactionEmoji = m.guild.emojis.cache.find(emoji => emoji.name === 'clean')
-					m.react(reactionEmoji)
+					const emoji = m.guild.emojis.cache.find(emoji => emoji.name === 'clean')
+					m.react(emoji)
 					return
 				}
-				if (m.content.toLowerCase().includes('dook')) {
+				if (message.includes('dook')) {
 					m.reply("I don't dig in my dook!")
 					m.react('💩')
 					return
 				}
-				if (m.content.toLowerCase().includes('utah')) {
+				// TODO Update this to detect 1:n "a" in utah and reply with n+y
+				if (message.includes('utah')) {
 					m.reply('Utaaaaaah...')
 					return
 				}
-				if (m.content.toLowerCase().includes('dougie')) {
+				if (message.includes('dougie')) {
 					m.reply('Dougie')
 					return
 				}
-				if (m.content.toLowerCase().includes('shithead')) {
+				if (message.includes('shithead')) {
 					m.reply('https://go.blueharvest.rocks/rbj2ml')
+					return
+				}
+				if (message.includes('could be')) {
+					const emoji = m.guild.emojis.cache.find(emoji => emoji.name === 'coodbe')
+					m.react(emoji)
 					return
 				}
 			}

@@ -76,12 +76,39 @@ export default async function handler(req, res) {
 				case 'list':
 					console.log('link list')
 
-					const list = await getLinks()
+					const links = await getLinks()
+
+					const components = links.map((link, i) => {
+						return {
+							type: 1,
+							components: [
+								{
+									type: 2,
+									label: `Remove (${link.idString})`,
+									style: 1,
+									custom_id: `${i}_remove`,
+								},
+								{
+									type: 2,
+									label: link.shortURL,
+									style: 1,
+									custom_id: `${i}_short`,
+								},
+								{
+									type: 2,
+									label: link.originalURL,
+									style: 1,
+									custom_id: `${i}_original`,
+								},
+							],
+						}
+					})
 
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `List of links`,
+							content: `Current Links`,
+							components,
 						},
 					})
 					return

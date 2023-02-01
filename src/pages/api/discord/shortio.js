@@ -9,16 +9,27 @@ export const getLinks = async () => {
 		method: 'GET',
 		headers: {
 			accept: 'application/json',
-			Authorization: authPk,
+			Authorization: authSk,
 		},
 	}
 
 	const response = await fetch(url, options)
 	const json = await response.json()
 
+	const links = json.links.reduce((memo, link) => {
+		if (link.idString !== 'lnk_2mwB_9dCPko6HFfo') {
+			memo.push({
+				id: link.idString,
+				shortURL: link.shortURL,
+				originalURL: link.originalURL,
+			})
+		}
+		return memo
+	}, [])
+
 	console.log(json)
 
-	return json
+	return links
 }
 
 export const createLink = async (url, title) => {}

@@ -2,6 +2,9 @@ import { InteractionType, InteractionResponseType, verifyKeyMiddleware } from 'd
 
 const PUBLIC_KEY = process.env.DISCORD_APP_PUBLIC_KEY
 
+// TODO add to env
+const shortLinkCommandId = '1070472243630579743'
+
 function runMiddleware(req, res, fn) {
 	return new Promise((resolve, reject) => {
 		req.header = name => req.headers[name.toLowerCase()]
@@ -58,14 +61,38 @@ export default async function handler(req, res) {
 			return
 		}
 
-		// temp
-		if (commandId === '1070467892598022235') {
-			res.send({
-				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-				data: {
-					content: "I'm not dumb",
-				},
-			})
+		// Short Links
+		// This is the parent command ID
+		if (commandId === shortLinkCommandId) {
+			switch (interaction.data.options.name) {
+				case 'list':
+					console.log('link list')
+					res.send({
+						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+						data: {
+							content: `List of links`,
+						},
+					})
+					break
+				case 'create':
+					console.log('link create')
+					res.send({
+						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+						data: {
+							content: `Link created`,
+						},
+					})
+					break
+				case 'remove':
+					console.log('link remove')
+					res.send({
+						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+						data: {
+							content: `Link removed`,
+						},
+					})
+					break
+			}
 			return
 		}
 

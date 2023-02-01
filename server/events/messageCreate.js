@@ -14,8 +14,8 @@ module.exports = {
 				const message = m.content.toLowerCase()
 
 				let utahRegex = /(ut)(a+)(h)/gim
-				let utahMatches = reg.exec(t1)
-				let utahTest = !!matches.length
+				let utahMatches = utahRegex.exec(m.content)
+				let utahTest = !!utahMatches?.length || false
 
 				if (message.includes('clean')) {
 					await m.reply('You know I keep it clean!')
@@ -28,16 +28,11 @@ module.exports = {
 					m.react('💩')
 					return
 				}
-				// TODO Update this to detect 1:n "a" in utah and reply with n+y
 				if (utahTest) {
-					let rebuild = `${matches[1]}${matches[2]}${matches[2]}${matches[3]}`
+					let rebuild = `${utahMatches[1]}${utahMatches[2]}${utahMatches[2]}${utahMatches[3]}`
 					m.reply(rebuild)
 					return
 				}
-				// if (message.includes('utah')) {
-				// 	m.reply('Utaaaaaah...')
-				// 	return
-				// }
 				if (message.includes('dougie')) {
 					m.reply('Dougie')
 					return

@@ -55,6 +55,17 @@ export default async function handler(req, res) {
 			return
 		}
 
+		// temp
+		if (commandId === '1070467892598022235') {
+			res.send({
+				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+				data: {
+					content: "I'm not dumb",
+				},
+			})
+			return
+		}
+
 		// /generate
 		if (commandId === process.env.DISCORD_COMMAND_ID_NAMES) {
 			const options = interaction.data.options.reduce((memo, el) => {

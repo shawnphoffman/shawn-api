@@ -8,13 +8,6 @@ const authToken = process.env.DISCORD_BOT_TOKEN
 const publicKey = process.env.DISCORD_APP_PUBLIC_KEY
 const guildId = process.env.DISCORD_GUILD_ID
 
-// console.log({
-// 	appId,
-// 	authToken,
-// 	publicKey,
-// 	guildId,
-// })
-
 const interaction = new DiscordInteractions({
 	applicationId: appId,
 	authToken: authToken,
@@ -23,41 +16,41 @@ const interaction = new DiscordInteractions({
 
 async function createCommand() {
 	const command = {
-		name: 'generate-star-wars-name',
-		description: 'Generates your Star Wars RPG name based on inputs',
+		name: 'temp-dumb-dumb',
+		description: 'Go away',
 		options: [
-			{
-				type: 3, //string
-				name: 'first',
-				description: 'Your first name',
-				required: true,
-				min_length: 2,
-				max_length: 100,
-			},
-			{
-				type: 3, //string
-				name: 'last',
-				description: 'Your last name',
-				required: true,
-				min_length: 2,
-				max_length: 100,
-			},
-			{
-				type: 3, //string
-				name: 'maiden',
-				description: "Your mother's maiden name",
-				required: true,
-				min_length: 2,
-				max_length: 100,
-			},
-			{
-				type: 3, //string
-				name: 'hometown',
-				description: 'The town where you were born',
-				required: true,
-				min_length: 2,
-				max_length: 100,
-			},
+			// {
+			// 	type: 3, //string
+			// 	name: 'first',
+			// 	description: 'Your first name',
+			// 	required: true,
+			// 	min_length: 2,
+			// 	max_length: 100,
+			// },
+			// {
+			// 	type: 3, //string
+			// 	name: 'last',
+			// 	description: 'Your last name',
+			// 	required: true,
+			// 	min_length: 2,
+			// 	max_length: 100,
+			// },
+			// {
+			// 	type: 3, //string
+			// 	name: 'maiden',
+			// 	description: "Your mother's maiden name",
+			// 	required: true,
+			// 	min_length: 2,
+			// 	max_length: 100,
+			// },
+			// {
+			// 	type: 3, //string
+			// 	name: 'hometown',
+			// 	description: 'The town where you were born',
+			// 	required: true,
+			// 	min_length: 2,
+			// 	max_length: 100,
+			// },
 		],
 	}
 
@@ -95,5 +88,5 @@ async function getCommands() {
 	await interaction.getApplicationCommands(guildId).then(console.log).catch(console.error)
 }
 
-// createCommand()
-getCommands()
+createCommand()
+// getCommands()

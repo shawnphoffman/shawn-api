@@ -58,11 +58,34 @@ async function updateCommand(id) {
 				name: 'create',
 				description: 'Create a new short link',
 				type: ApplicationCommandOptionType.SUB_COMMAND,
+				options: [
+					// url
+					{
+						name: 'url',
+						description: 'URL to shorten',
+						type: ApplicationCommandOptionType.STRING,
+						required: true,
+					},
+					{
+						name: 'title',
+						description: 'Title to display for the URL',
+						type: ApplicationCommandOptionType.STRING,
+					},
+				],
 			},
 			{
 				name: 'remove',
 				description: 'Remove an existing short link',
 				type: ApplicationCommandOptionType.SUB_COMMAND,
+				options: [
+					// id to remove
+					{
+						name: 'id',
+						description: 'ID of link to remove',
+						type: ApplicationCommandOptionType.STRING,
+						required: true,
+					},
+				],
 			},
 		],
 	}
@@ -102,6 +125,6 @@ async function getCommands() {
 
 // createCommand()
 // const id = '1070467892598022235'
-// updateCommand(shortLinkCommandId)
+updateCommand(shortLinkCommandId)
 // deleteCommand(id)
 getCommands()

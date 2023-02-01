@@ -64,29 +64,14 @@ export default async function handler(req, res) {
 		// Short Links
 		// This is the parent command ID
 		if (commandId === shortLinkCommandId) {
-			/*
-===========
-INTERACTION
-===========
-{
-  "app_permissions": "1072235408992",
-  "application_id": "676933166329495592",
-  "channel_id": "1070421182832189450",
-  "data": {
-    "guild_id": "471428649200123915",
-    "id": "1070472243630579743",
-    "name": "links",
-    "options": [
-      {
-        "name": "list",
-        "options": [],
-        "type": 1
-      }
-    ],
-    "type": 1
-  },
-			*/
-			switch (interaction.data.options[0].name) {
+			const subcommand = interaction.data.options[0] || {}
+
+			const options = subcommand.options.reduce((memo, el) => {
+				memo[el.name] = el.value
+				return memo
+			}, {})
+
+			switch (subcommand.name) {
 				case 'list':
 					console.log('link list')
 					res.send({
@@ -98,19 +83,21 @@ INTERACTION
 					return
 				case 'create':
 					console.log('link create')
+					const { url, title } = options
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `Link created`,
+							content: `Link created: (${url}, ${title || 'none'})`,
 						},
 					})
 					return
 				case 'remove':
 					console.log('link remove')
+					const { id } = options
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `Link removed`,
+							content: `Link removed (${id})`,
 						},
 					})
 					return
@@ -119,6 +106,7 @@ INTERACTION
 
 		// /generate
 		if (commandId === process.env.DISCORD_COMMAND_ID_NAMES) {
+			// TODO refactor
 			const options = interaction.data.options.reduce((memo, el) => {
 				memo[el.name] = el.value
 				return memo

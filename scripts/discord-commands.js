@@ -1,4 +1,4 @@
-const { DiscordInteractions } = require('slash-commands')
+const { DiscordInteractions, ApplicationCommandOptionType } = require('slash-commands')
 const dotenv = require('dotenv')
 
 dotenv.config()
@@ -8,6 +8,8 @@ const authToken = process.env.DISCORD_BOT_TOKEN
 const publicKey = process.env.DISCORD_APP_PUBLIC_KEY
 const guildId = process.env.DISCORD_GUILD_ID
 
+const shortLinkCommandId = '1070472243630579743'
+
 const interaction = new DiscordInteractions({
 	applicationId: appId,
 	authToken: authToken,
@@ -16,47 +18,58 @@ const interaction = new DiscordInteractions({
 
 async function createCommand() {
 	const command = {
-		name: 'temp-dumb-dumb',
-		description: 'Go away',
+		name: 'temp',
+		description: 'Manage your Short.io links',
 		options: [
-			// {
-			// 	type: 3, //string
-			// 	name: 'first',
-			// 	description: 'Your first name',
-			// 	required: true,
-			// 	min_length: 2,
-			// 	max_length: 100,
-			// },
-			// {
-			// 	type: 3, //string
-			// 	name: 'last',
-			// 	description: 'Your last name',
-			// 	required: true,
-			// 	min_length: 2,
-			// 	max_length: 100,
-			// },
-			// {
-			// 	type: 3, //string
-			// 	name: 'maiden',
-			// 	description: "Your mother's maiden name",
-			// 	required: true,
-			// 	min_length: 2,
-			// 	max_length: 100,
-			// },
-			// {
-			// 	type: 3, //string
-			// 	name: 'hometown',
-			// 	description: 'The town where you were born',
-			// 	required: true,
-			// 	min_length: 2,
-			// 	max_length: 100,
-			// },
+			{
+				name: 'get',
+				description: 'get temp',
+				type: ApplicationCommandOptionType.SUB_COMMAND,
+			},
+			{
+				name: 'edit',
+				description: 'edit temp',
+				type: ApplicationCommandOptionType.SUB_COMMAND,
+			},
+		],
+	}
+
+	interaction
+		.createApplicationCommand(command, guildId)
+		.then(e => {
+			console.log(JSON.stringify(e, null, 2))
+		})
+		.catch(e => {
+			console.error(JSON.stringify(e, null, 2))
+		})
+}
+
+async function updateCommand(id) {
+	const command = {
+		name: 'links',
+		description: 'Manage your Short.io links',
+		options: [
+			{
+				name: 'list',
+				description: 'List existing short links',
+				type: ApplicationCommandOptionType.SUB_COMMAND,
+			},
+			{
+				name: 'create',
+				description: 'Create a new short link',
+				type: ApplicationCommandOptionType.SUB_COMMAND,
+			},
+			{
+				name: 'remove',
+				description: 'Remove an existing short link',
+				type: ApplicationCommandOptionType.SUB_COMMAND,
+			},
 		],
 	}
 
 	// Create Guild Command
 	interaction
-		.createApplicationCommand(command, guildId)
+		.editApplicationCommand(id, command, guildId)
 		.then(e => {
 			// console.log(e.errors.name._errors)
 			console.log(JSON.stringify(e, null, 2))
@@ -65,28 +78,30 @@ async function createCommand() {
 			// console.log(e.errors.name._errors)
 			console.error(JSON.stringify(e, null, 2))
 		})
+}
 
-	/*
-	{
-		id: '1069032876768763956',
-		application_id: '676933166329495592',
-		version: '1069032876768763957',
-		default_permission: true,
-		default_member_permissions: null,
-		type: 1,
-		nsfw: false,
-		name: 'hello',
-		name_localizations: null,
-		description: 'Responds with a salutation',
-		description_localizations: null,
-		guild_id: '471428649200123915'
-	}
-	*/
+async function deleteCommand(id) {
+	interaction
+		.deleteApplicationCommand(id, guildId)
+		.then(e => {
+			console.log(JSON.stringify(e, null, 2))
+		})
+		.catch(e => {
+			console.error(JSON.stringify(e, null, 2))
+		})
 }
 
 async function getCommands() {
-	await interaction.getApplicationCommands(guildId).then(console.log).catch(console.error)
+	await interaction
+		.getApplicationCommands(guildId)
+		.then(e => {
+			console.log(JSON.stringify(e, null, 2))
+		})
+		.catch(console.error)
 }
 
-createCommand()
-// getCommands()
+// createCommand()
+// const id = '1070467892598022235'
+// updateCommand(shortLinkCommandId)
+// deleteCommand(id)
+getCommands()

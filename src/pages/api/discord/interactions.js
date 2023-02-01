@@ -39,7 +39,10 @@ export default async function handler(req, res) {
 	const interaction = req.body
 	const commandId = interaction.data.id
 
-	console.log(interaction)
+	console.log('===========')
+	console.log('INTERACTION')
+	console.log('===========')
+	console.log(JSON.stringify(interaction, null, 2))
 
 	// Slash Commands
 	if (interaction.type === InteractionType.APPLICATION_COMMAND) {

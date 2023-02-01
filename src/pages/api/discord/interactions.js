@@ -1,4 +1,5 @@
 import { InteractionType, InteractionResponseType, verifyKeyMiddleware } from 'discord-interactions'
+import { getLinks } from './shortio'
 
 const PUBLIC_KEY = process.env.DISCORD_APP_PUBLIC_KEY
 
@@ -74,6 +75,9 @@ export default async function handler(req, res) {
 			switch (subcommand.name) {
 				case 'list':
 					console.log('link list')
+
+					const list = await getLinks()
+
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {

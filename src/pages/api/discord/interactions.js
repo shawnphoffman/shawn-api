@@ -73,7 +73,7 @@ export default async function handler(req, res) {
 							content: `List of links`,
 						},
 					})
-					break
+					return
 				case 'create':
 					console.log('link create')
 					res.send({
@@ -82,7 +82,7 @@ export default async function handler(req, res) {
 							content: `Link created`,
 						},
 					})
-					break
+					return
 				case 'remove':
 					console.log('link remove')
 					res.send({
@@ -91,9 +91,8 @@ export default async function handler(req, res) {
 							content: `Link removed`,
 						},
 					})
-					break
+					return
 			}
-			return
 		}
 
 		// /generate

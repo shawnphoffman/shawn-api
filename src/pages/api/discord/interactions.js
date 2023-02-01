@@ -84,9 +84,9 @@ export default async function handler(req, res) {
 							components: [
 								{
 									type: 2,
-									label: `Remove (${link.idString})`,
+									label: `Remove (${link.id})`,
 									style: 1,
-									custom_id: `${i}_remove`,
+									custom_id: link.id,
 								},
 								{
 									type: 2,

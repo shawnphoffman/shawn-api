@@ -64,7 +64,29 @@ export default async function handler(req, res) {
 		// Short Links
 		// This is the parent command ID
 		if (commandId === shortLinkCommandId) {
-			switch (interaction.data.options.name) {
+			/*
+===========
+INTERACTION
+===========
+{
+  "app_permissions": "1072235408992",
+  "application_id": "676933166329495592",
+  "channel_id": "1070421182832189450",
+  "data": {
+    "guild_id": "471428649200123915",
+    "id": "1070472243630579743",
+    "name": "links",
+    "options": [
+      {
+        "name": "list",
+        "options": [],
+        "type": 1
+      }
+    ],
+    "type": 1
+  },
+			*/
+			switch (interaction.data.options[0].name) {
 				case 'list':
 					console.log('link list')
 					res.send({

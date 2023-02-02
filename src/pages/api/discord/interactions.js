@@ -104,7 +104,10 @@ export default async function handler(req, res) {
 						}
 					})
 
-					console.log({ components })
+					console.log('')
+					console.log('-------')
+					console.log('components')
+					console.log(components)
 
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

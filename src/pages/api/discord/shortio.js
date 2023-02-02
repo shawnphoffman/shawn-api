@@ -36,7 +36,7 @@ export const getLinks = async () => {
 	return links
 }
 
-export const createLink = async (url, title, path, cloaking) => {
+export const createLink = async (url, title, path) => {
 	const options = {
 		method: 'POST',
 		headers: {
@@ -50,7 +50,6 @@ export const createLink = async (url, title, path, cloaking) => {
 			allowDuplicates: true,
 			title: title ? title : null,
 			path: path ? path : null,
-			cloaking: cloaking ? cloaking : null,
 		}),
 	}
 
@@ -67,4 +66,23 @@ export const createLink = async (url, title, path, cloaking) => {
 		title: json.title,
 		id: json.idString,
 	}
+}
+
+export const archiveLink = async linkId => {
+	const options = {
+		method: 'POST',
+		headers: {
+			'content-type': 'application/json',
+			Authorization: authSk,
+		},
+		body: JSON.stringify({ linkIdString: linkId }),
+	}
+
+	const response = await fetch('https://api.short.io/links/archive', options)
+	await response.json()
+
+	console.log('')
+	console.log('archiveLink')
+
+	return
 }

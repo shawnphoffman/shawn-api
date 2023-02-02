@@ -1,5 +1,5 @@
 import { InteractionType, InteractionResponseType, verifyKeyMiddleware } from 'discord-interactions'
-import { createLink, getLinks } from './shortio'
+import { archiveLink, createLink, getLinks } from './shortio'
 
 const PUBLIC_KEY = process.env.DISCORD_APP_PUBLIC_KEY
 
@@ -129,7 +129,7 @@ export default async function handler(req, res) {
 				//
 				case 'create':
 					console.log('link create')
-					const { url, title, path, cloaking } = options
+					const { url, title, path } = options
 
 					if (!url) {
 						res.send({
@@ -141,7 +141,7 @@ export default async function handler(req, res) {
 						return
 					}
 
-					const link = await createLink(url, title, path, cloaking)
+					const link = await createLink(url, title, path)
 
 					if (!link.shortURL) {
 						res.send({
@@ -157,6 +157,14 @@ export default async function handler(req, res) {
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
 							content: `**Link Created** (${link.shortURL} ➡️ ${link.originalURL})`,
+							components: [
+								{
+									type: 2,
+									label: link.shortURL,
+									style: 5,
+									url: link.shortURL,
+								},
+							],
 						},
 					})
 					return
@@ -200,6 +208,19 @@ export default async function handler(req, res) {
 		console.log('whoops')
 		res.status(400).send('bad request')
 		return
+	} else if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
+		// HACK: REMOVE LINK BUTTON
+		if (interaction?.data?.custom_id) {
+			await archiveLink(interaction?.data?.custom_id)
+
+			res.send({
+				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+				data: {
+					content: 'LINK REMOVED',
+				},
+			})
+			return
+		}
 	}
 
 	res.status(400).end('use case not met')

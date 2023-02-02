@@ -78,12 +78,6 @@ async function updateCommand(id) {
 						type: ApplicationCommandOptionType.STRING,
 						required: false,
 					},
-					{
-						name: 'cloak',
-						description: 'If true, the link will redirect but will not show the original URL in the address bar.',
-						type: ApplicationCommandOptionType.BOOLEAN,
-						required: false,
-					},
 				],
 			},
 			// {

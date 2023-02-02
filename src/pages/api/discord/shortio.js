@@ -47,7 +47,7 @@ export const createLink = async (url, title, path) => {
 		body: JSON.stringify({
 			domain: domain,
 			originalURL: url,
-			allowDuplicates: true,
+			allowDuplicates: false,
 			title: title ? title : null,
 			path: path ? path : null,
 		}),

@@ -161,18 +161,18 @@ export default async function handler(req, res) {
 					console.log('create!')
 					console.log(JSON.stringify(link, null, 2))
 
-					res.send({
+					await res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `**Link Created** (${link.shortURL} ➡️ ${link.originalURL})`,
-							components: [
-								{
-									type: 2,
-									label: link.shortURL,
-									style: 5,
-									url: link.shortURL,
-								},
-							],
+							content: `**Link Created**\n(${link.shortURL} ➡️ ${link.originalURL})`,
+							// components: [
+							// 	{
+							// 		type: 2,
+							// 		label: link.shortURL,
+							// 		style: 5,
+							// 		url: link.shortURL,
+							// 	},
+							// ],
 						},
 					})
 					return

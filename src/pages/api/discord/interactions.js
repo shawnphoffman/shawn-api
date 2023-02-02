@@ -84,21 +84,21 @@ export default async function handler(req, res) {
 							components: [
 								{
 									type: 2,
-									label: `Remove (${link.id})`,
-									style: 1,
+									label: `OG: ${link.originalURL}`,
+									style: 5,
+									url: link.originalURL,
+								},
+								{
+									type: 2,
+									label: `Short: ${link.shortURL}`,
+									style: 5,
+									url: link.shortUrl,
+								},
+								{
+									type: 2,
+									label: `Remove (TBD)`,
+									style: 4,
 									custom_id: link.id,
-								},
-								{
-									type: 2,
-									label: link.shortURL,
-									style: 1,
-									custom_id: `${i}_short`,
-								},
-								{
-									type: 2,
-									label: link.originalURL,
-									style: 1,
-									custom_id: `${i}_original`,
 								},
 							],
 						}

@@ -211,7 +211,11 @@ export default async function handler(req, res) {
 	} else if (interaction.type === InteractionType.MESSAGE_COMPONENT) {
 		// HACK: REMOVE LINK BUTTON
 		if (interaction?.data?.custom_id) {
-			await archiveLink(interaction?.data?.custom_id)
+			const id = interaction?.data?.custom_id
+
+			console.log('REMOVE LINK')
+			console.log(id)
+			await archiveLink(id)
 
 			res.send({
 				type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

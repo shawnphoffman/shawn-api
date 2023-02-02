@@ -79,10 +79,10 @@ export const archiveLink = async linkId => {
 	}
 
 	const response = await fetch('https://api.short.io/links/archive', options)
-	await response.json()
 
 	console.log('')
 	console.log('archiveLink')
+	console.log(JSON.stringify(response, null, 2))
 
 	return
 }

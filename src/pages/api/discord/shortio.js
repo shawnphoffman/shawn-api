@@ -75,7 +75,7 @@ export const archiveLink = async linkId => {
 			'content-type': 'application/json',
 			Authorization: authSk,
 		},
-		body: JSON.stringify({ linkIdString: linkId }),
+		body: JSON.stringify({ linkId: linkId }),
 	}
 
 	const response = await fetch('https://api.short.io/links/archive', options)

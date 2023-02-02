@@ -106,7 +106,7 @@ export default async function handler(req, res) {
 								},
 								{
 									type: 2,
-									label: `Remove (TBD)`,
+									label: `Remove Link`,
 									style: 4,
 									custom_id: link.id,
 								},

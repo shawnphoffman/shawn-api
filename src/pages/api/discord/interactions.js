@@ -84,7 +84,7 @@ export default async function handler(req, res) {
 							components: [
 								{
 									type: 2,
-									label: `${link.shortURL}`,
+									label: links.title ? `${links.title}: ${link.shortURL}` : `${link.shortURL}`,
 									style: 5,
 									url: link.shortURL,
 								},
@@ -119,6 +119,8 @@ export default async function handler(req, res) {
 					const { url, title } = options
 
 					const link = await createLink(url, title)
+
+					if (!link.shortURL) return
 
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

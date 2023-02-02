@@ -21,6 +21,7 @@ export const getLinks = async () => {
 			memo.push({
 				id: link.idString,
 				shortURL: link.shortURL,
+				title: json.title,
 				originalURL: link.originalURL,
 			})
 		}
@@ -55,6 +56,7 @@ export const createLink = async (url, title) => {
 	return {
 		shortURL: json.shortURL,
 		originalURL: json.originalURL,
+		title: json.title,
 		id: json.idString,
 	}
 }

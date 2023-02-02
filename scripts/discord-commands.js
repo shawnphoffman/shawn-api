@@ -67,9 +67,22 @@ async function updateCommand(id) {
 						required: true,
 					},
 					{
-						name: 'title',
-						description: 'Title to display for the URL',
+						name: 'path',
+						description: 'Optional path part of newly created link. If empty, it will be generated automatically',
 						type: ApplicationCommandOptionType.STRING,
+						required: false,
+					},
+					{
+						name: 'title',
+						description: 'Title of created URL to be shown in the admin panel',
+						type: ApplicationCommandOptionType.STRING,
+						required: false,
+					},
+					{
+						name: 'cloak',
+						description: 'If true, the link will redirect but will not show the original URL in the address bar.',
+						type: ApplicationCommandOptionType.BOOLEAN,
+						required: false,
 					},
 				],
 			},
@@ -90,15 +103,21 @@ async function updateCommand(id) {
 		],
 	}
 
+	console.log('')
+	console.log(JSON.stringify(command, null, 2))
+	console.log('')
+
 	// Create Guild Command
 	interaction
 		.editApplicationCommand(id, command, guildId)
 		.then(e => {
 			// console.log(e.errors.name._errors)
+			console.log('UPDATED')
 			console.log(JSON.stringify(e, null, 2))
 		})
 		.catch(e => {
 			// console.log(e.errors.name._errors)
+			console.log('UPDATE ERROR')
 			console.error(JSON.stringify(e, null, 2))
 		})
 }
@@ -127,4 +146,4 @@ async function getCommands() {
 // const id = '1070467892598022235'
 updateCommand(shortLinkCommandId)
 // deleteCommand(id)
-getCommands()
+// getCommands()

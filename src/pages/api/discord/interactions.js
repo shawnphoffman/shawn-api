@@ -116,9 +116,9 @@ export default async function handler(req, res) {
 					return
 				case 'create':
 					console.log('link create')
-					const { url, title } = options
+					const { url, title, path, cloaking } = options
 
-					const link = await createLink(url, title)
+					const link = await createLink(url, title, path, cloaking)
 
 					if (!link.shortURL) return
 

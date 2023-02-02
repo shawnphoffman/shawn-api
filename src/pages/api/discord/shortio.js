@@ -35,7 +35,7 @@ export const getLinks = async () => {
 	return links
 }
 
-export const createLink = async (url, title) => {
+export const createLink = async (url, title, path, cloaking) => {
 	const options = {
 		method: 'POST',
 		headers: {
@@ -43,7 +43,14 @@ export const createLink = async (url, title) => {
 			'content-type': 'application/json',
 			Authorization: authSk,
 		},
-		body: JSON.stringify({ domain: domainId, originalURL: url, allowDuplicates: true, title: title ? title : null }),
+		body: JSON.stringify({
+			domain: domainId,
+			originalURL: url,
+			allowDuplicates: true,
+			title: title ? title : null,
+			path: path ? path : null,
+			cloaking: cloaking ? cloaking : null,
+		}),
 	}
 
 	const response = await fetch('https://api.short.io/links', options)

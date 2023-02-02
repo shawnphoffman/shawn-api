@@ -29,9 +29,9 @@ export const getLinks = async () => {
 		return memo
 	}, [])
 
-	console.log('')
-	console.log('getLinks')
-	console.log(JSON.stringify(json, null, 2))
+	// console.log('')
+	// console.log('getLinks')
+	// console.log(JSON.stringify(json, null, 2))
 
 	return links
 }
@@ -56,9 +56,9 @@ export const createLink = async (url, title, path) => {
 	const response = await fetch('https://api.short.io/links', options)
 	const json = await response.json()
 
-	console.log('')
-	console.log('createLink')
-	console.log(JSON.stringify(json, null, 2))
+	// console.log('')
+	// console.log('createLink')
+	// console.log(JSON.stringify(json, null, 2))
 
 	return {
 		shortURL: json.shortURL,
@@ -75,14 +75,15 @@ export const archiveLink = async linkId => {
 			'content-type': 'application/json',
 			Authorization: authSk,
 		},
-		body: JSON.stringify({ linkId: linkId }),
+		body: JSON.stringify({ link_id: linkId }),
 	}
 
 	const response = await fetch('https://api.short.io/links/archive', options)
+	const json = await response.json()
 
-	console.log('')
-	console.log('archiveLink')
-	console.log(JSON.stringify(response, null, 2))
+	// console.log('')
+	// console.log('archiveLink')
+	// console.log(JSON.stringify(json, null, 2))
 
-	return
+	return json
 }

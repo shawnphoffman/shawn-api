@@ -17,13 +17,13 @@ export const getLinks = async () => {
 	const json = await response.json()
 
 	const links = json.links.reduce((memo, link) => {
-		// if (link.idString !== 'lnk_2mwB_9dCPko6HFfo') {
-		memo.push({
-			id: link.idString,
-			shortURL: link.shortURL,
-			originalURL: link.originalURL,
-		})
-		// }
+		if (link.idString !== process.env.SHORTIO_ROOT_LINK_ID) {
+			memo.push({
+				id: link.idString,
+				shortURL: link.shortURL,
+				originalURL: link.originalURL,
+			})
+		}
 		return memo
 	}, [])
 

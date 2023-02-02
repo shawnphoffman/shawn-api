@@ -84,15 +84,15 @@ export default async function handler(req, res) {
 							components: [
 								{
 									type: 2,
-									label: `OG: ${link.originalURL}`,
+									label: `In: ${link.shortURL}`,
 									style: 5,
-									url: link.originalURL,
+									url: link.shortURL,
 								},
 								{
 									type: 2,
-									label: `Short: ${link.shortURL}`,
+									label: `Out: ${link.originalURL}`,
 									style: 5,
-									url: link.shortURL,
+									url: link.originalURL,
 								},
 								{
 									type: 2,

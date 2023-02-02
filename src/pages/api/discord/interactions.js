@@ -88,6 +88,8 @@ export default async function handler(req, res) {
 
 					const links = await getLinks()
 
+					// TODO SPLIT INTO GROUPS OF 10!!!
+
 					const components = links.map((link, i) => {
 						return {
 							type: 1,
@@ -141,6 +143,9 @@ export default async function handler(req, res) {
 						return
 					}
 
+					// TODO DO I need to defer updates until after I create the link???
+					// https://discord.com/developers/docs/interactions/receiving-and-responding#followup-messages
+
 					const link = await createLink(url, title, path)
 
 					if (!link.shortURL) {
@@ -152,6 +157,9 @@ export default async function handler(req, res) {
 						})
 						return
 					}
+
+					console.log('create!')
+					console.log(JSON.stringify(link, null, 2))
 
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

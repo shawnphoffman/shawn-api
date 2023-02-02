@@ -80,6 +80,9 @@ export default async function handler(req, res) {
 			}, {})
 
 			switch (subcommand.name) {
+				//
+				// ++ GET LINKS
+				//
 				case 'list':
 					console.log('link list')
 
@@ -121,6 +124,9 @@ export default async function handler(req, res) {
 						},
 					})
 					return
+				//
+				// ++ CREATE LINK
+				//
 				case 'create':
 					console.log('link create')
 					const { url, title, path, cloaking } = options

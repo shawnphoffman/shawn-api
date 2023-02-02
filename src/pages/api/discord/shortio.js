@@ -1,5 +1,6 @@
 const domainId = process.env.SHORTIO_DOMAIN_BH
-const authPk = process.env.SHORTIO_PUBLIC_KEY
+const domain = 'go.blueharvest.rocks'
+// const authPk = process.env.SHORTIO_PUBLIC_KEY
 const authSk = process.env.SHORTIO_SECRET_KEY
 
 export const getLinks = async () => {
@@ -17,7 +18,7 @@ export const getLinks = async () => {
 	const json = await response.json()
 
 	const links = json.links.reduce((memo, link) => {
-		if (link.idString !== process.env.SHORTIO_ROOT_LINK_ID) {
+		if (link.idString !== process.env.SHORTIO_ROOT_LINK_ID && !link.archived) {
 			memo.push({
 				id: link.idString,
 				shortURL: link.shortURL,
@@ -44,7 +45,7 @@ export const createLink = async (url, title, path, cloaking) => {
 			Authorization: authSk,
 		},
 		body: JSON.stringify({
-			domain: domainId,
+			domain: domain,
 			originalURL: url,
 			allowDuplicates: true,
 			title: title ? title : null,

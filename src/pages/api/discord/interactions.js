@@ -167,10 +167,15 @@ export default async function handler(req, res) {
 							content: `**Link Created**\n${link.shortURL} ➡️ ${link.originalURL}`,
 							components: [
 								{
-									type: 2,
-									label: `➡️ ${link.shortURL}`,
-									style: 5,
-									url: link.shortURL,
+									type: 1,
+									components: [
+										{
+											type: 2,
+											label: `➡️ ${link.shortURL}`,
+											style: 5,
+											url: link.shortURL,
+										},
+									],
 								},
 							],
 						},

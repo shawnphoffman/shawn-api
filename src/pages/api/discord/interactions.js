@@ -67,6 +67,13 @@ export default async function handler(req, res) {
 		if (commandId === shortLinkCommandId) {
 			const subcommand = interaction.data.options[0] || {}
 
+			console.log('')
+			console.log('+++++++++')
+			console.log('SUBCOMMAND')
+			console.log(JSON.stringify(subcommand, null, 2))
+			console.log('+++++++++')
+			console.log('')
+
 			const options = subcommand.options.reduce((memo, el) => {
 				memo[el.name] = el.value
 				return memo
@@ -118,24 +125,32 @@ export default async function handler(req, res) {
 					console.log('link create')
 					const { url, title, path, cloaking } = options
 
+					if (!url) {
+						res.send({
+							type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+							data: {
+								content: `EMPTY URL`,
+							},
+						})
+						return
+					}
+
 					const link = await createLink(url, title, path, cloaking)
 
-					if (!link.shortURL) return
+					if (!link.shortURL) {
+						res.send({
+							type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+							data: {
+								content: `URL WAS NOT CREATED`,
+							},
+						})
+						return
+					}
 
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
 							content: `**Link Created** (${link.shortURL} ➡️ ${link.originalURL})`,
-						},
-					})
-					return
-				case 'remove':
-					console.log('link remove')
-					const { id } = options
-					res.send({
-						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-						data: {
-							content: `Link removed (${id})`,
 						},
 					})
 					return

@@ -1,5 +1,5 @@
 import { InteractionType, InteractionResponseType, verifyKeyMiddleware } from 'discord-interactions'
-import { getLinks } from './shortio'
+import { createLink, getLinks } from './shortio'
 
 const PUBLIC_KEY = process.env.DISCORD_APP_PUBLIC_KEY
 
@@ -84,13 +84,13 @@ export default async function handler(req, res) {
 							components: [
 								{
 									type: 2,
-									label: `In: ${link.shortURL}`,
+									label: `${link.shortURL}`,
 									style: 5,
 									url: link.shortURL,
 								},
 								{
 									type: 2,
-									label: `Out: ${link.originalURL}`,
+									label: `➡️ ${link.originalURL}`,
 									style: 5,
 									url: link.originalURL,
 								},
@@ -109,7 +109,7 @@ export default async function handler(req, res) {
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `Current Links`,
+							content: `**Current Short Links**`,
 							components,
 						},
 					})
@@ -117,10 +117,13 @@ export default async function handler(req, res) {
 				case 'create':
 					console.log('link create')
 					const { url, title } = options
+
+					const link = await createLink(url, title)
+
 					res.send({
 						type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
 						data: {
-							content: `Link created: (${url}, ${title || 'none'})`,
+							content: `**Link Created** (${link.shortURL} ➡️ ${link.originalURL})`,
 						},
 					})
 					return

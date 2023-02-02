@@ -73,20 +73,20 @@ async function updateCommand(id) {
 					},
 				],
 			},
-			{
-				name: 'remove',
-				description: 'Remove an existing short link',
-				type: ApplicationCommandOptionType.SUB_COMMAND,
-				options: [
-					// id to remove
-					{
-						name: 'id',
-						description: 'ID of link to remove',
-						type: ApplicationCommandOptionType.STRING,
-						required: true,
-					},
-				],
-			},
+			// {
+			// 	name: 'remove',
+			// 	description: 'Remove an existing short link',
+			// 	type: ApplicationCommandOptionType.SUB_COMMAND,
+			// 	options: [
+			// 		// id to remove
+			// 		{
+			// 			name: 'id',
+			// 			description: 'ID of link to remove',
+			// 			type: ApplicationCommandOptionType.STRING,
+			// 			required: true,
+			// 		},
+			// 	],
+			// },
 		],
 	}
 

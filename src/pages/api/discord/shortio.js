@@ -27,26 +27,34 @@ export const getLinks = async () => {
 		return memo
 	}, [])
 
-	console.log(json)
+	console.log('')
+	console.log('getLinks')
+	console.log(JSON.stringify(json, null, 2))
 
 	return links
 }
 
-export const createLink = async (url, title) => {}
+export const createLink = async (url, title) => {
+	const options = {
+		method: 'POST',
+		headers: {
+			accept: 'application/json',
+			'content-type': 'application/json',
+			Authorization: authSk,
+		},
+		body: JSON.stringify({ domain: domainId, originalURL: url, allowDuplicates: true, title: title ? title : null }),
+	}
 
-export const removeLink = async id => {}
+	const response = await fetch('https://api.short.io/links', options)
+	const json = await response.json()
 
-// async function sendWebhook(url, content) {
-// 	var myHeaders = new Headers()
-// 	myHeaders.append('Content-Type', 'application/json')
+	console.log('')
+	console.log('createLink')
+	console.log(JSON.stringify(json, null, 2))
 
-// 	var requestOptions = {
-// 		headers: myHeaders,
-// 		method: 'POST',
-// 		body: JSON.stringify(content),
-// 	}
-
-// 	const response = await fetch(url, requestOptions)
-
-// 	console.log(response)
-// }
+	return {
+		shortURL: json.shortURL,
+		originalURL: json.originalURL,
+		id: json.idString,
+	}
+}

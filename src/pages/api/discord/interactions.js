@@ -92,7 +92,7 @@ export default async function handler(req, res) {
 									type: 2,
 									label: `Short: ${link.shortURL}`,
 									style: 5,
-									url: link.shortUrl,
+									url: link.shortURL,
 								},
 								{
 									type: 2,
@@ -104,9 +104,6 @@ export default async function handler(req, res) {
 						}
 					})
 
-					console.log('')
-					console.log('-------')
-					console.log('components')
 					console.log(JSON.stringify(components, null, 2))
 
 					res.send({

@@ -33,8 +33,8 @@ module.exports = {
 					m.reply(rebuild)
 					return
 				}
-				if (message.includes('dougie')) {
-					m.reply('Dougie')
+				if (message.includes('dougy')) {
+					m.reply('Dougy')
 					return
 				}
 				if (message.includes('shithead')) {

@@ -1,6 +1,8 @@
 import GetTwitchAccessToken from 'src/utils/getTwitchAccessToken'
 import fetchWithCache from 'src/utils/fetchWithCache'
 
+const clientId = process.env.TWITCH_CLIENT_ID
+
 async function GetTwitchUser(username, token) {
 	var myHeaders = new Headers()
 	myHeaders.append('Authorization', `Bearer ${token}`)

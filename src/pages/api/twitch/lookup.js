@@ -23,7 +23,7 @@ async function GetTwitchUser(username, token) {
 export default async function handler(req, res) {
 	await Cors(req, res, {
 		methods: ['GET', 'HEAD'],
-		origin: [/\.shawn\.party$/, /obs\.shawn\.party$/, /dev.obs\.shawn\.party$/, /localhost/],
+		origin: [/\.shawn\.party$/, /\.obs\.shawn\.party$/, /\.dev\.obs\.shawn\.party$/, /localhost/],
 	})
 
 	// Get Twitch Access Token

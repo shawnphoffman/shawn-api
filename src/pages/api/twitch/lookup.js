@@ -1,5 +1,6 @@
 import GetTwitchAccessToken from 'src/utils/getTwitchAccessToken'
 import fetchWithCache from 'src/utils/fetchWithCache'
+import Cors from 'src/utils/cors'
 
 const clientId = process.env.TWITCH_CLIENT_ID
 
@@ -20,6 +21,11 @@ async function GetTwitchUser(username, token) {
 }
 
 export default async function handler(req, res) {
+	await Cors(req, res, {
+		methods: ['GET', 'HEAD'],
+		// origin: [/\.shawn\.party$/],
+	})
+
 	// Get Twitch Access Token
 	const token = await GetTwitchAccessToken()
 

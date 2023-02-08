@@ -1,5 +1,8 @@
 import GetTwitchAccessToken from 'src/utils/getTwitchAccessToken'
 import fetchWithCache from 'src/utils/fetchWithCache'
+import Cors from 'src/utils/cors'
+
+const clientId = process.env.TWITCH_CLIENT_ID
 
 async function GetTwitchFollowers(id, token) {
 	var myHeaders = new Headers()
@@ -18,6 +21,11 @@ async function GetTwitchFollowers(id, token) {
 }
 
 export default async function handler(req, res) {
+	await Cors(req, res, {
+		methods: ['GET', 'HEAD'],
+		origin: [/\.shawn\.party$/, /\.obs\.shawn\.party$/, /\.dev\.obs\.shawn\.party$/, /localhost/],
+	})
+
 	// Get Twitch Access Token
 	const token = await GetTwitchAccessToken()
 

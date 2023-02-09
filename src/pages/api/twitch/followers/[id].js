@@ -20,11 +20,12 @@ async function GetTwitchFollowers(id, token) {
 	return json
 }
 
+// TODO Change this to a regex matcher
 const whitelist = [
-	'https://blueharvest.rocks/',
-	'https://dev.blueharvest.rocks/',
-	'https://myweirdfoot.com/',
-	'https://dev.myweirdfoot.com/',
+	'https://blueharvest.rocks',
+	'https://dev.blueharvest.rocks',
+	'https://myweirdfoot.com',
+	'https://dev.myweirdfoot.com',
 	'http://localhost',
 ]
 

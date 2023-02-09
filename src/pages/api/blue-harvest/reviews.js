@@ -7,7 +7,7 @@ const dataUrl = 'https://podcasts.apple.com/us/podcast/blue-harvest-a-star-wars-
 export default async function handler(req, res) {
 	await Cors(req, res, {
 		methods: ['GET', 'OPTIONS'],
-		origin: [/\.blueharvest\.rocks$/, /\.myweirdfoot\.com$/, /localhost/],
+		origin: [/blueharvest\.rocks$/, /myweirdfoot\.com$/, /localhost/],
 	})
 
 	const requestOptions = {

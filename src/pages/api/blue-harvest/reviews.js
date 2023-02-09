@@ -1,9 +1,15 @@
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+import Cors from 'src/utils/cors'
 
 const dataUrl = 'https://podcasts.apple.com/us/podcast/blue-harvest-a-star-wars-podcast/id1009917662?see-all=reviews'
 
 export default async function handler(req, res) {
+	await Cors(req, res, {
+		methods: ['GET', 'HEAD'],
+		origin: [/\.blueharvest\.rocks$/, /\.myweirdfoot\.com$/, /localhost/],
+	})
+
 	const requestOptions = {
 		method: 'GET',
 	}

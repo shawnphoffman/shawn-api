@@ -20,10 +20,28 @@ async function GetTwitchUser(username, token) {
 	return json
 }
 
+const whitelist = [
+	'https://blueharvest.rocks',
+	'https://dev.blueharvest.rocks',
+	'https://myweirdfoot.com',
+	'https://dev.myweirdfoot.com',
+	'http://localhost',
+]
+
 export default async function handler(req, res) {
 	await Cors(req, res, {
 		methods: ['GET', 'OPTIONS'],
 		// origin: [/shawn\.party/, /localhost/],
+		origin: (origin, callback) => {
+			console.log('ORIGIN')
+			console.log(origin)
+			console.log('+++++')
+			if (whitelist.indexOf(origin) !== -1 || !origin) {
+				callback(null, true)
+			} else {
+				callback(new Error('Not allowed by CORS'))
+			}
+		},
 	})
 
 	// Get Twitch Access Token

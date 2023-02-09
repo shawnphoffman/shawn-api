@@ -21,13 +21,7 @@ async function GetTwitchFollowers(id, token) {
 }
 
 // TODO Change this to a regex matcher
-const whitelist = [
-	'https://blueharvest.rocks',
-	'https://dev.blueharvest.rocks',
-	'https://myweirdfoot.com',
-	'https://dev.myweirdfoot.com',
-	'http://localhost',
-]
+const whitelist = ['https://obs.shawn.party', 'https://dev.obs.shawn.party', 'http://localhost']
 
 export default async function handler(req, res) {
 	await Cors(req, res, {

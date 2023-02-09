@@ -23,7 +23,7 @@ async function GetTwitchFollowers(id, token) {
 export default async function handler(req, res) {
 	await Cors(req, res, {
 		methods: ['GET', 'OPTIONS'],
-		origin: [/\.shawn\.party/, /localhost/],
+		origin: [/shawn\.party/, /localhost/],
 	})
 
 	// Get Twitch Access Token

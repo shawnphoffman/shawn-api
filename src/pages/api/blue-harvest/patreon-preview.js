@@ -4,10 +4,24 @@ import parser from 'xml2json'
 
 const newUrl = process.env.RSS_BLUE_HARVEST_PATREON
 
+var whitelist = [
+	'https://blueharvest.rocks/',
+	'https://dev.blueharvest.rocks/',
+	'https://myweirdfoot.com/',
+	'https://dev.myweirdfoot.com/',
+	'http://localhost',
+]
+
 export default async function handler(req, res) {
 	await Cors(req, res, {
 		methods: ['GET', 'OPTIONS'],
-		origin: [/blueharvest\.rocks$/, /myweirdfoot\.com$/, /localhost/],
+		origin: (origin, callback) => {
+			if (whitelist.indexOf(origin) !== -1 || !origin) {
+				callback(null, true)
+			} else {
+				callback(new Error('Not allowed by CORS'))
+			}
+		},
 	})
 
 	const requestOptions = {

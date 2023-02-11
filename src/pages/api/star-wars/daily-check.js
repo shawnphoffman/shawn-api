@@ -22,7 +22,7 @@ const processBook = book => {
 https://starwars.fandom.com${book.url}`
 }
 
-async function sendWebhook(url, content) {
+export async function sendWebhook(url, content) {
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
 

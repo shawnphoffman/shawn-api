@@ -1,5 +1,7 @@
 // import Cors from 'src/utils/cors'
 
+import { sendWebhook } from '../../star-wars/daily-check'
+
 // DEPLOYMENT STATUS
 // https://docs.github.com/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#deployment_status
 
@@ -29,27 +31,71 @@ export default async function handler(req, res) {
 		const headMsg = body.head_commit.message
 		const headUrl = body.head_commit.url
 
-		console.log('Commits Pushed!')
-		console.log({
-			pusher,
-			branch,
-			headMsg,
-			headUrl,
+		const msg = `**Blue Harvest Site Commits Pushed**
+- Pusher: ${pusher}
+- Branch: ${branch}
+	- HEAD Message: ${headMsg}
+	- HEAD URL: ${headUrl}`
+
+		sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
+			username: `Website Push Notifier`,
+			content: msg,
+			avatar: 'https://i.imgur.com/NBvUAic.jpg',
 		})
+
+		// console.log('Commits Pushed!')
+		// console.log({
+		// 	pusher,
+		// 	branch,
+		// 	headMsg,
+		// 	headUrl,
+		// })
+		res.status(200)
+		return
 	}
 
 	// Deployment Status Update
 	if (body.deployment_status) {
 		const rawEnv = body.deployment_status.environment
 		const status = body.deployment_status.state
-		const url = ''
+		let url = ''
+		switch (rawEnv) {
+			case 'Production – my-weird-foot':
+				url = 'https://myweirdfoot.com'
+				break
+			case 'Preview – my-weird-foot':
+				url = 'https://dev.myweirdfoot.com'
+				break
+			case 'Production – blue-harvest-rocks':
+				url = 'https://blueharvest.rocks'
+				break
+			case 'Preview – blue-harvest-rocks':
+				url = 'https://dev.blueharvest.rocks'
+				break
+			default:
+				url = 'https://blueharvest.rocks [fallback]'
+				break
+		}
 
-		console.log('Deployment Status!')
-		console.log({
-			rawEnv,
-			status,
-			url,
+		const msg = `**Blue Harvest Site Deployment**
+- Environment: ${rawEnv}
+- Status: ${status}
+- **Public URL**: ${url}`
+
+		sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
+			username: `Website Deployment Notifier`,
+			content: msg,
+			avatar: 'https://i.imgur.com/NBvUAic.jpg',
 		})
+
+		// console.log('Deployment Status!')
+		// console.log({
+		// 	rawEnv,
+		// 	status,
+		// 	url,
+		// })
+		res.status(200)
+		return
 	}
 
 	res.status(200).json({ blue: 'harvest' })

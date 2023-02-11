@@ -95,6 +95,7 @@ export default async function handler(req, res) {
 		// 	url,
 		// })
 		res.status(200).end()
+		return
 	}
 
 	res.status(200).json({ blue: 'harvest' })

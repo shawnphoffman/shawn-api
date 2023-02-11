@@ -21,7 +21,7 @@ async function sendWebhook(url, content) {
 
 	const response = await fetch(url, requestOptions)
 	console.log(response)
-	const data = await res.json()
+	const data = await response.json()
 	console.log(data)
 }
 

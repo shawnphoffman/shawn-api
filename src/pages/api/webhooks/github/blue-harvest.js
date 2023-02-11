@@ -50,7 +50,7 @@ export default async function handler(req, res) {
 		// 	headMsg,
 		// 	headUrl,
 		// })
-		res.status(200)
+		res.status(200).end()
 		return
 	}
 
@@ -94,8 +94,7 @@ export default async function handler(req, res) {
 		// 	status,
 		// 	url,
 		// })
-		res.status(200)
-		return
+		res.status(200).end()
 	}
 
 	res.status(200).json({ blue: 'harvest' })

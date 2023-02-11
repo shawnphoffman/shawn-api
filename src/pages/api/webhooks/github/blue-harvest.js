@@ -19,10 +19,9 @@ async function sendWebhook(url, content) {
 		body: JSON.stringify(content),
 	}
 
-	const response = await fetch(url, requestOptions)
-	console.log(response)
-	const data = await response.json()
-	console.log(data)
+	await fetch(url, requestOptions)
+	// const response = await fetch(url, requestOptions)
+	// console.log(response)
 }
 
 export default async function handler(req, res) {

@@ -1,7 +1,5 @@
 // import Cors from 'src/utils/cors'
 
-import { sendWebhook } from '../../star-wars/daily-check'
-
 // DEPLOYMENT STATUS
 // https://docs.github.com/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#deployment_status
 
@@ -10,6 +8,22 @@ import { sendWebhook } from '../../star-wars/daily-check'
 
 // HEADER
 // x-hub-signature-256
+
+async function sendWebhook(url, content) {
+	var myHeaders = new Headers()
+	myHeaders.append('Content-Type', 'application/json')
+
+	var requestOptions = {
+		headers: myHeaders,
+		method: 'POST',
+		body: JSON.stringify(content),
+	}
+
+	const response = await fetch(url, requestOptions)
+	console.log(response)
+	const data = await res.json()
+	console.log(data)
+}
 
 export default async function handler(req, res) {
 	// await Cors(req, res, {
@@ -37,7 +51,7 @@ export default async function handler(req, res) {
 	- HEAD Message: ${headMsg}
 	- HEAD URL: ${headUrl}`
 
-		sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
 			username: `Website Push Notifier`,
 			content: msg,
 			avatar: 'https://i.imgur.com/NBvUAic.jpg',
@@ -82,7 +96,7 @@ export default async function handler(req, res) {
 - Status: ${status}
 - **Public URL**: ${url}`
 
-		sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_ALERTS, {
 			username: `Website Deployment Notifier`,
 			content: msg,
 			avatar: 'https://i.imgur.com/NBvUAic.jpg',

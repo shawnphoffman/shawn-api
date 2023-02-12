@@ -46,6 +46,7 @@ export async function getComics() {
 		})
 		.toArray()
 
+	console.log('-----------------')
 	console.log(`COMIC COUNT: ${comics.length}`)
 
 	// Return an object with the data extracted from the page.

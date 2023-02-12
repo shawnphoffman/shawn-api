@@ -47,6 +47,7 @@ export async function getBooks() {
 		})
 		.toArray()
 
+	console.log('-----------------')
 	console.log(`BOOK COUNT: ${books.length}`)
 	// console.log(comics)
 

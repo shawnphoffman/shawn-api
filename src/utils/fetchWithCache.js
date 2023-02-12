@@ -2,6 +2,7 @@ import cacheData from 'memory-cache'
 
 async function fetchWithCache(url, options, cacheMinutes = 10) {
 	const value = cacheData.get(url)
+	console.log('-----------------')
 	if (value) {
 		console.log('CACHED', url)
 		return value
@@ -18,6 +19,7 @@ async function fetchWithCache(url, options, cacheMinutes = 10) {
 
 export async function fetchHtmlWithCache(url, options, cacheMinutes = 10) {
 	const value = cacheData.get(url)
+	console.log('-----------------')
 	if (value) {
 		console.log('CACHED', url)
 		return value

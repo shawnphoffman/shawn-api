@@ -1,6 +1,6 @@
 // import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 // import * as cheerio from 'cheerio'
-import { verifySignature } from '@upstash/qstash/nextjs'
+// import { verifySignature } from '@upstash/qstash/nextjs'
 import { getComics } from './future-comics'
 import { getBooks } from './future-books'
 // import { getTV } from './future-tv'
@@ -34,7 +34,10 @@ async function sendWebhook(url, content) {
 
 	const response = await fetch(url, requestOptions)
 
-	console.log(response)
+	console.log('-----------------')
+	console.log('WEBHOOK RESPONSE')
+	console.log(`Status: ${response.status}`)
+	console.log(`Status Text: ${response.statusText}`)
 }
 
 async function handler(req, res) {
@@ -75,9 +78,10 @@ async function handler(req, res) {
 	res.status(200).json({ success: true, bookCount: outBooks.length, comicCount: outComics.length })
 }
 
-const isLocal = process.env.LOCAL || false
+// const isLocal = process.env.LOCAL || false
 
-export default isLocal ? handler : verifySignature(handler)
+// export default isLocal ? handler : verifySignature(handler)
+export default handler
 
 export const config = {
 	api: {

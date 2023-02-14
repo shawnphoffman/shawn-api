@@ -51,7 +51,7 @@ export default async function handler(req, res) {
 
 	if (comics) {
 		const outComics = comics.map(c => `- ${c}`).join('\n')
-		await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
 			username: `Digital Comics Now Available! `,
 			avatar: 'https://blueharvest.rocks/bots/bh_red.png',
 			content: `**${pageTitle}**

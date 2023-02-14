@@ -1,7 +1,8 @@
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
 
-const rootUrl = 'https://thetvdb.com/lists/13864'
+const rootUrl = 'https://thetvdb.com'
+const listUrl = `${rootUrl}/lists/13864`
 
 const requestOptions = {
 	method: 'GET',
@@ -50,7 +51,7 @@ const fetchChild = async childUrl => {
 				episode: epNum,
 				pubDate: new Date(pubDate),
 				pubString: pubDate,
-				url: link,
+				url: `${rootUrl}${link}`,
 			}
 
 			return episode
@@ -66,7 +67,7 @@ const fetchChild = async childUrl => {
 export async function getTV() {
 	// Response is an array of future TV episodes
 	var response = []
-	const data = await fetchHtmlWithCache(rootUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(listUrl, requestOptions, 60 * 24)
 
 	const $ = cheerio.load(data)
 

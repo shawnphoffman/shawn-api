@@ -1,9 +1,6 @@
-// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
-// import * as cheerio from 'cheerio'
-// import { verifySignature } from '@upstash/qstash/nextjs'
 import { getComics } from './future-comics'
 import { getBooks } from './future-books'
-// import { getTV } from './future-tv'
+import { getTV } from './future-tv'
 
 const dateString = d => {
 	return new Date(d).toDateString()
@@ -20,6 +17,14 @@ const processBook = book => {
 **${book.title} (${book.author})**
 - ${book.format}
 https://starwars.fandom.com${book.url}`
+}
+
+const processTv = tv => {
+	return `
+**${tv.series} (${tv.episode})**
+- Title: ${tv.title}
+- Release Date: ${tv.pubString}
+${tv.url}`
 }
 
 async function sendWebhook(url, content) {
@@ -75,12 +80,29 @@ async function handler(req, res) {
 		})
 	}
 
-	res.status(200).json({ success: true, bookCount: outBooks.length, comicCount: outComics.length })
+	// TV
+	const tv = await getTV()
+	const outTv = tv.filter(c => {
+		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
+		return tomorrow === pubDate
+		// return today === pubDate
+	})
+
+	if (outTv) {
+		await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
+			username: `TV Shows Premiering (${dateString(tomorrow)})`,
+			content: outTv.map(processTv).join('\n'),
+		})
+	}
+
+	res.status(200).json({
+		success: true,
+		bookCount: outBooks.length,
+		comicCount: outComics.length,
+		tvCount: outTv.length,
+	})
 }
 
-// const isLocal = process.env.LOCAL || false
-
-// export default isLocal ? handler : verifySignature(handler)
 export default handler
 
 export const config = {

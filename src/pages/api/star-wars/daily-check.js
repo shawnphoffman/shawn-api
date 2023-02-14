@@ -20,11 +20,12 @@ https://starwars.fandom.com${book.url}`
 }
 
 const processTv = tv => {
+	const cleanDate = new Date(tv.pubDate).getTime() / 1000
 	return `
 **${tv.series} (${tv.episode})**
-- Title: ${tv.title}
-- Release Date: ${tv.pubString}
-${tv.url}`
+- *Title:* ${tv.title}
+- *Release Date*: <t:${cleanDate}:d>
+- *Link:* ${tv.url}`
 }
 
 async function sendWebhook(url, content) {
@@ -49,12 +50,15 @@ async function handler(req, res) {
 	// const today = new Date().setDate(1).setHours(0, 0, 0, 0)
 	var tomorrow = new Date()
 	tomorrow.setDate(tomorrow.getDate() + 1)
+	tomorrow.setHours(0, 0, 0, 0)
 
 	// Comics
 	const comics = await getComics()
 	const outComics = comics.filter(c => {
-		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
-		return tomorrow === pubDate
+		const pubDate = new Date(c.pubDate)
+		pubDate.setHours(0, 0, 0, 0)
+		const test = tomorrow.getTime() === pubDate.getTime()
+		return test
 		// return today === pubDate
 	})
 
@@ -62,36 +66,43 @@ async function handler(req, res) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
 			username: `Comics Releasing (${dateString(tomorrow)})`,
 			content: outComics.map(processComic).join('\n'),
+			avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 		})
 	}
 
 	// Books
 	const books = await getBooks()
 	const outBooks = books.filter(c => {
-		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
-		return tomorrow === pubDate
+		const pubDate = new Date(c.pubDate)
+		pubDate.setHours(0, 0, 0, 0)
+		const test = tomorrow.getTime() === pubDate.getTime()
+		return test
 		// return today === pubDate
 	})
 
-	if (outBooks) {
+	if (outBooks.length) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
 			username: `Books Releasing (${dateString(tomorrow)})`,
 			content: outBooks.map(processBook).join('\n'),
+			avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 		})
 	}
 
 	// TV
 	const tv = await getTV()
 	const outTv = tv.filter(c => {
-		const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
-		return tomorrow === pubDate
+		const pubDate = new Date(c.pubDate)
+		pubDate.setHours(0, 0, 0, 0)
+		const test = tomorrow.getTime() === pubDate.getTime()
+		return test
 		// return today === pubDate
 	})
 
-	if (outTv) {
+	if (outTv.length) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
 			username: `TV Shows Premiering (${dateString(tomorrow)})`,
 			content: outTv.map(processTv).join('\n'),
+			avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 		})
 	}
 

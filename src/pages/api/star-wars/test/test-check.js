@@ -1,19 +1,16 @@
-import { getComics } from '../future-comics'
-import { getBooks } from '../future-books'
-// import { getTV } from './future-tv'
-// import Cors from 'src/utils/cors'
+import { getTV } from '../future-tv'
 
-const processComic = comic => {
-	return `
-**${comic.title}**
-https://starwars.fandom.com${comic.url}`
+const dateString = d => {
+	return new Date(d).toDateString()
 }
 
-const processBook = book => {
+const processTv = tv => {
+	const cleanDate = new Date(tv.pubDate).getTime() / 1000
 	return `
-**${book.title}${book.author ? ` (${book.author})` : ``}**
-- Format: ${book.format}
-https://starwars.fandom.com${book.url}`
+**${tv.series} (${tv.episode})**
+- *Title:* ${tv.title}
+- *Release Date*: <t:${cleanDate}:d>
+- *Link:* ${tv.url}`
 }
 
 async function sendWebhook(url, content) {
@@ -35,43 +32,37 @@ async function sendWebhook(url, content) {
 }
 
 async function handler(req, res) {
-	// await Cors(req, res, {
-	// 	methods: ['POST', 'OPTIONS'],
-	// 	// origin: [/shawn\.party$/],
-	// })
+	var tomorrow = new Date()
+	tomorrow.setHours(0, 0, 0, 0)
+	tomorrow.setDate(tomorrow.getDate() + 1)
 
-	const debug = req.query?.debug === 'true'
+	// TV
+	const tv = await getTV()
+	const outTv = tv.filter(c => {
+		const pubDate = new Date(c.pubDate)
+		pubDate.setHours(0, 0, 0, 0)
+		const test = tomorrow.getTime() === pubDate.getTime()
+		return test
+		// return today === pubDate
+	})
 
-	// Comics
-	const comics = await getComics()
-	const outComics = [comics[0]]
+	console.log({ outTv })
 
-	if (outComics.length && !debug) {
+	if (outTv.length) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
-			username: `TEST Comics Dump`,
-			content: outComics.map(processComic).join('\n'),
+			username: `TV Shows Premiering (${dateString(tomorrow)})`,
+			content: outTv.map(processTv).join('\n'),
+			avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 		})
 	}
 
-	// Books
-	const books = await getBooks()
-	const outBooks = [books[0]]
-
-	if (outBooks.length && !debug) {
-		await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
-			username: `TEST Books Dump`,
-			content: outBooks.map(processBook).join('\n'),
-		})
-	}
-
-	const response = {
+	res.status(200).json({
 		success: true,
-		books: outBooks,
-		comics: outComics,
-		bookCount: outBooks.length,
-		comicCount: outComics.length,
-	}
-	res.status(200).json(response)
+		tvCount: outTv.length,
+		outTv,
+		tomorrow,
+		tv,
+	})
 }
 
 export default handler

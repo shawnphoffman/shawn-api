@@ -49,7 +49,7 @@ async function sendWebhook(url, content) {
 async function handler(req, res) {
 	// const today = new Date().setDate(1).setHours(0, 0, 0, 0)
 	const tomorrow = new Date()
-	tomorrow.setDate(tomorrow.getDate() + 1)
+	// tomorrow.setDate(tomorrow.getDate() + 1)
 	tomorrow.setHours(0, 0, 0, 0)
 
 	// Comics

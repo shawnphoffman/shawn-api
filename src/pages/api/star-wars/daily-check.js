@@ -20,11 +20,12 @@ https://starwars.fandom.com${book.url}`
 }
 
 const processTv = tv => {
-	const cleanDate = new Date(tv.pubDate).getTime() / 1000
+	const cleanDate = new Date(tv.pubDate)
+	cleanDate.setDate(cleanDate.getDate() + 1)
 	return `
 **${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
-- *Release Date*: <t:${cleanDate}:d>
+- *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
 - *Link:* ${tv.url}`
 }
 
@@ -82,7 +83,7 @@ async function handler(req, res) {
 
 	if (outComics.length && !debug) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
-			username: `Comics Releasing (${dateString(tomorrow)})`,
+			username: `Comics Releasing (${dateString(today)})`,
 			content: outComics.map(processComic).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 		})
@@ -112,7 +113,7 @@ async function handler(req, res) {
 
 	if (outBooks.length && !debug) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
-			username: `Books Releasing (${dateString(tomorrow)})`,
+			username: `Books Releasing (${dateString(today)})`,
 			content: outBooks.map(processBook).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 		})

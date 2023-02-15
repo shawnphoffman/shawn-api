@@ -135,7 +135,7 @@ async function handler(req, res) {
 			tomTest: tomorrow.getTime() === pubDate.getTime(),
 			todTest: today.getTime() === pubDate.getTime(),
 		})
-		const test = tomorrow.getTime() === pubDate.getTime()
+		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})

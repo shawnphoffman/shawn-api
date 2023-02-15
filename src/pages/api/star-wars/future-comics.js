@@ -8,7 +8,7 @@ const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_comics'
 
 const getComicsAlt = async () => {
 	var yesterday = new Date()
-	yesterday.setDate(yesterday.getDate() - 2)
+	yesterday.setDate(yesterday.getDate() - 4)
 
 	const requestOptions = {
 		method: 'GET',
@@ -64,7 +64,7 @@ const getComicsAlt = async () => {
 	return comics
 }
 
-export async function getComics() {
+const getComics = async () => {
 	const requestOptions = {
 		method: 'GET',
 	}
@@ -117,7 +117,7 @@ export async function getComics() {
 	return response
 }
 
-export default async function handler(req, res) {
+export async function getAllComics() {
 	const response = await getComics()
 	const response2 = await getComicsAlt()
 
@@ -133,6 +133,12 @@ export default async function handler(req, res) {
 	}, {})
 
 	const temp = Object.values(alt).sort((a, b) => a.pubDate - b.pubDate)
+
+	return temp
+}
+
+export default async function handler(req, res) {
+	const temp = await getAllComics()
 
 	res.status(200).send(temp)
 }

@@ -1,4 +1,4 @@
-import { getComics } from './future-comics'
+import { getAllComics } from './future-comics'
 import { getBooks } from './future-books'
 import { getTV } from './future-tv'
 
@@ -47,22 +47,40 @@ async function sendWebhook(url, content) {
 }
 
 async function handler(req, res) {
-	// const today = new Date().setDate(1).setHours(0, 0, 0, 0)
+	const debug = req.query?.debug === 'true'
+
+	const today = new Date()
+	today.setHours(0, 0, 0, 0)
 	const tomorrow = new Date()
-	// tomorrow.setDate(tomorrow.getDate() + 1)
+	tomorrow.setDate(tomorrow.getDate() + 1)
 	tomorrow.setHours(0, 0, 0, 0)
 
+	console.log(`Today is ${today.toString()}`)
+	console.log(`Tomorrow is ${tomorrow.toString()}`)
+
 	// Comics
-	const comics = await getComics()
+	const comics = await getAllComics()
 	const outComics = comics.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
-		const test = tomorrow.getTime() === pubDate.getTime()
+		console.log({
+			type: 'comic',
+			title: c.title,
+			pubDate,
+			tomorrow,
+			today,
+			pubTime: pubDate.getTime(),
+			tomTime: tomorrow.getTime(),
+			todTime: today.getTime(),
+			tomTest: tomorrow.getTime() === pubDate.getTime(),
+			todTest: today.getTime() === pubDate.getTime(),
+		})
+		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
 
-	if (outComics.length) {
+	if (outComics.length && !debug) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
 			username: `Comics Releasing (${dateString(tomorrow)})`,
 			content: outComics.map(processComic).join('\n'),
@@ -75,12 +93,24 @@ async function handler(req, res) {
 	const outBooks = books.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
-		const test = tomorrow.getTime() === pubDate.getTime()
+		console.log({
+			type: 'book',
+			title: c.title,
+			pubDate,
+			tomorrow,
+			today,
+			pubTime: pubDate.getTime(),
+			tomTime: tomorrow.getTime(),
+			todTime: today.getTime(),
+			tomTest: tomorrow.getTime() === pubDate.getTime(),
+			todTest: today.getTime() === pubDate.getTime(),
+		})
+		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
 
-	if (outBooks.length) {
+	if (outBooks.length && !debug) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
 			username: `Books Releasing (${dateString(tomorrow)})`,
 			content: outBooks.map(processBook).join('\n'),
@@ -93,14 +123,26 @@ async function handler(req, res) {
 	const outTv = tv.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
+		console.log({
+			type: 'tv',
+			title: c.title,
+			pubDate,
+			tomorrow,
+			today,
+			pubTime: pubDate.getTime(),
+			tomTime: tomorrow.getTime(),
+			todTime: today.getTime(),
+			tomTest: tomorrow.getTime() === pubDate.getTime(),
+			todTest: today.getTime() === pubDate.getTime(),
+		})
 		const test = tomorrow.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
 
-	if (outTv.length) {
+	if (outTv.length && !debug) {
 		await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
-			username: `TV Shows Premiering (${dateString(tomorrow)})`,
+			username: `TV Shows Premiering (${dateString(today)})`,
 			content: outTv.map(processTv).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 		})

@@ -1,6 +1,7 @@
 import { getAllComics } from './future-comics'
 import { getBooks } from './future-books'
 import { getTV } from './future-tv'
+import { crossPostMessage } from '@/utils/discord'
 
 const dateString = d => {
 	return new Date(d).toDateString()
@@ -45,6 +46,10 @@ async function sendWebhook(url, content) {
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)
+	try {
+		const json = await response.json()
+		return json
+	} catch (e) {}
 }
 
 async function handler(req, res) {
@@ -82,11 +87,15 @@ async function handler(req, res) {
 	})
 
 	if (outComics.length && !debug) {
-		await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
+		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
 			username: `Comics Releasing (${dateString(today)})`,
 			content: outComics.map(processComic).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 		})
+
+		if (resp && resp.id && resp.channel_id && resp.author?.bot) {
+			await crossPostMessage(resp.channel_id, resp.id)
+		}
 	}
 
 	// Books

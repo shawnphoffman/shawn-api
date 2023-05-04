@@ -160,13 +160,14 @@ async function handler(req, res) {
 	})
 
 	if (outTv.length && !debug) {
-		spliceIntoChunks(outTv, 4).forEach(async tv => {
+		const loops = spliceIntoChunks(outTv, 4)
+		for (let i = 0; i < loops.length; i++) {
 			await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
 				username: `TV Shows Premiering (${dateString(today)})`,
-				content: tv.map(processTv).join('\n'),
+				content: loops[i].map(processTv).join('\n'),
 				avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 			})
-		})
+		}
 	}
 
 	res.status(200).json({

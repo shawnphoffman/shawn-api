@@ -30,6 +30,15 @@ const processTv = tv => {
 - *Link:* ${tv.url}`
 }
 
+function spliceIntoChunks(arr, chunkSize = 4) {
+	const res = []
+	while (arr.length > 0) {
+		const chunk = arr.splice(0, chunkSize)
+		res.push(chunk)
+	}
+	return res
+}
+
 async function sendWebhook(url, content) {
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
@@ -151,10 +160,12 @@ async function handler(req, res) {
 	})
 
 	if (outTv.length && !debug) {
-		await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
-			username: `TV Shows Premiering (${dateString(today)})`,
-			content: outTv.map(processTv).join('\n'),
-			avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
+		spliceIntoChunks(outTv, 4).forEach(async tv => {
+			await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
+				username: `TV Shows Premiering (${dateString(today)})`,
+				content: tv.map(processTv).join('\n'),
+				avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
+			})
 		})
 	}
 

@@ -174,6 +174,9 @@ async function handler(req, res) {
 		bookCount: outBooks.length,
 		comicCount: outComics.length,
 		tvCount: outTv.length,
+		bookTest: today.getTime(),
+		comicTest: tomorrow.getTime(),
+		tvTest: today.getTime(),
 	})
 }
 

@@ -13,6 +13,7 @@
 	},
 	"dependencies": {
 		"@next/font": "13.1.5",
+		"@podverse/podcast-feed-parser": "^1.1.1",
 		"@twurple/api": "^5.3.4",
 		"@twurple/auth": "^5.3.4",
 		"@twurple/eventsub-http": "^5.3.4",
@@ -25,6 +26,7 @@
 		"dotenv": "^16.0.3",
 		"eslint": "8.32.0",
 		"eslint-config-next": "13.1.5",
+		"isomorphic-fetch": "^3.0.0",
 		"memory-cache": "^0.2.0",
 		"next": "13.1.5",
 		"raw-body": "^2.5.1",

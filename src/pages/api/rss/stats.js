@@ -40,7 +40,10 @@ export default async function handler(req, res) {
 		.map(e => {
 			return {
 				title: e.title,
-				duration: e.duration,
+				duration: {
+					totalSeconds: e.duration,
+					...secondsToDhms(e.duration),
+				},
 				guid: e.guid,
 				link: e.link,
 				pubDate: e.pubDate,
@@ -56,7 +59,7 @@ export default async function handler(req, res) {
 		})
 
 	const totalSeconds = episodes.reduce((a, b) => {
-		return a + b.duration
+		return a + b.duration.totalSeconds
 	}, 0)
 
 	res.json({

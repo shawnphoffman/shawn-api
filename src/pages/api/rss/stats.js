@@ -55,7 +55,7 @@ export default async function handler(req, res) {
 			return 0
 		})
 
-	const totalDuration = episodes.reduce((a, b) => {
+	const totalSeconds = episodes.reduce((a, b) => {
 		return a + b.duration
 	}, 0)
 
@@ -63,8 +63,10 @@ export default async function handler(req, res) {
 		title: podcast.meta.title,
 		total: {
 			count: podcast.episodes.length,
-			duration: totalDuration,
-			display: secondsToDhms(totalDuration),
+			duration: {
+				totalSeconds,
+				...secondsToDhms(totalSeconds),
+			},
 		},
 		episodes,
 		// raw: podcast,

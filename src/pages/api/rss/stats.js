@@ -1,4 +1,4 @@
-// import Cors from 'src/utils/cors'
+import Cors from 'src/utils/cors'
 import podcastFeedParser from '@podverse/podcast-feed-parser'
 
 const secondsToDhms = seconds => {
@@ -22,6 +22,11 @@ const secondsToDhms = seconds => {
 }
 
 export default async function handler(req, res) {
+	await Cors(req, res, {
+		methods: ['GET', 'POST', 'OPTIONS'],
+		// origin: [/\.shawn\.party/, /localhost/],
+	})
+
 	const url = req.query?.url
 
 	if (!url) {

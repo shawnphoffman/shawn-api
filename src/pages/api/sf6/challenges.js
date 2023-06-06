@@ -4,12 +4,7 @@ import Cors from 'src/utils/cors'
 
 const dataUrl = 'https://www.streetfighter.com/6/buckler/reward/challenge'
 
-export default async function handler(req, res) {
-	await Cors(req, res, {
-		methods: ['GET', 'OPTIONS'],
-		// origin: [/blueharvest\.rocks$/, /myweirdfoot\.com$/, /localhost/],
-	})
-
+export const getChallenges = async () => {
 	// CHEERIO BOILERPLATE
 	const requestOptions = {
 		method: 'GET',
@@ -33,8 +28,8 @@ export default async function handler(req, res) {
 	try {
 		data = await fetchHtmlWithCache(dataUrl, requestOptions, 60)
 	} catch (error) {
-		// console.log(error)
-		return res.status(400).send(error)
+		console.log(error)
+		return null
 	}
 	const $ = cheerio.load(data)
 	// console.log(data)
@@ -54,9 +49,12 @@ export default async function handler(req, res) {
 			// console.log({ rawDateString })
 			const cleanDateString = rawDateString.replace('Valid Until：', '').replace(/\(|\)/g, '')
 			// console.log({ cleanDateString })
-			// const endDate = new Date(cleanDateString)
-			const endDate = new Date(cleanDateString).toLocaleDateString('en-US')
-			// console.log({ endDate })
+			// NOTE - I hate server dates
+			// // const endDate = new Date(cleanDateString)
+			// const endDate = new Date(cleanDateString).toLocaleDateString('en-US')
+			// // console.log({ endDate })
+			// NOTE Try this instead. Who cares
+			const endDate = cleanDateString.substring(0, 16)
 
 			const rawRewards = $(this).find('[class^=challenge_reward] dd p')
 			const item = rawRewards.clone().children().remove().end().text().trim().replace(/×/g, '') // SHEESH
@@ -113,11 +111,20 @@ export default async function handler(req, res) {
 		})
 		.toArray()
 
-	// const author = $(this).find('.we-customer-review__user').text().trim()
-	// const date = $(this).find('time').text().trim()
-	// const text = $(this).find('p').text().trim()
-	// const stars = $(this).find('figure').attr('aria-label').replace(' out of 5', '')
-	// console.log(`Review Count: ${reviews.length}`)
+	return challenges
+}
+
+export default async function handler(req, res) {
+	await Cors(req, res, {
+		methods: ['GET', 'OPTIONS'],
+		// origin: [/blueharvest\.rocks$/, /myweirdfoot\.com$/, /localhost/],
+	})
+
+	const challenges = await getChallenges()
+
+	if (!challenges) {
+		return res.status(400).text('Broken')
+	}
 
 	res.status(200).send(challenges)
 }

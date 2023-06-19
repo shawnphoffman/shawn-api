@@ -1,20 +1,39 @@
 import { getChallenges } from '../challenges'
 // import { crossPostMessage } from '@/utils/discord'
 
+// [Official SF6 Site](https://www.streetfighter.com/6/buckler/reward/challenge)
+
+const getEmoji = name => {
+	switch (name.toLowerCase()) {
+		case 'fighting ground':
+			return '<:sf6_fg:1117220413194391583>'
+		case 'battle hub':
+			return '<:sf6_bh:1117220412032569434>'
+		case 'world tour':
+			return '<:sf6_wt:1117220415706779729>'
+		case 'drive ticket':
+			return '<:sf6_drive:1120140262560235600>'
+		case 'kudos':
+			return '<:sf6_kudos:1120140670535991306>'
+		default:
+			return ''
+	}
+}
+
 const formatTasks = tasks => {
+	if (tasks.length === 1) return `${tasks[0].description} ${getEmoji(tasks[0].mode)}`
+
 	return tasks.map(t => {
-		return `- ${t.description} (${t.mode})\n`
+		return `- ${t.description} ${getEmoji(t.mode)}\n`
 	})
 	// .join('')
 }
 
 const formatChallenge = challenge => {
 	const tasks = formatTasks(challenge.tasks)
-	return `**${challenge.title}**
-Ends: ${challenge.endDate}PM
-Reward: ${challenge.reward.item} x${challenge.reward.qty}
-Tasks:
-${tasks}`
+	return `**${challenge.title} - ${challenge.endDate.substring(0, 5)}**
+  ${tasks} - ${getEmoji(challenge.reward.item)} x${challenge.reward.qty}
+`
 }
 
 // function spliceIntoChunks(arr, chunkSize = 4) {

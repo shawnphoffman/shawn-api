@@ -44,7 +44,7 @@ export default async function handler(req, res) {
 		const headMsg = body.head_commit.message
 		const headUrl = body.head_commit.url
 
-		const msg = `**Blue Harvest Site Commits Pushed**
+		const msg = `**Site Commits Pushed**
 - Pusher: ${pusher}
 - Branch: ${branch}
 	- HEAD Message: ${headMsg}
@@ -73,10 +73,10 @@ export default async function handler(req, res) {
 		const status = body.deployment_status.state
 		let url = ''
 		switch (rawEnv) {
-			case 'Production – my-weird-foot':
+			case 'Production – high-potion':
 				url = 'https://myweirdfoot.com'
 				break
-			case 'Preview – my-weird-foot':
+			case 'Preview – high-potion':
 				url = 'https://dev.myweirdfoot.com'
 				break
 			case 'Production – blue-harvest-rocks':
@@ -90,7 +90,7 @@ export default async function handler(req, res) {
 				break
 		}
 
-		const msg = `**Blue Harvest Site Deployment**
+		const msg = `**Site Deployment**
 - Environment: ${rawEnv}
 - Status: ${status}
 - **Public URL**: ${url}`

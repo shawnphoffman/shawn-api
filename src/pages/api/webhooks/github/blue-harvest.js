@@ -71,19 +71,14 @@ export default async function handler(req, res) {
 	if (body.deployment_status) {
 		const rawEnv = body.deployment_status.environment
 		const status = body.deployment_status.state
+		const repo = body.repository.name
 		let url = ''
 		switch (rawEnv) {
-			case 'Production – high-potion':
-				url = 'https://myweirdfoot.com'
+			case 'Production':
+				url = repo === 'blue-harvest-rocks' ? 'https://blueharvest.rocks' : 'https://myweirdfoot.com'
 				break
-			case 'Preview – high-potion':
-				url = 'https://dev.myweirdfoot.com'
-				break
-			case 'Production – blue-harvest-rocks':
-				url = 'https://blueharvest.rocks'
-				break
-			case 'Preview – blue-harvest-rocks':
-				url = 'https://dev.blueharvest.rocks'
+			case 'Preview':
+				url = repo === 'blue-harvest-rocks' ? 'https://dev.blueharvest.rocks' : 'https://dev.myweirdfoot.com'
 				break
 			default:
 				url = 'https://blueharvest.rocks [fallback]'

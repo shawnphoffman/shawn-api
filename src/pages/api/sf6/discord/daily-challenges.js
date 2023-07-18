@@ -21,19 +21,17 @@ const getEmoji = name => {
 }
 
 const formatTasks = tasks => {
-	if (tasks.length === 1) return `${tasks[0].description} ${getEmoji(tasks[0].mode)}`
+	if (tasks.length === 1) return `${getEmoji(tasks[0].mode)} ${tasks[0].description}`
 
 	return tasks.map(t => {
-		return `- ${t.description} ${getEmoji(t.mode)}\n`
+		return `- ${getEmoji(t.mode)} ${t.description}\n`
 	})
-	// .join('')
 }
 
 const formatChallenge = challenge => {
 	const tasks = formatTasks(challenge.tasks)
-	return `**${challenge.title} - ${challenge.endDate.substring(0, 5)}**
-  ${tasks} - ${getEmoji(challenge.reward.item)} x${challenge.reward.qty}
-`
+	return `### ${challenge.title} - ${challenge.endDate.substring(0, 5)}
+  ${tasks} - ${getEmoji(challenge.reward.item)} ˣ${challenge.reward.qty}`
 }
 
 // function spliceIntoChunks(arr, chunkSize = 4) {
@@ -72,7 +70,8 @@ async function handler(req, res) {
 
 	if (challenges.length) {
 		// DISCORD_WEBHOOK_SF6
-		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
+		// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
+		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
 			username: `Street Fighter 6 Challenges`,
 			content: challenges.map(formatChallenge).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_pink@2x.png',

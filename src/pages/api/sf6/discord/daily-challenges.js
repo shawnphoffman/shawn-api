@@ -70,8 +70,8 @@ async function handler(req, res) {
 
 	if (challenges.length) {
 		// DISCORD_WEBHOOK_SF6
-		// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
-		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
+		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
+			// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
 			username: `Street Fighter 6 Challenges`,
 			content: challenges.map(formatChallenge).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_pink@2x.png',

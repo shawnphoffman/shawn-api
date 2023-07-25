@@ -10,14 +10,14 @@ const dateString = d => {
 const processComic = comic => {
 	return `
 **${comic.title}**
-https://starwars.fandom.com${comic.url}`
+[More Info](https://starwars.fandom.com${comic.url})`
 }
 
 const processBook = book => {
 	return `
 **${book.title} (${book.author})**
 - ${book.format}
-https://starwars.fandom.com${book.url}`
+[More Info](https://starwars.fandom.com${book.url})`
 }
 
 const processTv = tv => {
@@ -27,7 +27,7 @@ const processTv = tv => {
 **${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
 - *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
-- *Link:* ${tv.url}`
+- [*More Info:*](${tv.url})`
 }
 
 function spliceIntoChunks(arr, chunkSize = 4) {

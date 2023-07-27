@@ -77,7 +77,7 @@ async function handler(req, res) {
 	const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 	let results = await fetchResults(sid, task)
-	await delay(10000)
+	await delay(3000)
 
 	// TODO Do this differently lololololololol
 	if (!results || !results.finished || results.files.length === 0) {
@@ -96,7 +96,8 @@ async function handler(req, res) {
 		results = await fetchResults(sid, task)
 	}
 
-	if (!results || !results.finished || results.files.length === 0) return res.status(500).json({ success: false, error: 'Results failed' })
+	if (!results || !results.finished || results.files.length === 0)
+		return res.status(500).json({ success: false, error: 'Results failed', task })
 
 	const files = results.files.map(file => file.name.replace(/\.[^/.]+$/, '')).sort()
 

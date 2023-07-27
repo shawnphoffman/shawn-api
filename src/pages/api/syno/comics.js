@@ -80,23 +80,23 @@ async function handler(req, res) {
 	await delay(3000)
 
 	// TODO Do this differently lololololololol
-	if (!results || !results.finished || !!results?.files?.length) {
+	if (!results || !results.finished || (results?.files?.length ?? 0) <= 0) {
 		await delay(3000)
 		console.log('retrying 1')
 		results = await fetchResults(sid, task)
 	}
-	if (!results || !results.finished || !!results?.files?.length) {
+	if (!results || !results.finished || (results?.files?.length ?? 0) <= 0) {
 		await delay(2000)
 		console.log('retrying 2')
 		results = await fetchResults(sid, task)
 	}
-	if (!results || !results.finished || !!results?.files?.length) {
+	if (!results || !results.finished || (results?.files?.length ?? 0) <= 0) {
 		await delay(1000)
 		console.log('retrying 3')
 		results = await fetchResults(sid, task)
 	}
 
-	if (!results || !results.finished || !!results?.files?.length) {
+	if (!results || !results.finished || (results?.files?.length ?? 0) <= 0) {
 		console.error('Results failed', { results, task })
 		return res.status(401).json({ success: false, error: 'Results failed', task })
 	}

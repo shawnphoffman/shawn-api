@@ -80,23 +80,23 @@ async function handler(req, res) {
 	await delay(3000)
 
 	// TODO Do this differently lololololololol
-	if (!results || !results.finished || results.files.length === 0) {
+	if (!results || !results.finished || !!results?.files?.length) {
 		await delay(3000)
 		console.log('retrying 1')
 		results = await fetchResults(sid, task)
 	}
-	if (!results || !results.finished || results.files.length === 0) {
+	if (!results || !results.finished || !!results?.files?.length) {
 		await delay(2000)
 		console.log('retrying 2')
 		results = await fetchResults(sid, task)
 	}
-	if (!results || !results.finished || results.files.length === 0) {
+	if (!results || !results.finished || !!results?.files?.length) {
 		await delay(1000)
 		console.log('retrying 3')
 		results = await fetchResults(sid, task)
 	}
 
-	if (!results || !results.finished || results.files.length === 0)
+	if (!results || !results.finished || !!results?.files?.length)
 		return res.status(500).json({ success: false, error: 'Results failed', task })
 
 	const files = results.files.map(file => file.name.replace(/\.[^/.]+$/, '')).sort()

@@ -18,6 +18,7 @@ const login = async () => {
 
 	const response = await fetch(authURL, requestOptions)
 	const json = await response.json()
+	console.log('')
 	console.log('login', json)
 
 	return json?.data?.sid
@@ -30,6 +31,7 @@ const startSearch = async sid => {
 
 	const response = await fetch(url, requestOptions)
 	const json = await response.json()
+	console.log('')
 	console.log('start', { json, url })
 
 	return json?.data?.taskid
@@ -42,12 +44,16 @@ const fetchResults = async (sid, taskid) => {
 
 	const response = await fetch(url, requestOptions)
 	const json = await response.json()
+	console.log('')
 	console.log('results', { json, url })
 
-	return json?.data?.files
+	return json?.data
 }
 
 async function handler(req, res) {
+	console.log('=======================')
+	console.log('STARTING COMICS SEARCH')
+
 	await Cors(req, res, {
 		methods: ['GET', 'POST', 'OPTIONS'],
 		// origin: [/\.shawn\.party/, /localhost/],
@@ -69,13 +75,29 @@ async function handler(req, res) {
 	if (!task) return res.status(500).json({ success: false, error: 'Search failed' })
 
 	const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
-	await delay(7000)
 
-	const results = await fetchResults(sid, task)
+	let results = await fetchResults(sid, task)
 
-	if (!results) return res.status(500).json({ success: false, error: 'Results failed' })
+	// TODO Do this differently lololololololol
+	if (!results || !results.finished || results.files.length === 0) {
+		await delay(3000)
+		console.log('retrying 1')
+		results = await fetchResults(sid, task)
+	}
+	if (!results || !results.finished || results.files.length === 0) {
+		await delay(2000)
+		console.log('retrying 2')
+		results = await fetchResults(sid, task)
+	}
+	if (!results || !results.finished || results.files.length === 0) {
+		await delay(1000)
+		console.log('retrying 3')
+		results = await fetchResults(sid, task)
+	}
 
-	const files = results.map(file => file.name.replace(/\.[^/.]+$/, '')).sort()
+	if (!results || !results.finished || results.files.length === 0) return res.status(500).json({ success: false, error: 'Results failed' })
+
+	const files = results.files.map(file => file.name.replace(/\.[^/.]+$/, '')).sort()
 
 	res.status(200).json({
 		success: true,

@@ -77,6 +77,7 @@ async function handler(req, res) {
 	const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
 	let results = await fetchResults(sid, task)
+	await delay(10000)
 
 	// TODO Do this differently lololololololol
 	if (!results || !results.finished || results.files.length === 0) {

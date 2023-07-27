@@ -68,11 +68,11 @@ async function handler(req, res) {
 
 	const sid = await login()
 
-	if (!sid) return res.status(500).json({ success: false, error: 'Login failed' })
+	if (!sid) return res.status(401).json({ success: false, error: 'Login failed' })
 
 	const task = await startSearch(sid)
 
-	if (!task) return res.status(500).json({ success: false, error: 'Search failed' })
+	if (!task) return res.status(401).json({ success: false, error: 'Search failed' })
 
 	const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -96,8 +96,10 @@ async function handler(req, res) {
 		results = await fetchResults(sid, task)
 	}
 
-	if (!results || !results.finished || !!results?.files?.length)
-		return res.status(500).json({ success: false, error: 'Results failed', task })
+	if (!results || !results.finished || !!results?.files?.length) {
+		console.error('Results failed', { results, task })
+		return res.status(401).json({ success: false, error: 'Results failed', task })
+	}
 
 	const files = results.files.map(file => file.name.replace(/\.[^/.]+$/, '')).sort()
 

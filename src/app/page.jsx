@@ -1,9 +1,10 @@
-import React from 'react'
+import KoFi from '@/components/KoFi'
 
 export default function Home() {
 	return (
-		<div>
-			<h1>Shawn API</h1>
-		</div>
+		<>
+			<div>Why are you here?</div>
+			<KoFi />
+		</>
 	)
 }

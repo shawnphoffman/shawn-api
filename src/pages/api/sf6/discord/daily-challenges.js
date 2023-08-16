@@ -30,8 +30,10 @@ const formatTasks = tasks => {
 
 const formatChallenge = challenge => {
 	const tasks = formatTasks(challenge.tasks)
-	return `### ${challenge.title} - ${challenge.endDate.substring(0, 5)}
-  ${tasks} - ${getEmoji(challenge.reward.item)} ˣ${challenge.reward.qty}`
+	return (
+		`### ${challenge.title.replace('Challenge ')} - ${challenge.endDate.substring(0, 5)} ` +
+		`${getEmoji(challenge.reward.item)} ˣ${challenge.reward.qty} - ${tasks}`
+	)
 }
 
 // function spliceIntoChunks(arr, chunkSize = 4) {

@@ -20,7 +20,7 @@ html {
 
 body {
 	margin: 8px;
-	overflow: scroll;
+	/* overflow: scroll; */
 }
 
 h1 {

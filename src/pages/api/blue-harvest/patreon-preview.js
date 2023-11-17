@@ -27,7 +27,7 @@ export default async function handler(req, res) {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(newUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(newUrl, requestOptions, 15)
 	const json = parser.toJson(data)
 	const obj = JSON.parse(json)
 

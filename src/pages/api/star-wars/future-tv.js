@@ -11,7 +11,7 @@ const requestOptions = {
 const fetchChild = async childUrl => {
 	const url = `https://thetvdb.com${childUrl}/allseasons/official`
 
-	const data = await fetchHtmlWithCache(url, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(url, requestOptions, 15)
 	const $ = cheerio.load(data)
 
 	const seriesTitle = $('.crumbs a:nth-child(3)').text().trim()
@@ -67,7 +67,7 @@ const fetchChild = async childUrl => {
 export async function getTV() {
 	// Response is an array of future TV episodes
 	var response = []
-	const data = await fetchHtmlWithCache(listUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(listUrl, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 

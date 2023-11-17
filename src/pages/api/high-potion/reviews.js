@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(dataUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(dataUrl, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 

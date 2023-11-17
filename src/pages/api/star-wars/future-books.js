@@ -11,7 +11,7 @@ const getBooksAlt = async () => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(altUrl, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 
@@ -66,7 +66,7 @@ export async function getBooks() {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(url, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 

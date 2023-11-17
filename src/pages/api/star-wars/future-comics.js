@@ -13,7 +13,7 @@ const getComicsAlt = async () => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(altUrl, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 
@@ -68,7 +68,7 @@ const getComics = async () => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 60 * 24)
+	const data = await fetchHtmlWithCache(url, requestOptions, 15)
 
 	const $ = cheerio.load(data)
 

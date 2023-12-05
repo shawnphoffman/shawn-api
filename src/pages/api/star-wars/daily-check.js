@@ -110,6 +110,10 @@ async function handler(req, res) {
 	// Books
 	const books = await getBooks()
 	const outBooks = books.filter(c => {
+		if (c.format && c.format.toLowerCase().includes('reprint')) {
+			return false
+		}
+
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
 		console.log({
@@ -124,6 +128,7 @@ async function handler(req, res) {
 			tomTest: tomorrow.getTime() === pubDate.getTime(),
 			todTest: today.getTime() === pubDate.getTime(),
 		})
+
 		const test = tomorrow.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate

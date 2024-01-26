@@ -37,7 +37,7 @@ export default async function handler(req, res) {
 
 	const $ = cheerio.load(data)
 
-	const pageTitle = $('h1').text().trim()
+	// const pageTitle = $('h1').text().trim()
 
 	// console.log(`Title: ${pageTitle}`)
 
@@ -46,5 +46,5 @@ export default async function handler(req, res) {
 
 	const response = parseRatingString(roughRating)
 
-	res.status(200).send(response)
+	res.status(200).send({ ...response, url })
 }

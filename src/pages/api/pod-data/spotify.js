@@ -3,11 +3,11 @@ import * as cheerio from 'cheerio'
 import Cors from 'src/utils/cors'
 
 function parseRatingString(inputString) {
-	const regex = /^(\d+)\((\d+)\)$/
+	const regex = /^(\d+(\.\d+)?)\((\d+)\)$/
 	const match = inputString.match(regex)
 	if (match) {
-		const rating = parseInt(match[1], 10)
-		const ratingCount = parseInt(match[2], 10)
+		const rating = parseFloat(match[1])
+		const ratingCount = parseInt(match[3], 10)
 		return {
 			rating: rating,
 			ratingCount: ratingCount,
@@ -37,12 +37,12 @@ export default async function handler(req, res) {
 
 	const $ = cheerio.load(data)
 
-	// const pageTitle = $('h1').text().trim()
+	const pageTitle = $('h1').text().trim()
 
-	// console.log(`Title: ${pageTitle}`)
+	console.log(`Title: ${pageTitle}`)
 
 	const roughRating = $('[data-testid="rating-and-topics"] button:first').text()
-	// console.log(`Rough Heading: ${roughRating}`)
+	console.log(`Rough Heading: ${roughRating}`)
 
 	const response = parseRatingString(roughRating)
 

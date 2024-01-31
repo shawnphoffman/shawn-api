@@ -30,21 +30,25 @@ export default async function handler(req, res) {
 		return
 	}
 
-	const requestOptions = {
-		method: 'GET',
+	try {
+		const requestOptions = {
+			method: 'GET',
+		}
+		const data = await fetchHtmlWithCache(url, requestOptions, 15)
+
+		const $ = cheerio.load(data)
+
+		const pageTitle = $('h1').text().trim()
+
+		console.log(`Title: ${pageTitle}`)
+
+		const roughRating = $('[data-testid="rating-and-topics"] button:first').text()
+		console.log(`Rough Heading: ${roughRating}`)
+
+		const response = parseRatingString(roughRating)
+
+		res.status(200).send({ ...response, url })
+	} catch (error) {
+		res.error(500).send(error)
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
-
-	const $ = cheerio.load(data)
-
-	const pageTitle = $('h1').text().trim()
-
-	console.log(`Title: ${pageTitle}`)
-
-	const roughRating = $('[data-testid="rating-and-topics"] button:first').text()
-	console.log(`Rough Heading: ${roughRating}`)
-
-	const response = parseRatingString(roughRating)
-
-	res.status(200).send({ ...response, url })
 }

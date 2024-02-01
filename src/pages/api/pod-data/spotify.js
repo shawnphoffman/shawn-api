@@ -46,6 +46,7 @@ export default async function handler(req, res) {
 
 		res.status(200).send({ ...response, url })
 	} catch (error) {
-		res.error(500).send(error)
+		console.log('Error:', error)
+		res.status(500).send(error)
 	}
 }

@@ -1,6 +1,6 @@
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
-import Cors from 'src/utils/cors'
+import corsCheck from './cors'
 
 function parseRatingString(inputString) {
 	const regex = /^(\d+(\.\d+)?)\((\d+)\)$/
@@ -18,10 +18,7 @@ function parseRatingString(inputString) {
 }
 
 export default async function handler(req, res) {
-	await Cors(req, res, {
-		methods: ['GET', 'OPTIONS'],
-		origin: [/justshillin\.com$/, /localhost/],
-	})
+	corsCheck(req, res)
 
 	const url = req.query?.url
 

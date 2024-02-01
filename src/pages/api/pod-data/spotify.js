@@ -18,7 +18,7 @@ function parseRatingString(inputString) {
 }
 
 export default async function handler(req, res) {
-	corsCheck(req, res)
+	// corsCheck(req, res)
 
 	const url = req.query?.url
 

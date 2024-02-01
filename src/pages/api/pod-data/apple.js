@@ -6,7 +6,7 @@ import corsCheck from './cors'
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 
 export default async function handler(req, res) {
-	corsCheck(req, res)
+	// corsCheck(req, res)
 
 	const url = req.query?.url
 

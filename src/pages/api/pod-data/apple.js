@@ -1,7 +1,9 @@
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+import corsCheck from './cors'
 
 // const dataUrl = 'https://podcasts.apple.com/us/podcast/jammed-transmissions-a-star-wars-podcast/id1445333816?see-all=reviews'
+// https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 
 export default async function handler(req, res) {
 	corsCheck(req, res)

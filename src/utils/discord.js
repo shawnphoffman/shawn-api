@@ -44,5 +44,7 @@ export const sendWebhook = async (url, content, crossPost) => {
 				await crossPostMessage(json.channel_id, json.id)
 			}
 		}
-	} catch (e) {}
+	} catch (e) {
+		console.error('Error parsing response', e)
+	}
 }

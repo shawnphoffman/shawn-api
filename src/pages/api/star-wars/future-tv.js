@@ -72,7 +72,7 @@ export async function getTV() {
 	const $ = cheerio.load(data)
 
 	// Process Root URL and build our child URLS
-	const pageTitle = $('h1').text().trim()
+	// const pageTitle = $('h1').text().trim()
 
 	// console.log(`List: ${pageTitle}`);
 	var children = $('h3 a')

@@ -64,7 +64,9 @@ async function sendWebhook(url, content) {
 	try {
 		const json = await response.json()
 		return json
-	} catch (e) {}
+	} catch (e) {
+		console.error('Error parsing response', e)
+	}
 }
 
 async function handler(req, res) {
@@ -72,7 +74,8 @@ async function handler(req, res) {
 
 	if (challenges.length) {
 		// DISCORD_WEBHOOK_SF6
-		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
+		// const resp =
+		await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
 			// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
 			username: `Street Fighter 6 Challenges`,
 			content: challenges.map(formatChallenge).join('\n'),

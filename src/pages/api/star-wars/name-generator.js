@@ -20,7 +20,7 @@ function properName(name) {
 	return (
 		'' +
 		name
-			.replace(/[^\s\-\']+[\s\-\']*/g, function (word) {
+			.replace(/[^\s\-']+[\s\-']*/g, function (word) {
 				return word.charAt(0).toUpperCase() + word.substr(1).toLowerCase()
 			})
 			.replace(/\b(Van|De|Der|Da|Von)\b/g, function (wat) {

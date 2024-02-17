@@ -1,6 +1,6 @@
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
-import corsCheck from './cors'
+// import corsCheck from './cors'
 
 function parseRatingString(inputString) {
 	const regex = /^(\d+(\.\d+)?)\((\d+)\)$/

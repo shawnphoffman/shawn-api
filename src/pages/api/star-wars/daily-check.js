@@ -2,6 +2,7 @@ import { getAllComics } from './future-comics'
 import { getBooks } from './future-books'
 import { getTV } from './future-tv'
 import { crossPostMessage } from '@/utils/discord'
+import { postBleet } from '@/components/bluesky/bluesky'
 
 const dateString = d => {
 	return new Date(d).toDateString()
@@ -58,7 +59,9 @@ async function sendWebhook(url, content) {
 	try {
 		const json = await response.json()
 		return json
-	} catch (e) {}
+	} catch (e) {
+		console.error('Error parsing response', e)
+	}
 }
 
 async function handler(req, res) {
@@ -146,6 +149,12 @@ async function handler(req, res) {
 			content: outBooks.map(processBook).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 		})
+
+		try {
+			postBleet({ contentType: 'Books', items: outBooks.map(processBook).join('\n') })
+		} catch (error) {
+			console.error('Error bleeting message', error)
+		}
 	}
 
 	// TV
@@ -178,6 +187,12 @@ async function handler(req, res) {
 				content: loops[i].map(processTv).join('\n'),
 				avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 			})
+
+			try {
+				postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
+			} catch (error) {
+				console.error('Error bleeting message', error)
+			}
 		}
 	}
 

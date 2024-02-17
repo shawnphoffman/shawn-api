@@ -19,7 +19,8 @@ const handler = async (req, res) => {
 	})
 	console.log(`Redis Resp: ${redisResp}`)
 
-	const outBooks = books.filter(c => {
+	// const outBooks = books.filter(c => {
+	const outBooks = books.filter(() => {
 		// const pubDate = new Date(c.pubDate).setHours(0, 0, 0, 0)
 		// return today === pubDate
 		return true

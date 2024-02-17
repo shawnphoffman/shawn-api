@@ -105,6 +105,12 @@ async function handler(req, res) {
 		if (resp && resp.id && resp.channel_id && resp.author?.bot) {
 			await crossPostMessage(resp.channel_id, resp.id)
 		}
+
+		try {
+			postBleet({ contentType: 'Comics', items: outComics.map(processComic).join('\n') })
+		} catch (error) {
+			console.error('Error bleeting message', error)
+		}
 	}
 
 	// Books

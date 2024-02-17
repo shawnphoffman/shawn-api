@@ -12,6 +12,7 @@
 		"node": "18.x"
 	},
 	"dependencies": {
+		"@atproto/api": "^0.9.7",
 		"@podverse/podcast-feed-parser": "^1.1.1",
 		"@twurple/api": "^5.3.4",
 		"@twurple/auth": "^5.3.4",

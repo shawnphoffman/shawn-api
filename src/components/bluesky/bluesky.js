@@ -16,15 +16,15 @@ const agent = new BskyAgent({
 // const websiteTarget = `Check out their website...`
 
 // const formatBleet = async (agent, { contentType, item, homepage, handle = [] }) => {
-const formatBleet = async (agent, { contentType, items /*, homepage, handle = []*/ }) => {
+const formatBleet = async (agent, { contentType, items, url /*, handle = []*/ }) => {
 	const stinger = `New Star Wars ${contentType}`
 	let txt = `${stinger}!!!
 ${items}`
 
-	// 	if (homepage) {
-	// 		txt += `
-	// ${websiteTarget}`
-	// 	}
+	if (url) {
+		txt += `
+	${url}`
+	}
 
 	// 	if (handle.length) {
 	// 		txt += `
@@ -35,22 +35,19 @@ ${items}`
 	await rt.detectFacets(agent)
 
 	const facets = [
-		// ...(homepage
-		// 	? [
-		// 			{
-		// 				// index: {
-		// 				// 	byteStart: txt.indexOf(websiteTarget),
-		// 				// 	byteEnd: txt.indexOf(websiteTarget) + websiteTarget.length,
-		// 				// },
-		// 				features: [
-		// 					{
-		// 						$type: 'app.bsky.richtext.facet#link',
-		// 						uri: homepage,
-		// 					},
-		// 				],
-		// 			},
-		// 	  ]
-		// 	: []),
+		...(url
+			? [
+					{
+						features: [
+							{
+								$type: 'app.bsky.richtext.facet#link',
+								uri: url,
+							},
+						],
+					},
+					// eslint-disable-next-line no-mixed-spaces-and-tabs
+			  ]
+			: []),
 		...(rt.facets || []),
 	]
 
@@ -92,7 +89,7 @@ ${items}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleet = async ({ contentType, items }) => {
+export const postBleet = async ({ contentType, items, url }) => {
 	// Login
 	const loginResponse = await agent.login({
 		identifier: username,
@@ -105,7 +102,7 @@ export const postBleet = async ({ contentType, items }) => {
 
 	try {
 		// Generate Bleet
-		const record = await formatBleet(agent, { contentType, items })
+		const record = await formatBleet(agent, { contentType, items, url })
 
 		// Post Bleet
 		const post = await agent.post(record)

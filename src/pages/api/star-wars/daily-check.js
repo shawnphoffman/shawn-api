@@ -10,26 +10,27 @@ const dateString = d => {
 
 const processComic = comic => {
 	return `
-**${comic.title}**
-[More Info](https://starwars.fandom.com${comic.url})`
+${comic.title}`
 }
+// https://starwars.fandom.com${comic.url}`
+
+const getAuthor = author => (author && author.length ? `(${author})` : '')
 
 const processBook = book => {
 	return `
-**${book.title} (${book.author})**
-- ${book.format}
-[More Info](https://starwars.fandom.com${book.url})`
+${book.title} ${getAuthor(book.author)}`
 }
+// https://starwars.fandom.com${book.url}`
 
 const processTv = tv => {
 	const cleanDate = new Date(tv.pubDate)
 	cleanDate.setDate(cleanDate.getDate() + 1)
 	return `
-**${tv.series} (${tv.episode})**
+${tv.series} (${tv.episode})
 - *Title:* ${tv.title}
-- *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
-- [*More Info:*](${tv.url})`
+- *Release Date*: <t:${cleanDate.getTime() / 1000}:d>`
 }
+// - [*More Info:*](${tv.url})`
 
 function spliceIntoChunks(arr, chunkSize = 4) {
 	const res = []
@@ -110,7 +111,10 @@ async function handler(req, res) {
 		}
 
 		try {
-			postBleet({ contentType: 'Comics', items: outComics.map(processComic).join('\n') })
+			outComics.forEach(c => {
+				console.log(`Bleeting comic: ${c.title}`)
+				postBleet({ contentType: 'Comic', items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
+			})
 		} catch (error) {
 			console.error('Error bleeting message', error)
 		}
@@ -151,7 +155,11 @@ async function handler(req, res) {
 		})
 
 		try {
-			postBleet({ contentType: 'Books', items: outBooks.map(processBook).join('\n') })
+			// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
+			outBooks.forEach(c => {
+				console.log(`Bleeting book: ${c.title}`)
+				postBleet({ contentType: 'Book', items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
+			})
 		} catch (error) {
 			console.error('Error bleeting message', error)
 		}
@@ -187,12 +195,16 @@ async function handler(req, res) {
 				content: loops[i].map(processTv).join('\n'),
 				avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 			})
+		}
 
-			try {
-				postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
-			} catch (error) {
-				console.error('Error bleeting message', error)
-			}
+		try {
+			// postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
+			outTv.forEach(c => {
+				console.log(`Bleeting TV show: ${c.title}`)
+				postBleet({ contentType: 'TV Show', items: processTv(c), url: c.url })
+			})
+		} catch (error) {
+			console.error('Error bleeting message', error)
 		}
 	}
 

@@ -113,7 +113,7 @@ async function handler(req, res) {
 		try {
 			outComics.forEach(c => {
 				console.log(`Bleeting comic: ${c.title}`)
-				postBleet({ contentType: 'Comic', items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
+				postBleet({ contentType: 'Comic', title: c.title, items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
 			})
 		} catch (error) {
 			console.error('Error bleeting message', error)
@@ -158,7 +158,7 @@ async function handler(req, res) {
 			// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
 			outBooks.forEach(c => {
 				console.log(`Bleeting book: ${c.title}`)
-				postBleet({ contentType: 'Book', items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
+				postBleet({ contentType: 'Book', title: c.title, items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
 			})
 		} catch (error) {
 			console.error('Error bleeting message', error)
@@ -201,7 +201,7 @@ async function handler(req, res) {
 			// postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
 			outTv.forEach(c => {
 				console.log(`Bleeting TV show: ${c.title}`)
-				postBleet({ contentType: 'TV Show', items: processTv(c), url: c.url })
+				postBleet({ contentType: 'TV Show', title: c.title, items: processTv(c), url: c.url })
 			})
 		} catch (error) {
 			console.error('Error bleeting message', error)

@@ -13,18 +13,23 @@ const agent = new BskyAgent({
 	service: 'https://bsky.social',
 })
 
-// const websiteTarget = `Check out their website...`
+const websiteTarget = `Click here for more...`
 
 // const formatBleet = async (agent, { contentType, item, homepage, handle = [] }) => {
-const formatBleet = async (agent, { contentType, items, url /*, handle = []*/ }) => {
+const formatBleet = async (agent, { contentType, items, url, title /*, handle = []*/ }) => {
 	const stinger = `New Star Wars ${contentType}`
 	let txt = `${stinger}!!!
 ${items}`
 
 	if (url) {
 		txt += `
-	${url}`
+${websiteTarget}`
 	}
+
+	// if (url) {
+	// 	txt += `
+	// ${url}`
+	// }
 
 	// 	if (handle.length) {
 	// 		txt += `
@@ -38,6 +43,10 @@ ${items}`
 		...(url
 			? [
 					{
+						index: {
+							byteStart: txt.indexOf(websiteTarget),
+							byteEnd: txt.indexOf(websiteTarget) + websiteTarget.length,
+						},
 						features: [
 							{
 								$type: 'app.bsky.richtext.facet#link',
@@ -67,15 +76,15 @@ ${items}`
 		text: rt.text,
 		langs: ['en'],
 		facets,
-		// embed: {
-		// 	$type: 'app.bsky.embed.external',
-		// 	external: {
-		// 		// uri: item.link ? item.link : homepage ? homepage : '',
-		// 		title: item.title,
-		// 		description: stinger,
-		// 		// thumb,
-		// 	},
-		// },
+		embed: {
+			$type: 'app.bsky.embed.external',
+			external: {
+				uri: url ? url : '',
+				title: title || stinger,
+				// description: stinger,
+				// thumb,
+			},
+		},
 	}
 
 	console.log('================')
@@ -89,7 +98,7 @@ ${items}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleet = async ({ contentType, items, url }) => {
+export const postBleet = async ({ contentType, items, url, title }) => {
 	// Login
 	const loginResponse = await agent.login({
 		identifier: username,
@@ -102,7 +111,7 @@ export const postBleet = async ({ contentType, items, url }) => {
 
 	try {
 		// Generate Bleet
-		const record = await formatBleet(agent, { contentType, items, url })
+		const record = await formatBleet(agent, { contentType, items, url, title })
 
 		// Post Bleet
 		const post = await agent.post(record)

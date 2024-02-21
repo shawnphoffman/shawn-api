@@ -100,15 +100,15 @@ async function handler(req, res) {
 	})
 
 	if (outComics.length && !debug) {
-		const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
-			username: `Comics Releasing (${dateString(today)})`,
-			content: outComics.map(processComic).join('\n'),
-			avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
-		})
+		// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
+		// 	username: `Comics Releasing (${dateString(today)})`,
+		// 	content: outComics.map(processComic).join('\n'),
+		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
+		// })
 
-		if (resp && resp.id && resp.channel_id && resp.author?.bot) {
-			await crossPostMessage(resp.channel_id, resp.id)
-		}
+		// if (resp && resp.id && resp.channel_id && resp.author?.bot) {
+		// 	await crossPostMessage(resp.channel_id, resp.id)
+		// }
 
 		try {
 			outComics.forEach(c => {
@@ -148,11 +148,11 @@ async function handler(req, res) {
 	})
 
 	if (outBooks.length && !debug) {
-		await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
-			username: `Books Releasing (${dateString(today)})`,
-			content: outBooks.map(processBook).join('\n'),
-			avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
-		})
+		// await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
+		// 	username: `Books Releasing (${dateString(today)})`,
+		// 	content: outBooks.map(processBook).join('\n'),
+		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
+		// })
 
 		try {
 			// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
@@ -188,13 +188,13 @@ async function handler(req, res) {
 	})
 
 	if (outTv.length && !debug) {
-		const loops = spliceIntoChunks(outTv, 4)
+		const loops = spliceIntoChunks(outTv, 1)
 		for (let i = 0; i < loops.length; i++) {
-			await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
-				username: `TV Shows Premiering (${dateString(today)})`,
-				content: loops[i].map(processTv).join('\n'),
-				avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
-			})
+			// await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
+			// 	username: `TV Shows Premiering (${dateString(today)})`,
+			// 	content: loops[i].map(processTv).join('\n'),
+			// 	avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
+			// })
 		}
 
 		try {

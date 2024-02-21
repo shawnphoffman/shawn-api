@@ -81,7 +81,7 @@ ${websiteTarget}`
 			external: {
 				uri: url ? url : '',
 				title: title || stinger,
-				// description: stinger,
+				description: stinger,
 				// thumb,
 			},
 		},

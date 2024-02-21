@@ -8,27 +8,29 @@ import { postBleet } from '@/components/bluesky/bluesky'
 // 	return new Date(d).toDateString()
 // }
 
+// eslint-disable-next-line no-unused-vars
 const processComic = comic => {
-	return `
-${comic.title}`
+	return `${comic.title}
+`
 }
 // https://starwars.fandom.com${comic.url}`
 
 const getAuthor = author => (author && author.length ? `(${author})` : '')
 
+// eslint-disable-next-line no-unused-vars
 const processBook = book => {
-	return `
-${book.title} ${getAuthor(book.author)}`
+	return `${book.title} ${getAuthor(book.author)}
+`
 }
 // https://starwars.fandom.com${book.url}`
 
 const processTv = tv => {
 	const cleanDate = new Date(tv.pubDate)
 	cleanDate.setDate(cleanDate.getDate() + 1)
-	return `
-${tv.series} (${tv.episode})
+	return `${tv.series} (${tv.episode})
 - *Title:* ${tv.title}
-- *Release Date*: <t:${cleanDate.getTime() / 1000}:d>`
+- *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
+`
 }
 // - [*More Info:*](${tv.url})`
 
@@ -105,19 +107,17 @@ async function handler(req, res) {
 		// 	content: outComics.map(processComic).join('\n'),
 		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 		// })
-
 		// if (resp && resp.id && resp.channel_id && resp.author?.bot) {
 		// 	await crossPostMessage(resp.channel_id, resp.id)
 		// }
-
-		try {
-			outComics.forEach(c => {
-				console.log(`Bleeting comic: ${c.title}`)
-				postBleet({ contentType: 'Comic', title: c.title, items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
-			})
-		} catch (error) {
-			console.error('Error bleeting message', error)
-		}
+		// try {
+		// 	outComics.forEach(c => {
+		// 		console.log(`Bleeting comic: ${c.title}`)
+		// 		postBleet({ contentType: 'Comic', title: c.title, items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
+		// 	})
+		// } catch (error) {
+		// 	console.error('Error bleeting message', error)
+		// }
 	}
 
 	// Books
@@ -153,16 +153,15 @@ async function handler(req, res) {
 		// 	content: outBooks.map(processBook).join('\n'),
 		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 		// })
-
-		try {
-			// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
-			outBooks.forEach(c => {
-				console.log(`Bleeting book: ${c.title}`)
-				postBleet({ contentType: 'Book', title: c.title, items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
-			})
-		} catch (error) {
-			console.error('Error bleeting message', error)
-		}
+		// try {
+		// 	// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
+		// 	outBooks.forEach(c => {
+		// 		console.log(`Bleeting book: ${c.title}`)
+		// 		postBleet({ contentType: 'Book', title: c.title, items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
+		// 	})
+		// } catch (error) {
+		// 	console.error('Error bleeting message', error)
+		// }
 	}
 
 	// TV

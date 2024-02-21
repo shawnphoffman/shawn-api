@@ -1,12 +1,12 @@
 import { getAllComics } from './future-comics'
 import { getBooks } from './future-books'
 import { getTV } from './future-tv'
-import { crossPostMessage } from '@/utils/discord'
+// import { crossPostMessage } from '@/utils/discord'
 import { postBleet } from '@/components/bluesky/bluesky'
 
-const dateString = d => {
-	return new Date(d).toDateString()
-}
+// const dateString = d => {
+// 	return new Date(d).toDateString()
+// }
 
 const processComic = comic => {
 	return `
@@ -41,29 +41,29 @@ function spliceIntoChunks(arr, chunkSize = 4) {
 	return res
 }
 
-async function sendWebhook(url, content) {
-	var myHeaders = new Headers()
-	myHeaders.append('Content-Type', 'application/json')
+// async function sendWebhook(url, content) {
+// 	var myHeaders = new Headers()
+// 	myHeaders.append('Content-Type', 'application/json')
 
-	var requestOptions = {
-		headers: myHeaders,
-		method: 'POST',
-		body: JSON.stringify(content),
-	}
+// 	var requestOptions = {
+// 		headers: myHeaders,
+// 		method: 'POST',
+// 		body: JSON.stringify(content),
+// 	}
 
-	const response = await fetch(url, requestOptions)
+// 	const response = await fetch(url, requestOptions)
 
-	console.log('-----------------')
-	console.log('WEBHOOK RESPONSE')
-	console.log(`Status: ${response.status}`)
-	console.log(`Status Text: ${response.statusText}`)
-	try {
-		const json = await response.json()
-		return json
-	} catch (e) {
-		console.error('Error parsing response', e)
-	}
-}
+// 	console.log('-----------------')
+// 	console.log('WEBHOOK RESPONSE')
+// 	console.log(`Status: ${response.status}`)
+// 	console.log(`Status Text: ${response.statusText}`)
+// 	try {
+// 		const json = await response.json()
+// 		return json
+// 	} catch (e) {
+// 		console.error('Error parsing response', e)
+// 	}
+// }
 
 async function handler(req, res) {
 	const debug = req.query?.debug === 'true'

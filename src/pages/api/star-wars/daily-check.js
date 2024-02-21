@@ -82,18 +82,18 @@ async function handler(req, res) {
 	const outComics = comics.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
-		console.log({
-			type: 'comic',
-			title: c.title,
-			pubDate,
-			tomorrow,
-			today,
-			pubTime: pubDate.getTime(),
-			tomTime: tomorrow.getTime(),
-			todTime: today.getTime(),
-			tomTest: tomorrow.getTime() === pubDate.getTime(),
-			todTest: today.getTime() === pubDate.getTime(),
-		})
+		// console.log({
+		// 	type: 'comic',
+		// 	title: c.title,
+		// 	pubDate,
+		// 	tomorrow,
+		// 	today,
+		// 	pubTime: pubDate.getTime(),
+		// 	tomTime: tomorrow.getTime(),
+		// 	todTime: today.getTime(),
+		// 	tomTest: tomorrow.getTime() === pubDate.getTime(),
+		// 	todTest: today.getTime() === pubDate.getTime(),
+		// })
 		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
@@ -129,18 +129,18 @@ async function handler(req, res) {
 
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
-		console.log({
-			type: 'book',
-			title: c.title,
-			pubDate,
-			tomorrow,
-			today,
-			pubTime: pubDate.getTime(),
-			tomTime: tomorrow.getTime(),
-			todTime: today.getTime(),
-			tomTest: tomorrow.getTime() === pubDate.getTime(),
-			todTest: today.getTime() === pubDate.getTime(),
-		})
+		// console.log({
+		// 	type: 'book',
+		// 	title: c.title,
+		// 	pubDate,
+		// 	tomorrow,
+		// 	today,
+		// 	pubTime: pubDate.getTime(),
+		// 	tomTime: tomorrow.getTime(),
+		// 	todTime: today.getTime(),
+		// 	tomTest: tomorrow.getTime() === pubDate.getTime(),
+		// 	todTest: today.getTime() === pubDate.getTime(),
+		// })
 
 		const test = tomorrow.getTime() === pubDate.getTime()
 		return test
@@ -170,18 +170,18 @@ async function handler(req, res) {
 	const outTv = tv.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
-		console.log({
-			type: 'tv',
-			title: c.title,
-			pubDate,
-			tomorrow,
-			today,
-			pubTime: pubDate.getTime(),
-			tomTime: tomorrow.getTime(),
-			todTime: today.getTime(),
-			tomTest: tomorrow.getTime() === pubDate.getTime(),
-			todTest: today.getTime() === pubDate.getTime(),
-		})
+		// console.log({
+		// 	type: 'tv',
+		// 	title: c.title,
+		// 	pubDate,
+		// 	tomorrow,
+		// 	today,
+		// 	pubTime: pubDate.getTime(),
+		// 	tomTime: tomorrow.getTime(),
+		// 	todTime: today.getTime(),
+		// 	tomTest: tomorrow.getTime() === pubDate.getTime(),
+		// 	todTest: today.getTime() === pubDate.getTime(),
+		// })
 		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate

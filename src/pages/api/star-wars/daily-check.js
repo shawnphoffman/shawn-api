@@ -34,14 +34,14 @@ const processTv = tv => {
 }
 // - [*More Info:*](${tv.url})`
 
-function spliceIntoChunks(arr, chunkSize = 4) {
-	const res = []
-	while (arr.length > 0) {
-		const chunk = arr.splice(0, chunkSize)
-		res.push(chunk)
-	}
-	return res
-}
+// function spliceIntoChunks(arr, chunkSize = 4) {
+// 	const res = []
+// 	while (arr.length > 0) {
+// 		const chunk = arr.splice(0, chunkSize)
+// 		res.push(chunk)
+// 	}
+// 	return res
+// }
 
 // async function sendWebhook(url, content) {
 // 	var myHeaders = new Headers()
@@ -187,14 +187,14 @@ async function handler(req, res) {
 	})
 
 	if (outTv.length && !debug) {
-		const loops = spliceIntoChunks(outTv, 1)
-		for (let i = 0; i < loops.length; i++) {
-			// await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
-			// 	username: `TV Shows Premiering (${dateString(today)})`,
-			// 	content: loops[i].map(processTv).join('\n'),
-			// 	avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
-			// })
-		}
+		// const loops = spliceIntoChunks(outTv, 1)
+		// for (let i = 0; i < loops.length; i++) {
+		// 	// await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
+		// 	// 	username: `TV Shows Premiering (${dateString(today)})`,
+		// 	// 	content: loops[i].map(processTv).join('\n'),
+		// 	// 	avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
+		// 	// })
+		// }
 
 		try {
 			// postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })

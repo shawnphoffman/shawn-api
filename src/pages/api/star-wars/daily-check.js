@@ -3,6 +3,7 @@ import { getBooks } from './future-books'
 import { getTV } from './future-tv'
 // import { crossPostMessage } from '@/utils/discord'
 import { postBleet } from '@/components/bluesky/bluesky'
+import redis, { RedisKey } from '@/utils/redis'
 
 // const dateString = d => {
 // 	return new Date(d).toDateString()
@@ -24,6 +25,7 @@ const processBook = book => {
 }
 // https://starwars.fandom.com${book.url}`
 
+// eslint-disable-next-line no-unused-vars
 const processTv = tv => {
 	const cleanDate = new Date(tv.pubDate)
 	cleanDate.setDate(cleanDate.getDate() + 1)
@@ -33,6 +35,12 @@ const processTv = tv => {
 `
 }
 // - [*More Info:*](${tv.url})`
+
+const processTvForBsky = tv => {
+	return `${tv.series} (${tv.episode})
+  Title: ${tv.title}
+`
+}
 
 // function spliceIntoChunks(arr, chunkSize = 4) {
 // 	const res = []
@@ -197,10 +205,15 @@ async function handler(req, res) {
 		// }
 
 		try {
-			// postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
 			outTv.forEach(async c => {
-				console.log(`Bleeting TV show: ${c.title}`)
-				await postBleet({ contentType: 'TV Show', title: c.title, items: processTv(c), url: c.url })
+				const redisMember = `tv:${c.title}`
+				const exists = await redis.sismember(RedisKey.Discord, redisMember)
+				if (!exists) {
+					console.log(`Bleeting TV show: ${c.title}`)
+					await postBleet({ contentType: 'TV Show', title: c.title, items: processTvForBsky(c), url: c.url })
+				} else {
+					console.log('+ Redis.discord.exists', redisMember)
+				}
 			})
 		} catch (error) {
 			console.error('Error bleeting message', error)

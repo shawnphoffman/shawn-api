@@ -198,9 +198,9 @@ async function handler(req, res) {
 
 		try {
 			// postBleet({ contentType: 'TV Show', items: loops[i].map(processTv).join('\n') })
-			outTv.forEach(c => {
+			outTv.forEach(async c => {
 				console.log(`Bleeting TV show: ${c.title}`)
-				postBleet({ contentType: 'TV Show', title: c.title, items: processTv(c), url: c.url })
+				await postBleet({ contentType: 'TV Show', title: c.title, items: processTv(c), url: c.url })
 			})
 		} catch (error) {
 			console.error('Error bleeting message', error)

@@ -1,31 +1,33 @@
 import { getAllComics } from './future-comics'
 import { getBooks } from './future-books'
 import { getTV } from './future-tv'
-// import { crossPostMessage } from '@/utils/discord'
+import { crossPostMessage } from '@/utils/discord'
 import { postBleet } from '@/components/bluesky/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 
-// const dateString = d => {
-// 	return new Date(d).toDateString()
-// }
+const dateString = d => {
+	return new Date(d).toDateString()
+}
 
-// eslint-disable-next-line no-unused-vars
 const processComic = comic => {
 	return `${comic.title}
 `
 }
-// https://starwars.fandom.com${comic.url}`
+const processComicForBsky = comic => {
+	return `  ${comic.title}`
+}
 
 const getAuthor = author => (author && author.length ? `(${author})` : '')
 
-// eslint-disable-next-line no-unused-vars
 const processBook = book => {
 	return `${book.title} ${getAuthor(book.author)}
 `
 }
-// https://starwars.fandom.com${book.url}`
 
-// eslint-disable-next-line no-unused-vars
+const processBookForBsky = book => {
+	return `  ${book.title} ${getAuthor(book.author)}`
+}
+
 const processTv = tv => {
 	const cleanDate = new Date(tv.pubDate)
 	cleanDate.setDate(cleanDate.getDate() + 1)
@@ -34,12 +36,10 @@ const processTv = tv => {
 - *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
 `
 }
-// - [*More Info:*](${tv.url})`
 
 const processTvForBsky = tv => {
-	return `${tv.series} (${tv.episode})
-  Title: ${tv.title}
-`
+	return `  ${tv.series} (${tv.episode})
+  Title: ${tv.title}`
 }
 
 // function spliceIntoChunks(arr, chunkSize = 4) {
@@ -51,29 +51,29 @@ const processTvForBsky = tv => {
 // 	return res
 // }
 
-// async function sendWebhook(url, content) {
-// 	var myHeaders = new Headers()
-// 	myHeaders.append('Content-Type', 'application/json')
+async function sendWebhook(url, content) {
+	var myHeaders = new Headers()
+	myHeaders.append('Content-Type', 'application/json')
 
-// 	var requestOptions = {
-// 		headers: myHeaders,
-// 		method: 'POST',
-// 		body: JSON.stringify(content),
-// 	}
+	var requestOptions = {
+		headers: myHeaders,
+		method: 'POST',
+		body: JSON.stringify(content),
+	}
 
-// 	const response = await fetch(url, requestOptions)
+	const response = await fetch(url, requestOptions)
 
-// 	console.log('-----------------')
-// 	console.log('WEBHOOK RESPONSE')
-// 	console.log(`Status: ${response.status}`)
-// 	console.log(`Status Text: ${response.statusText}`)
-// 	try {
-// 		const json = await response.json()
-// 		return json
-// 	} catch (e) {
-// 		console.error('Error parsing response', e)
-// 	}
-// }
+	console.log('-----------------')
+	console.log('WEBHOOK RESPONSE')
+	console.log(`Status: ${response.status}`)
+	console.log(`Status Text: ${response.statusText}`)
+	try {
+		const json = await response.json()
+		return json
+	} catch (e) {
+		console.error('Error parsing response', e)
+	}
+}
 
 async function handler(req, res) {
 	const debug = req.query?.debug === 'true'
@@ -110,22 +110,39 @@ async function handler(req, res) {
 	})
 
 	if (outComics.length && !debug) {
-		// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
-		// 	username: `Comics Releasing (${dateString(today)})`,
-		// 	content: outComics.map(processComic).join('\n'),
-		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
-		// })
-		// if (resp && resp.id && resp.channel_id && resp.author?.bot) {
-		// 	await crossPostMessage(resp.channel_id, resp.id)
-		// }
-		// try {
-		// 	outComics.forEach(c => {
-		// 		console.log(`Bleeting comic: ${c.title}`)
-		// 		postBleet({ contentType: 'Comic', title: c.title, items: processComic(c), url: `https://starwars.fandom.com${c.url}` })
-		// 	})
-		// } catch (error) {
-		// 	console.error('Error bleeting message', error)
-		// }
+		try {
+			outComics.forEach(async c => {
+				const redisMember = `comics:${c.title}`
+
+				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
+				if (!discordExists) {
+					const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
+						username: `Comics Releasing (${dateString(today)})`,
+						content: outComics.map(processComic).join('\n'),
+						avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
+					})
+					if (resp && resp.id && resp.channel_id && resp.author?.bot) {
+						await crossPostMessage(resp.channel_id, resp.id)
+					}
+					redis.sadd(RedisKey.Discord, redisMember)
+				} else {
+					console.log('+ Redis.discord.exists', redisMember)
+				}
+
+				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				if (!exists) {
+					console.log(`Bleeting comic: ${c.title}`)
+
+					postBleet({ contentType: 'Comic', title: c.title, items: processComicForBsky(c), url: `https://starwars.fandom.com${c.url}` })
+
+					redis.sadd(RedisKey.Discord, redisMember)
+				} else {
+					console.log('+ Redis.bluesky.exists', redisMember)
+				}
+			})
+		} catch (error) {
+			console.error('Error bleeting message', error)
+		}
 	}
 
 	// Books
@@ -134,7 +151,6 @@ async function handler(req, res) {
 		if (c.format && c.format.toLowerCase().includes('reprint')) {
 			return false
 		}
-
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
 		// console.log({
@@ -156,20 +172,35 @@ async function handler(req, res) {
 	})
 
 	if (outBooks.length && !debug) {
-		// await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
-		// 	username: `Books Releasing (${dateString(today)})`,
-		// 	content: outBooks.map(processBook).join('\n'),
-		// 	avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
-		// })
-		// try {
-		// 	// postBleet({ contentType: 'Book', items: outBooks.map(processBook).join('\n') })
-		// 	outBooks.forEach(c => {
-		// 		console.log(`Bleeting book: ${c.title}`)
-		// 		postBleet({ contentType: 'Book', title: c.title, items: processBook(c), url: `https://starwars.fandom.com${c.url}` })
-		// 	})
-		// } catch (error) {
-		// 	console.error('Error bleeting message', error)
-		// }
+		try {
+			outBooks.forEach(async c => {
+				const redisMember = `books:${c.title}`
+
+				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
+				if (!discordExists) {
+					await sendWebhook(process.env.DISCORD_WEBHOOK_BOOKS, {
+						username: `Books Releasing (${dateString(today)})`,
+						content: processBook(c),
+						avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
+					})
+					redis.sadd(RedisKey.Discord, redisMember)
+				} else {
+					console.log('+ Redis.discord.exists', redisMember)
+				}
+
+				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				if (!exists) {
+					console.log(`Bleeting book: ${c.title}`)
+					await postBleet({ contentType: 'Book', title: c.title, items: processBookForBsky(c), url: `https://starwars.fandom.com${c.url}` })
+
+					redis.sadd(RedisKey.Discord, redisMember)
+				} else {
+					console.log('+ Redis.bluesky.exists', redisMember)
+				}
+			})
+		} catch (error) {
+			console.error('Error bleeting message', error)
+		}
 	}
 
 	// TV
@@ -195,24 +226,30 @@ async function handler(req, res) {
 	})
 
 	if (outTv.length && !debug) {
-		// const loops = spliceIntoChunks(outTv, 1)
-		// for (let i = 0; i < loops.length; i++) {
-		// 	// await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
-		// 	// 	username: `TV Shows Premiering (${dateString(today)})`,
-		// 	// 	content: loops[i].map(processTv).join('\n'),
-		// 	// 	avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
-		// 	// })
-		// }
-
 		try {
 			outTv.forEach(async c => {
 				const redisMember = `tv:${c.title}`
-				const exists = await redis.sismember(RedisKey.Discord, redisMember)
+
+				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
+				if (!discordExists) {
+					await sendWebhook(process.env.DISCORD_WEBHOOK_TV, {
+						username: `TV Shows Premiering (${dateString(today)})`,
+						content: processTv(c),
+						avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
+					})
+					redis.sadd(RedisKey.Discord, redisMember)
+				} else {
+					console.log('+ Redis.discord.exists', redisMember)
+				}
+
+				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
 				if (!exists) {
 					console.log(`Bleeting TV show: ${c.title}`)
 					await postBleet({ contentType: 'TV Show', title: c.title, items: processTvForBsky(c), url: c.url })
+
+					redis.sadd(RedisKey.Discord, redisMember)
 				} else {
-					console.log('+ Redis.discord.exists', redisMember)
+					console.log('+ Redis.bluesky.exists', redisMember)
 				}
 			})
 		} catch (error) {

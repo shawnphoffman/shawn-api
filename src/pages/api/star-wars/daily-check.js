@@ -9,34 +9,44 @@ const dateString = d => {
 	return new Date(d).toDateString()
 }
 
+//
+// COMICS
+//
 const processComic = comic => {
-	return `${comic.title}
-`
+	return `
+**${comic.title}**
+[More Info](https://starwars.fandom.com${comic.url})`
 }
 const processComicForBsky = comic => {
 	return `  ${comic.title}`
 }
 
+//
+// BOOKS
+//
 const getAuthor = author => (author && author.length ? `(${author})` : '')
-
 const processBook = book => {
-	return `${book.title} ${getAuthor(book.author)}
-`
+	return `
+**${book.title} (${book.author})**
+- ${book.format}
+[More Info](https://starwars.fandom.com${book.url})`
 }
-
 const processBookForBsky = book => {
 	return `  ${book.title} ${getAuthor(book.author)}`
 }
 
+//
+// TV
+//
 const processTv = tv => {
 	const cleanDate = new Date(tv.pubDate)
 	cleanDate.setDate(cleanDate.getDate() + 1)
-	return `${tv.series} (${tv.episode})
+	return `
+**${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
 - *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
-`
+- [*More Info:*](${tv.url})`
 }
-
 const processTvForBsky = tv => {
 	return `  ${tv.series} (${tv.episode})
   Title: ${tv.title}`
@@ -135,7 +145,7 @@ async function handler(req, res) {
 
 					postBleet({ contentType: 'Comic', title: c.title, items: processComicForBsky(c), url: `https://starwars.fandom.com${c.url}` })
 
-					redis.sadd(RedisKey.Discord, redisMember)
+					redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
@@ -193,7 +203,7 @@ async function handler(req, res) {
 					console.log(`Bleeting book: ${c.title}`)
 					await postBleet({ contentType: 'Book', title: c.title, items: processBookForBsky(c), url: `https://starwars.fandom.com${c.url}` })
 
-					redis.sadd(RedisKey.Discord, redisMember)
+					redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
@@ -247,7 +257,7 @@ async function handler(req, res) {
 					console.log(`Bleeting TV show: ${c.title}`)
 					await postBleet({ contentType: 'TV Show', title: c.title, items: processTvForBsky(c), url: c.url })
 
-					redis.sadd(RedisKey.Discord, redisMember)
+					redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}

@@ -18,7 +18,8 @@ const processComic = comic => {
 [More Info](https://starwars.fandom.com${comic.url})`
 }
 const processComicForBsky = comic => {
-	return `  ${comic.title}`
+	return `  ${comic.title}
+#StarWars #Comics #NewRelease`
 }
 
 //
@@ -32,7 +33,8 @@ const processBook = book => {
 [More Info](https://starwars.fandom.com${book.url})`
 }
 const processBookForBsky = book => {
-	return `  ${book.title} ${getAuthor(book.author)}`
+	return `  ${book.title} ${getAuthor(book.author)}
+#StarWars #Books #NewRelease`
 }
 
 //
@@ -49,7 +51,8 @@ const processTv = tv => {
 }
 const processTvForBsky = tv => {
 	return `  ${tv.series} (${tv.episode})
-  Title: ${tv.title}`
+  Title: ${tv.title}
+#StarWars #TV #NewRelease`
 }
 
 // function spliceIntoChunks(arr, chunkSize = 4) {

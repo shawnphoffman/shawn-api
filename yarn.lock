@@ -7,10 +7,10 @@
   resolved "https://registry.yarnpkg.com/@aashutoshrathi/word-wrap/-/word-wrap-1.2.6.tgz#bd9154aec9983f77b3a034ecaa015c2e4201f6cf"
   integrity sha512-1Yjs2SvM8TflER/OD3cOjhWWOZb58A2t7wpE2S9XfBYTiIl+XFhQG2bjy4Pu1I+EAlCNUzRDYDdFwFYUKvXcIA==
 
-"@atproto/api@^0.9.7":
-  version "0.9.7"
-  resolved "https://registry.yarnpkg.com/@atproto/api/-/api-0.9.7.tgz#b5fa62e56dd0c28cee3321389dc532f699f2a1f5"
-  integrity sha512-WqBjVwDaOM84kXQb6fHWLDXhoDDH0Cu7EH2hWunPHBDYCDcEbvZmDehifScDkbxrPs5OLkkmA0oFJcEJVWziGQ==
+"@atproto/api@^0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@atproto/api/-/api-0.10.1.tgz#19945744582f2cda250855a9ae5ffc7563061474"
+  integrity sha512-yYb20+54MV1qDWyleRXPHqP2sFZdZh7c+W5cCEtZBDoGFDZQo4qOamy8P1arZGVh/vTz4Ho2aM+kdnxkv3/Gsw==
   dependencies:
     "@atproto/common-web" "^0.2.3"
     "@atproto/lexicon" "^0.3.1"

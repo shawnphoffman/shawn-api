@@ -1,10 +1,8 @@
 import 'dotenv/config'
 
 import { BskyAgent, RichText } from '@atproto/api'
+import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from './imageUtils'
 // import { captureException, captureMessage } from '@sentry/node'
-
-// import type { BleetArgs, BleetResponse, ImageBlob } from '../types'
-// import { fetchRemoteImageBuffer, getItemImage } from '../utils/imageUtils'
 
 const username = process.env.BSKY_USERNAME
 const password = process.env.BSKY_PASSWORD
@@ -15,8 +13,7 @@ const agent = new BskyAgent({
 
 const websiteTarget = `Click here for more...`
 
-// const formatBleet = async (agent, { contentType, item, homepage, handle = [] }) => {
-const formatBleet = async (agent, { contentType, items, url, title /*, handle = []*/ }) => {
+const formatBleet = async (agent, { contentType, items, url, title }) => {
 	const stinger = `New Star Wars ${contentType}`
 	let txt = `${stinger}!!!
 ${items}`
@@ -25,16 +22,6 @@ ${items}`
 		txt += `
 ${websiteTarget}`
 	}
-
-	// if (url) {
-	// 	txt += `
-	// ${url}`
-	// }
-
-	// 	if (handle.length) {
-	// 		txt += `
-	// @${handle.join(' @')}`
-	// 	}
 
 	const rt = new RichText({ text: txt })
 	await rt.detectFacets(agent)
@@ -60,21 +47,9 @@ ${websiteTarget}`
 		...(rt.facets || []),
 	]
 
-	// let thumb
-	// const image = getItemImage(item)
-	// if (image) {
-	// 	const buffer = await fetchRemoteImageBuffer(image)
-
-	// 	const blob = await manualUploadBlob(agent, buffer)
-
-	// 	if (blob) {
-	// 		thumb = blob
-	// 	}
-	// }
-
 	const record = {
 		text: rt.text,
-		langs: ['en'],
+		langs: ['en-US'],
 		facets,
 		embed: {
 			$type: 'app.bsky.embed.external',
@@ -82,9 +57,24 @@ ${websiteTarget}`
 				uri: url ? url : '',
 				title: title || stinger,
 				description: stinger,
-				// thumb,
+				// thumb: thumb,
 			},
 		},
+	}
+
+	if (url) {
+		const imageUrl = await getOgImageUrl(url)
+		if (imageUrl) {
+			const buffer = await fetchRemoteImageBuffer(imageUrl)
+
+			const mimetype = getContentType(imageUrl)
+
+			const blob = await manualUploadBlob(agent, buffer, mimetype)
+
+			if (blob) {
+				record.embed.external.thumb = blob
+			}
+		}
 	}
 
 	console.log('================')
@@ -125,5 +115,31 @@ export const postBleet = async ({ contentType, items, url, title }) => {
 		console.error('BLUESKY POST FAILED', error)
 		// captureException(error)
 		return null
+	}
+}
+
+// eslint-disable-next-line no-unused-vars
+const manualUploadBlob = async (agent, buffer, mimetype) => {
+	const jwt = agent.session?.accessJwt
+	const uploadUrl = 'https://bsky.social/xrpc/com.atproto.repo.uploadBlob'
+
+	const options = {
+		method: 'POST',
+		headers: {
+			Authorization: `Bearer ${jwt}`,
+			'Content-Type': mimetype,
+		},
+		body: buffer,
+	}
+
+	try {
+		const resp = await fetch(uploadUrl, options)
+		const json = await resp.json()
+
+		// console.log('MANUAL UPLOAD BLOB', json)
+
+		return json.blob
+	} catch (error) {
+		return
 	}
 }

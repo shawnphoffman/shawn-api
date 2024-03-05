@@ -96,6 +96,9 @@ async function handler(req, res) {
 	const tomorrow = new Date()
 	tomorrow.setDate(tomorrow.getDate() + 1)
 	tomorrow.setHours(0, 0, 0, 0)
+	const yesterday = new Date()
+	yesterday.setDate(yesterday.getDate() - 1)
+	yesterday.setHours(0, 0, 0, 0)
 
 	console.log(`Today is ${today.toString()}`)
 	console.log(`Tomorrow is ${tomorrow.toString()}`)
@@ -179,10 +182,12 @@ async function handler(req, res) {
 		// 	todTest: today.getTime() === pubDate.getTime(),
 		// })
 
-		const test = today.getTime() === pubDate.getTime()
+		const test = yesterday.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
+	
+	console.log(outBooks)
 
 	if (outBooks.length && !debug) {
 		try {
@@ -275,7 +280,7 @@ async function handler(req, res) {
 		bookCount: outBooks.length,
 		comicCount: outComics.length,
 		tvCount: outTv.length,
-		bookTest: today,
+		bookTest: yesterday,
 		comicTest: tomorrow,
 		tvTest: today,
 	})

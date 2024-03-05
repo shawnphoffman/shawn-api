@@ -285,6 +285,7 @@ async function handler(req, res) {
 		bookTest: yesterday,
 		comicTest: tomorrow,
 		tvTest: today,
+		books,
 	})
 }
 

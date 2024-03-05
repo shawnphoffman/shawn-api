@@ -170,18 +170,18 @@ async function handler(req, res) {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
 		console.log({
-		  type: 'book',
-		  title: c.title,
-		  pubDate,
-		  tomorrow,
-		  today,
+				type: 'book',
+				title: c.title,
+				pubDate,
+				tomorrow,
+				today,
 				yesterday,
-		  pubTime: pubDate.getTime(),
-		  tomTime: tomorrow.getTime(),
-		  todTime: today.getTime(),
+				pubTime: pubDate.getTime(),
+				tomTime: tomorrow.getTime(),
+				todTime: today.getTime(),
 				yesTime: yesterday.getTime(),
-		  tomTest: tomorrow.getTime() === pubDate.getTime(),
-		  todTest: today.getTime() === pubDate.getTime(),
+				tomTest: tomorrow.getTime() === pubDate.getTime(),
+				todTest: today.getTime() === pubDate.getTime(),
 		})
 
 		const test = today.getTime() === pubDate.getTime()

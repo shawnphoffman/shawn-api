@@ -149,7 +149,12 @@ async function handler(req, res) {
 				if (!exists) {
 					console.log(`Bleeting comic: ${c.title}`)
 
-					postBleet({ contentType: 'Comic', title: c.title, items: processComicForBsky(c), url: `https://starwars.fandom.com${c.url}` })
+					await postBleet({
+						contentType: 'Comic',
+						title: c.title,
+						items: processComicForBsky(c),
+						url: `https://starwars.fandom.com${c.url}`,
+					})
 
 					redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
@@ -170,25 +175,25 @@ async function handler(req, res) {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)
 		console.log({
-				type: 'book',
-				title: c.title,
-				pubDate,
-				tomorrow,
-				today,
-				yesterday,
-				pubTime: pubDate.getTime(),
-				tomTime: tomorrow.getTime(),
-				todTime: today.getTime(),
-				yesTime: yesterday.getTime(),
-				tomTest: tomorrow.getTime() === pubDate.getTime(),
-				todTest: today.getTime() === pubDate.getTime(),
+			type: 'book',
+			title: c.title,
+			pubDate,
+			tomorrow,
+			today,
+			yesterday,
+			pubTime: pubDate.getTime(),
+			tomTime: tomorrow.getTime(),
+			todTime: today.getTime(),
+			yesTime: yesterday.getTime(),
+			tomTest: tomorrow.getTime() === pubDate.getTime(),
+			todTest: today.getTime() === pubDate.getTime(),
 		})
 
 		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
-	
+
 	console.log(outBooks)
 
 	if (outBooks.length && !debug) {

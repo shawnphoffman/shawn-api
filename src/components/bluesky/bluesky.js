@@ -99,23 +99,23 @@ export const postBleet = async ({ contentType, items, url, title }) => {
 		// captureMessage('BLUESKY LOGIN FAILED', 'error')
 	}
 
-	try {
-		// Generate Bleet
-		const record = await formatBleet(agent, { contentType, items, url, title })
+	// try {
+	// Generate Bleet
+	const record = await formatBleet(agent, { contentType, items, url, title })
 
-		// Post Bleet
-		const post = await agent.post(record)
+	// Post Bleet
+	const post = await agent.post(record)
 
-		console.log(`Bleeting: ${contentType}`)
-		console.log(post)
-		console.log('================')
+	console.log(`Bleeting: ${contentType}`)
+	console.log(post)
+	console.log('================')
 
-		return post
-	} catch (error) {
-		console.error('BLUESKY POST FAILED', error)
-		// captureException(error)
-		return null
-	}
+	return post
+	// } catch (error) {
+	// 	console.error('BLUESKY POST FAILED', error)
+	// 	// captureException(error)
+	// 	return null
+	// }
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -132,14 +132,14 @@ const manualUploadBlob = async (agent, buffer, mimetype) => {
 		body: buffer,
 	}
 
-	try {
-		const resp = await fetch(uploadUrl, options)
-		const json = await resp.json()
+	// try {
+	const resp = await fetch(uploadUrl, options)
+	const json = await resp.json()
 
-		// console.log('MANUAL UPLOAD BLOB', json)
+	// console.log('MANUAL UPLOAD BLOB', json)
 
-		return json.blob
-	} catch (error) {
-		return
-	}
+	return json.blob
+	// } catch (error) {
+	// 	return
+	// }
 }

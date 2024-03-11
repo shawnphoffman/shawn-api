@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 	}
 
 	try {
-		postBleet({ contentType: type, title: title, items: content, url })
+		await postBleet({ contentType: type, title: title, items: content, url })
 		// postBleet({ contentType: 'ContentType', items: 'TEST (composite) #StorWors', url: scrape })
 
 		// const imageUrl = await getOgImageUrl(scrape)
@@ -25,6 +25,6 @@ export default async function handler(req, res) {
 		// return res.status(404).send('No image found')
 		return res.status(200).send('OK')
 	} catch (error) {
-		return res.status(400).send('Bad request')
+		return res.status(400).send(JSON.stringify(error, null, 2))
 	}
 }

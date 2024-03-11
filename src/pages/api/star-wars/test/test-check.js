@@ -10,7 +10,7 @@ const processTv = tv => {
 **${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
 - *Release Date*: <t:${cleanDate}:d>
-- [*More Info:*](${tv.url})`
+- [*More Info Here*](${tv.url})`
 }
 
 async function sendWebhook(url, content) {

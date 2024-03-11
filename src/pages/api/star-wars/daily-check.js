@@ -15,7 +15,7 @@ const dateString = d => {
 const processComic = comic => {
 	return `
 **${comic.title}**
-[More Info](https://starwars.fandom.com${comic.url})`
+[More Info Here](https://starwars.fandom.com${comic.url})`
 }
 const processComicForBsky = comic => {
 	return `  ${comic.title}
@@ -30,7 +30,7 @@ const processBook = book => {
 	return `
 **${book.title} (${book.author})**
 - ${book.format}
-[More Info](https://starwars.fandom.com${book.url})`
+[More Info Here](https://starwars.fandom.com${book.url})`
 }
 const processBookForBsky = book => {
 	return `  ${book.title} ${getAuthor(book.author)}
@@ -47,7 +47,7 @@ const processTv = tv => {
 **${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
 - *Release Date*: <t:${cleanDate.getTime() / 1000}:d>
-- [*More Info:*](${tv.url})`
+- [*More Info Here*](${tv.url})`
 }
 const processTvForBsky = tv => {
 	return `  ${tv.series} (${tv.episode})

@@ -245,7 +245,8 @@ async function handler(req, res) {
 		// 	tomTest: tomorrow.getTime() === pubDate.getTime(),
 		// 	todTest: today.getTime() === pubDate.getTime(),
 		// })
-		const test = today.getTime() === pubDate.getTime()
+		// 02-12-2024: Changed this to "tomorrow" to avoid bad images
+		const test = tomorrow.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})

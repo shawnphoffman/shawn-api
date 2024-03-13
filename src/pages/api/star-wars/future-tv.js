@@ -40,9 +40,9 @@ const fetchChild = async childUrl => {
 			// console.log(`title: ${title}`);
 			// console.log(`link: ${link}`);
 
-			if (new Date(new Date(pubDate).toDateString()) < new Date(new Date().toDateString())) {
-				return
-			}
+			// if (new Date(new Date(pubDate).toDateString()) < new Date(new Date().toDateString())) {
+			// 	return
+			// }
 
 			// Grab the episode data
 			const episode = {

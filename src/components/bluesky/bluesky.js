@@ -13,12 +13,16 @@ const agent = new BskyAgent({
 
 const websiteTarget = `Click here for more...`
 
-const formatBleet = async (agent, { contentType, items, url, title }) => {
-	const stinger = `New Star Wars ${contentType}`
-	let txt = `${stinger}!!!
-${items}`
+const formatBleet = async (agent, { contentType, items, url, title, desc }) => {
+	const hasContentType = !!contentType
 
-	if (url) {
+	const stinger = hasContentType ? `New Star Wars ${contentType}` : ''
+	let txt = hasContentType
+		? `${stinger}!!!
+${items}`
+		: items
+
+	if (hasContentType && url) {
 		txt += `
 ${websiteTarget}`
 	}
@@ -27,7 +31,7 @@ ${websiteTarget}`
 	await rt.detectFacets(agent)
 
 	const facets = [
-		...(url
+		...(hasContentType && url
 			? [
 					{
 						index: {
@@ -56,7 +60,7 @@ ${websiteTarget}`
 			external: {
 				uri: url ? url : '',
 				title: title || stinger,
-				description: stinger,
+				description: desc || stinger || '',
 				// thumb: thumb,
 			},
 		},
@@ -88,7 +92,7 @@ ${websiteTarget}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleet = async ({ contentType, items, url, title }) => {
+export const postBleet = async ({ contentType, items, url, title, desc }) => {
 	// Login
 	const loginResponse = await agent.login({
 		identifier: username,
@@ -101,12 +105,12 @@ export const postBleet = async ({ contentType, items, url, title }) => {
 
 	// try {
 	// Generate Bleet
-	const record = await formatBleet(agent, { contentType, items, url, title })
+	const record = await formatBleet(agent, { contentType, items, url, title, desc })
 
 	// Post Bleet
 	const post = await agent.post(record)
 
-	console.log(`Bleeting: ${contentType}`)
+	console.log(`Bleeting: ${contentType || 'NO TYPE'}`)
 	console.log(post)
 	console.log('================')
 

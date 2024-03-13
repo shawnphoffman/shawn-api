@@ -134,7 +134,7 @@ async function handler(req, res) {
 				if (!discordExists) {
 					const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_COMICS, {
 						username: `Comics Releasing (${dateString(today)})`,
-						content: outComics.map(processComic).join('\n'),
+						content: processComic(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 					})
 					if (resp && resp.id && resp.channel_id && resp.author?.bot) {

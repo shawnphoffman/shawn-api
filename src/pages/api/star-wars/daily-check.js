@@ -140,13 +140,13 @@ async function handler(req, res) {
 					if (resp && resp.id && resp.channel_id && resp.author?.bot) {
 						await crossPostMessage(resp.channel_id, resp.id)
 					}
-					redis.sadd(RedisKey.Discord, redisMember)
+					await redis.sadd(RedisKey.Discord, redisMember)
 				} else {
 					console.log('+ Redis.discord.exists', redisMember)
 				}
 
-				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
-				if (!exists) {
+				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				if (!blueskyExists) {
 					console.log(`Bleeting comic: ${c.title}`)
 
 					await postBleet({
@@ -156,7 +156,7 @@ async function handler(req, res) {
 						url: `https://starwars.fandom.com${c.url}`,
 					})
 
-					redis.sadd(RedisKey.Bluesky, redisMember)
+					await redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
@@ -208,17 +208,17 @@ async function handler(req, res) {
 						content: processBook(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 					})
-					redis.sadd(RedisKey.Discord, redisMember)
+					await redis.sadd(RedisKey.Discord, redisMember)
 				} else {
 					console.log('+ Redis.discord.exists', redisMember)
 				}
 
-				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
-				if (!exists) {
+				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				if (!blueskyExists) {
 					console.log(`Bleeting book: ${c.title}`)
 					await postBleet({ contentType: 'Book', title: c.title, items: processBookForBsky(c), url: `https://starwars.fandom.com${c.url}` })
 
-					redis.sadd(RedisKey.Bluesky, redisMember)
+					await redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
@@ -263,17 +263,17 @@ async function handler(req, res) {
 						content: processTv(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 					})
-					redis.sadd(RedisKey.Discord, redisMember)
+					await redis.sadd(RedisKey.Discord, redisMember)
 				} else {
 					console.log('+ Redis.discord.exists', redisMember)
 				}
 
-				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
-				if (!exists) {
+				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				if (!blueskyExists) {
 					console.log(`Bleeting TV show: ${c.title}`)
 					await postBleet({ contentType: 'TV Show', title: c.title, items: processTvForBsky(c), url: c.url })
 
-					redis.sadd(RedisKey.Bluesky, redisMember)
+					await redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}

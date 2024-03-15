@@ -1,6 +1,7 @@
 import sharp from 'sharp'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+import { log } from 'next-axiom'
 
 const POST_IMG_MAX = {
 	width: 600,
@@ -67,13 +68,13 @@ export const getOgImageUrl = async url => {
 	const $ = cheerio.load(data)
 
 	const pageTitle = $('h1').text().trim()
-	console.log(`TITLE: ${pageTitle}`)
+	log.info(`TITLE: ${pageTitle}`)
 
 	let imageUrl = $('meta[property="og:image"]').attr('content')
 
 	// Welp. Try to grab ANY image at this point
 	if (!imageUrl) {
-		console.log('NO OG IMAGE')
+		log.info('NO OG IMAGE')
 		// Find all image tags
 		const images = $('img')
 		let largestSize = 0
@@ -90,7 +91,7 @@ export const getOgImageUrl = async url => {
 			// const height = parseInt($(element).attr('height')) || 0
 			// const size = width * height
 
-			console.log(`IMAGE: ${$(element).attr('src')} - ${length}`)
+			log.info(`IMAGE: ${$(element).attr('src')} - ${length}`)
 			// Check if current image is larger than the largest found so far
 			if (length > largestSize) {
 				largestSize = length

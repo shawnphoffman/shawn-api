@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { BskyAgent, RichText } from '@atproto/api'
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from './imageUtils'
 // import { captureException, captureMessage } from '@sentry/node'
+import { log } from 'next-axiom'
 
 const username = process.env.BSKY_USERNAME
 const password = process.env.BSKY_PASSWORD
@@ -81,9 +82,9 @@ ${websiteTarget}`
 		}
 	}
 
-	console.log('================')
-	console.log(record)
-	console.log('================')
+	log.info('================')
+	log.info(record)
+	log.info('================')
 
 	return record
 }
@@ -99,7 +100,7 @@ export const postBleet = async ({ contentType, items, url, title, desc }) => {
 		password: password,
 	})
 	if (!loginResponse.success) {
-		console.error('BLUESKY LOGIN FAILED')
+		log.error('BLUESKY LOGIN FAILED')
 		// captureMessage('BLUESKY LOGIN FAILED', 'error')
 	}
 
@@ -110,13 +111,13 @@ export const postBleet = async ({ contentType, items, url, title, desc }) => {
 	// Post Bleet
 	const post = await agent.post(record)
 
-	console.log(`Bleeting: ${contentType || 'NO TYPE'}`)
-	console.log(post)
-	console.log('================')
+	log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
+	log.info(post)
+	log.info('================')
 
 	return post
 	// } catch (error) {
-	// 	console.error('BLUESKY POST FAILED', error)
+	// 	log.error('BLUESKY POST FAILED', error)
 	// 	// captureException(error)
 	// 	return null
 	// }
@@ -140,7 +141,7 @@ const manualUploadBlob = async (agent, buffer, mimetype) => {
 	const resp = await fetch(uploadUrl, options)
 	const json = await resp.json()
 
-	// console.log('MANUAL UPLOAD BLOB', json)
+	// log.info('MANUAL UPLOAD BLOB', json)
 
 	return json.blob
 	// } catch (error) {

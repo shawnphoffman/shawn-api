@@ -2,6 +2,7 @@
 import { postBleet } from '@/components/bluesky/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 import { getNews } from './get/official-news'
+import { log } from 'next-axiom'
 
 const blacklistWords = ['quiz', 'trivia', 'recipe']
 
@@ -27,14 +28,14 @@ async function handler(req, res) {
 
 				// Filter out items by title
 				if (blacklistWords.some(b => item.title.toLowerCase().includes(b))) {
-					console.log('🗑️ Blacklisted Word', item.title)
+					log.info('🗑️ Blacklisted Word', item.title)
 					return
 				}
 
 				// BLUESKY
 				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
 				if (!blueskyExists) {
-					console.log(`Bleeting news: ${item.title}`)
+					log.info(`Bleeting news: ${item.title}`)
 					const bleet = {
 						title: item.title,
 						items: processNewsForBsky(item),
@@ -44,11 +45,11 @@ async function handler(req, res) {
 					await postBleet(bleet)
 					await redis.sadd(RedisKey.Bluesky, redisMember)
 				} else {
-					console.log('+ Redis.bluesky.exists', redisMember)
+					log.info('+ Redis.bluesky.exists', redisMember)
 				}
 			})
 		} catch (error) {
-			console.error('Error bleeting message', error)
+			log.error('Error bleeting message', error)
 		}
 	}
 

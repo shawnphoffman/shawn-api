@@ -23,18 +23,22 @@ async function handler(req, res) {
 
 	if (news.length) {
 		try {
-			news.forEach(async item => {
+			// eslint-disable-next-line no-unused-vars
+			// news.forEach(async (item, i) => {
+			for (const item of news) {
 				const redisMember = `sw-news:${item.title}`
 
 				// Filter out items by title
 				if (blacklistWords.some(b => item.title.toLowerCase().includes(b))) {
 					log.info('🗑️ Blacklisted Word', item.title)
-					return
+					continue
 				}
 
 				// BLUESKY
 				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+				// if (!blueskyExists || i === 0) {
 				if (!blueskyExists) {
+					console.log(`Bleeting news: ${item.title}`)
 					log.info(`Bleeting news: ${item.title}`)
 					const bleet = {
 						title: item.title,
@@ -47,7 +51,7 @@ async function handler(req, res) {
 				} else {
 					log.info('+ Redis.bluesky.exists', redisMember)
 				}
-			})
+			}
 		} catch (error) {
 			log.error('Error bleeting message', error)
 		}
@@ -63,6 +67,7 @@ async function handler(req, res) {
 export default handler
 
 export const config = {
+	maxDuration: 30,
 	api: {
 		bodyParser: false,
 	},

@@ -1,4 +1,4 @@
-import { getTV } from '../future-tv'
+import { getTV } from '../get/future-tv'
 
 const dateString = d => {
 	return new Date(d).toDateString()

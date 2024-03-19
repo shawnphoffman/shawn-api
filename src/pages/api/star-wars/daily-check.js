@@ -127,7 +127,8 @@ async function handler(req, res) {
 
 	if (outComics.length && !debug) {
 		try {
-			outComics.forEach(async c => {
+			// outComics.forEach(async c => {
+			for (const c of outComics) {
 				const redisMember = `comics:${c.title}`
 
 				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
@@ -160,7 +161,7 @@ async function handler(req, res) {
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
-			})
+			}
 		} catch (error) {
 			console.error('Error bleeting message', error)
 		}
@@ -198,7 +199,8 @@ async function handler(req, res) {
 
 	if (outBooks.length && !debug) {
 		try {
-			outBooks.forEach(async c => {
+			// outBooks.forEach(async c => {
+			for (const c of outBooks) {
 				const redisMember = `books:${c.title}`
 
 				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
@@ -222,7 +224,7 @@ async function handler(req, res) {
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
-			})
+			}
 		} catch (error) {
 			console.error('Error bleeting message', error)
 		}
@@ -246,14 +248,16 @@ async function handler(req, res) {
 		// 	todTest: today.getTime() === pubDate.getTime(),
 		// })
 		// 02-12-2024: Changed this to "tomorrow" to avoid bad images
-		const test = tomorrow.getTime() === pubDate.getTime()
+		// 03-19-2024: Changed back to "today" because I'm dumb
+		const test = today.getTime() === pubDate.getTime()
 		return test
 		// return today === pubDate
 	})
 
 	if (outTv.length && !debug) {
 		try {
-			outTv.forEach(async c => {
+			// outTv.forEach(async c => {
+			for (const c of outTv) {
 				const redisMember = `tv:${c.title}`
 
 				const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
@@ -277,7 +281,7 @@ async function handler(req, res) {
 				} else {
 					console.log('+ Redis.bluesky.exists', redisMember)
 				}
-			})
+			}
 		} catch (error) {
 			console.error('Error bleeting message', error)
 		}

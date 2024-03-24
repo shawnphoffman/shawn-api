@@ -1,5 +1,6 @@
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const url = 'https://starwars.fandom.com/wiki/List_of_future_books'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_books'

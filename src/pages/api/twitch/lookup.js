@@ -1,6 +1,6 @@
-import GetTwitchAccessToken from 'src/utils/getTwitchAccessToken'
-import fetchWithCache from 'src/utils/fetchWithCache'
 import Cors from 'src/utils/cors'
+import fetchWithCache from 'src/utils/fetchWithCache'
+import GetTwitchAccessToken from 'src/utils/getTwitchAccessToken'
 
 const clientId = process.env.TWITCH_CLIENT_ID
 

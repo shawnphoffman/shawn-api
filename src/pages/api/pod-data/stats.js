@@ -1,5 +1,5 @@
-import Cors from 'src/utils/cors'
 import podcastFeedParser from '@podverse/podcast-feed-parser'
+import Cors from 'src/utils/cors'
 
 const secondsToDhms = seconds => {
 	seconds = Number(seconds)

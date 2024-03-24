@@ -1,5 +1,6 @@
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 // import corsCheck from './cors'
 
 function parseRatingString(inputString) {

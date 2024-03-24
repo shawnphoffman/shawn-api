@@ -1,7 +1,8 @@
-import sharp from 'sharp'
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
 import { log } from 'next-axiom'
+import sharp from 'sharp'
+
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const POST_IMG_MAX = {
 	width: 600,

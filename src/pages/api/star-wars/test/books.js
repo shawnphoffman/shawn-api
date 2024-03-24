@@ -1,4 +1,5 @@
 import redis from 'src/utils/redis'
+
 import { getBooks } from '../get/future-books'
 
 const handler = async (req, res) => {

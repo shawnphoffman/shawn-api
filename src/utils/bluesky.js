@@ -1,9 +1,11 @@
 import 'dotenv/config'
 
 import { BskyAgent, RichText } from '@atproto/api'
-import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from './imageUtils'
 // import { captureException, captureMessage } from '@sentry/node'
 import { log } from 'next-axiom'
+
+import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from './imageUtils'
+import { addToStarWarsFeed } from './shawnbot'
 
 const username = process.env.BSKY_USERNAME
 const password = process.env.BSKY_PASSWORD
@@ -114,6 +116,10 @@ export const postBleet = async ({ contentType, items, url, title, desc }) => {
 	log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
 	log.info(post)
 	log.info('================')
+
+	if (post?.cid) {
+		await addToStarWarsFeed({ cid: post.cid, uri: post.uri })
+	}
 
 	return post
 	// } catch (error) {

@@ -1,5 +1,6 @@
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const url = 'https://portal.permit.pcta.org/availability/mexican-border.php'
 const validMonths = ['3', '4', '5']

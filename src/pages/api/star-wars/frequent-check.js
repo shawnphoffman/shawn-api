@@ -1,8 +1,10 @@
 // import { crossPostMessage } from '@/utils/discord'
-import { postBleet } from '@/components/bluesky/bluesky'
-import redis, { RedisKey } from '@/utils/redis'
-import { getNews } from './get/official-news'
 import { log } from 'next-axiom'
+
+import { getNews } from './get/official-news'
+
+import { postBleet } from '@/utils/bluesky'
+import redis, { RedisKey } from '@/utils/redis'
 
 const blacklistWords = ['quiz', 'trivia', 'recipe']
 

@@ -19,10 +19,18 @@ html {
 }
 
 body {
-	margin: 8px;
-	/* overflow: scroll; */
+	margin: 1rem;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0.5em 0;
+	padding: 0;
+}
 h1 {
 	color: var(--c1);
 }
@@ -45,5 +53,5 @@ a:hover {
 input,
 button {
 	font-family: inherit;
-	font-size: 16px;
+	font-size: 1rem;
 }

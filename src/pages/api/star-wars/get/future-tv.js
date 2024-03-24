@@ -1,5 +1,6 @@
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import * as cheerio from 'cheerio'
+
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const rootUrl = 'https://thetvdb.com'
 const listUrl = `${rootUrl}/lists/13864`

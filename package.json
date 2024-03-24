@@ -19,6 +19,7 @@
 		"@twurple/eventsub-http": "^5.3.4",
 		"@twurple/pubsub": "^5.3.4",
 		"@upstash/redis": "^1.23.4",
+		"@vercel/analytics": "^1.2.2",
 		"@vercel/ncc": "^0.36.1",
 		"axios": "^1.5.1",
 		"cheerio": "^1.0.0-rc.12",

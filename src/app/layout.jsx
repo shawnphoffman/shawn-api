@@ -1,5 +1,6 @@
 import './globals.css'
 
+import { Analytics } from '@vercel/analytics/react'
 import localFont from 'next/font/local'
 
 import KoFi from '@/components/KoFi'
@@ -17,6 +18,7 @@ export default function RootLayout({ children }) {
 				{children}
 
 				<KoFi />
+				<Analytics />
 			</body>
 		</html>
 	)

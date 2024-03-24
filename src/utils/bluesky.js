@@ -118,7 +118,7 @@ export const postBleet = async ({ contentType, items, url, title, desc }) => {
 	log.info('================')
 
 	if (post?.cid) {
-		await addToStarWarsFeed({ cid: post.cid, uri: post.uri })
+		await addToStarWarsFeed({ cid: post.cid, uri: post.uri, indexedAt: new Date().toISOString() })
 	}
 
 	return post

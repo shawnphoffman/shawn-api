@@ -15,17 +15,23 @@ export const addToStarWarsFeed = async (post: Post) => {
 		return
 	}
 
+	const addUrl = `${url}/posts`
+
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
 	myHeaders.append('x-force-key', key)
 
+	console.log('INPUT', post)
 	var requestOptions = {
 		headers: myHeaders,
 		method: 'POST',
 		body: JSON.stringify(post),
 	}
 	try {
-		await fetch(url, requestOptions)
+		return await fetch(addUrl, requestOptions)
+		// const temp = await fetch(addUrl, requestOptions)
+		// console.log('RESULT', temp)
+		// return temp
 	} catch (error) {
 		console.error('Error adding to star wars feed', error)
 	}

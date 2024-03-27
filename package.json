@@ -43,7 +43,8 @@
 	},
 	"devDependencies": {
 		"@shawnphoffman/eslint-config": "^1.0.3",
-		"@shawnphoffman/prettier-config": "^1.0.1"
+		"@shawnphoffman/prettier-config": "^1.0.1",
+		"@types/react": "18.2.71"
 	},
 	"prettier": "@shawnphoffman/prettier-config"
 }

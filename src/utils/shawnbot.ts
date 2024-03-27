@@ -21,7 +21,7 @@ export const addToStarWarsFeed = async (post: Post) => {
 	myHeaders.append('Content-Type', 'application/json')
 	myHeaders.append('x-force-key', key)
 
-	console.log('INPUT', post)
+	// console.log('INPUT', post)
 	var requestOptions = {
 		headers: myHeaders,
 		method: 'POST',

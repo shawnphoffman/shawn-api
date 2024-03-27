@@ -21,18 +21,20 @@ const getEmoji = name => {
 }
 
 const formatTasks = tasks => {
-	if (tasks.length === 1) return `${getEmoji(tasks[0].mode)} ${tasks[0].description}`
+	// if (tasks.length === 1) return `${getEmoji(tasks[0].mode)} ${tasks[0].description}`
 
-	return tasks.map(t => {
-		return `- ${getEmoji(t.mode)} ${t.description}\n`
-	})
+	return tasks
+		.map(t => {
+			return `\n    - ${getEmoji(t.mode)} ${t.description}`
+		})
+		.join('')
 }
 
 const formatChallenge = challenge => {
 	const tasks = formatTasks(challenge.tasks)
 	return (
-		`### ${challenge.title.replace('Challenge ')} - ${challenge.endDate.substring(0, 5)} ` +
-		`${getEmoji(challenge.reward.item)} ˣ${challenge.reward.qty} - ${tasks}`
+		`### ${challenge.title.replace('Challenge ', '')} - ${challenge.endDate.substring(0, 5)} ` +
+		`${getEmoji(challenge.reward.item)} ˣ${challenge.reward.qty} ${tasks}`
 	)
 }
 

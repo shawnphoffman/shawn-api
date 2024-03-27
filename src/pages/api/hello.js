@@ -1,4 +1,4 @@
-import Cors from 'src/utils/cors'
+import Cors from '@/utils/cors'
 
 export default async function handler(req, res) {
 	await Cors(req, res, {

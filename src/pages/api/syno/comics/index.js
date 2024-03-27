@@ -1,8 +1,8 @@
-import Cors from 'src/utils/cors'
-import redis from 'src/utils/redis'
-import { getSearchResults, login, logout,RedisKey } from 'src/utils/synology'
-
 import { search } from './start'
+
+import Cors from '@/utils/cors'
+import redis from '@/utils/redis'
+import { getSearchResults, login, logout, RedisKey } from '@/utils/synology'
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 

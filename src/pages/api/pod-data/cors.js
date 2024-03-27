@@ -1,4 +1,4 @@
-import Cors from 'src/utils/cors'
+import Cors from '@/utils/cors'
 
 const podSites = [
 	/blueharvest\.rocks$/,

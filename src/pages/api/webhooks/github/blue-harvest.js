@@ -1,4 +1,4 @@
-// import Cors from 'src/utils/cors'
+// import Cors from '@/utils/cors'
 
 // DEPLOYMENT STATUS
 // https://docs.github.com/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#deployment_status

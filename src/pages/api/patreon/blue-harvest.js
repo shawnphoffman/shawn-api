@@ -1,6 +1,6 @@
-import Cors from 'src/utils/cors'
 import parser from 'xml2json'
 
+import Cors from '@/utils/cors'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const newUrl = process.env.RSS_BLUE_HARVEST_PATREON

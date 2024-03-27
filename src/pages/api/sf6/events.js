@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
-import Cors from 'src/utils/cors'
 
+import Cors from '@/utils/cors'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const dataUrl = 'https://www.streetfighter.com/6/buckler/event/schedule'

@@ -1,6 +1,6 @@
-import redis from 'src/utils/redis'
-
 import { getBooks } from '../get/future-books'
+
+import redis from '@/utils/redis'
 
 const handler = async (req, res) => {
 	// const today = new Date().setHours(0, 0, 0, 0)

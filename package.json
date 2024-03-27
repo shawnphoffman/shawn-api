@@ -14,10 +14,6 @@
 	"dependencies": {
 		"@atproto/api": "^0.10.1",
 		"@podverse/podcast-feed-parser": "^1.1.1",
-		"@twurple/api": "^5.3.4",
-		"@twurple/auth": "^5.3.4",
-		"@twurple/eventsub-http": "^5.3.4",
-		"@twurple/pubsub": "^5.3.4",
 		"@upstash/redis": "^1.23.4",
 		"@vercel/analytics": "^1.2.2",
 		"@vercel/ncc": "^0.36.1",
@@ -44,6 +40,7 @@
 	"devDependencies": {
 		"@shawnphoffman/eslint-config": "^1.0.3",
 		"@shawnphoffman/prettier-config": "^1.0.1",
+		"@types/node": "20.11.30",
 		"@types/react": "18.2.71"
 	},
 	"prettier": "@shawnphoffman/prettier-config"

@@ -55,3 +55,18 @@ button {
 	font-family: inherit;
 	font-size: 1rem;
 }
+
+.kofiContainer {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.kofiFrame {
+	border: none;
+	padding: 4px;
+	width: 100%;
+	max-width: 500px;
+	background: var(--bg);
+	border-radius: 1rem;
+}

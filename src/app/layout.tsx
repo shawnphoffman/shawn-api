@@ -4,8 +4,9 @@ import { Analytics } from '@vercel/analytics/react'
 import localFont from 'next/font/local'
 
 import KoFi from '@/components/KoFi'
+// import KoFiPanel from '@/components/KoFiPanel'
 const fontRegular = localFont({
-	src: './fonts/BerkeleyMonoVariable-Regular.woff2',
+	src: '../fonts/BerkeleyMonoVariable-Regular.woff2',
 })
 
 export default function RootLayout({ children }) {
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
 				{children}
 
 				<KoFi />
+				{/* <KoFiPanel /> */}
 				<Analytics />
 			</body>
 		</html>

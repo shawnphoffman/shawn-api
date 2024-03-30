@@ -19,7 +19,7 @@ ${newsItem.desc}
 }
 
 async function processNews(news) {
-	await new Promise(resolve => setTimeout(resolve, 2000))
+	// await new Promise(resolve => setTimeout(resolve, 5000))
 	if (news.length) {
 		try {
 			for (const item of news) {
@@ -58,17 +58,19 @@ async function processNews(news) {
 const encoder = new TextEncoder()
 
 async function* makeIterator() {
-	yield encoder.encode('<p>Starting..</p>')
+	yield encoder.encode(`========================================\n
+Starting...\n
+`)
 	const news = await getNews()
-	yield encoder.encode('<p>Processing...</p>')
+	yield encoder.encode(`Processing...\n
+`)
 	await processNews(news)
-	yield encoder.encode('<p>Finished</p><hr />')
-	yield encoder.encode(`<p>News Items: ${news.length}</p>`)
-	yield encoder.encode(`
-	<p>News:</li>
-	<ul>
-		${news.map(n => `<li>${n.title}</li>`).join('')}
-	</ul>
+	yield encoder.encode(`Finished!\n
+========================================\n
+Items: ${news.length}
+News:
+${news.map(n => `  - ${n.title}`).join('\n')}\n
+========================================
 `)
 }
 

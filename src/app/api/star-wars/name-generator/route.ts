@@ -33,11 +33,7 @@ function properName(name: string) {
 	)
 }
 
-export async function GET(req: NextRequest) {
-	if (req.method !== 'POST') {
-		return new Response('Only POST requests allowed', { status: 405 })
-	}
-
+export async function POST(req: NextRequest) {
 	try {
 		const { first, last, maiden, town } = await req.json()
 

@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 		const requestOptions = {
 			method: 'GET',
 		}
-		const data = await fetchHtmlWithCache(url, requestOptions, 15)
+		const data = await fetchHtmlWithCache(url, requestOptions, 60)
 
 		const $ = cheerio.load(data)
 

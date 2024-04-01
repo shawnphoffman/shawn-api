@@ -18,6 +18,11 @@ module.exports = withAxiom({
 				destination: '/api/star-wars/check/frequent',
 				permanent: true,
 			},
+			{
+				source: '/api/patreon/:path*',
+				destination: '/api/podcast-data/patreon/:path*',
+				permanent: true,
+			},
 		]
 	},
 })

@@ -1,16 +1,32 @@
-// import { crossPostMessage } from '@/utils/discord'
 import { log } from 'next-axiom'
 
 import { getNews } from '@/pages/api/star-wars/get/official-news'
 import { postBleet } from '@/utils/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 
+// =================
+// NEWS
+// =================
+
+//
+// TYPES
+//
+export type NewsItem = {
+	title: string
+	desc: string
+	link?: string
+	imgSrc: string
+}
+
+//
+// FILTERS
+//
 const blacklistWords = ['quiz', 'trivia', 'recipe']
 
 //
-// NEWS
+// FORMATTERS
 //
-const formatNewsForBsky = newsItem => {
+const formatNewsForBsky = (newsItem: NewsItem) => {
 	return `${newsItem.title}
 
 ${newsItem.desc}
@@ -18,40 +34,44 @@ ${newsItem.desc}
 #StarWars #StarWarsNews`
 }
 
-async function processNews(news) {
-	// await new Promise(resolve => setTimeout(resolve, 5000))
-	if (news.length) {
-		try {
-			for (const item of news) {
-				const redisMember = `sw-news:${item.title}`
+//
+// PROCESSOR
+//
+async function processNews(news: NewsItem[]) {
+	if (!news.length) {
+		return 'No news today'
+	}
 
-				// Filter out items by title
-				if (blacklistWords.some(b => item.title.toLowerCase().includes(b))) {
-					log.info('🗑️ Blacklisted Word', { title: item.title })
-					continue
-				}
+	try {
+		for (const item of news) {
+			const redisMember = `sw-news:${item.title}`
 
-				// BLUESKY
-				const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
-				if (!blueskyExists) {
-					console.log(`Bleeting news: ${item.title}`)
-					log.info(`Bleeting news: ${item.title}`)
-					const bleet = {
-						title: item.title,
-						items: formatNewsForBsky(item),
-						url: item.link,
-						desc: item.desc,
-						contentType: null,
-					}
-					await postBleet(bleet)
-					await redis.sadd(RedisKey.Bluesky, redisMember)
-				} else {
-					log.info('+ Redis.bluesky.exists', { redisMember })
-				}
+			// Filter out items by title
+			if (blacklistWords.some(b => item.title.toLowerCase().includes(b))) {
+				log.info('🗑️ Blacklisted Word', { title: item.title })
+				continue
 			}
-		} catch (error) {
-			log.error('Error bleeting message', error)
+
+			// TODO - Discord
+
+			// Bluesky
+			const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+			if (!blueskyExists) {
+				log.info(`Bleeting news: ${item.title}`)
+				const bleet = {
+					title: item.title,
+					items: formatNewsForBsky(item),
+					url: item.link,
+					desc: item.desc,
+				}
+				await postBleet(bleet)
+				await redis.sadd(RedisKey.Bluesky, redisMember)
+			} else {
+				log.info('+ Redis.bluesky.exists', { redisMember })
+			}
 		}
+	} catch (error) {
+		log.error('Error bleeting message', error)
 	}
 }
 

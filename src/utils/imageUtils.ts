@@ -19,6 +19,7 @@ export const fetchRemoteImageBuffer = async imgUrl => {
 	const fimgb = await fimg.arrayBuffer()
 
 	// SHARP RESIZE
+	// @ts-expect-error TODO
 	const resized = await new sharp(fimgb)
 		.resize(POST_IMG_MAX.width, POST_IMG_MAX.height, {
 			fit: sharp.fit.inside,
@@ -27,6 +28,7 @@ export const fetchRemoteImageBuffer = async imgUrl => {
 		.toBuffer()
 
 	// COMPOSITE BLURRY BOI
+	// @ts-expect-error TODO
 	return await new sharp(fimgb)
 		.resize(POST_IMG_MAX.width, POST_IMG_MAX.height)
 		.modulate({ brightness: 0.5 })
@@ -86,6 +88,11 @@ export const getOgImageUrl = async url => {
 
 			// LOL for now just use the one with the longest src
 			const src = $(element).attr('src')
+
+			if (!src) {
+				return
+			}
+
 			const length = src.length
 
 			// const width = parseInt($(element).attr('width')) || 0
@@ -104,7 +111,9 @@ export const getOgImageUrl = async url => {
 	if (imageUrl) {
 		imageUrl = getCleanUrl(imageUrl)
 
-		if (!imageUrl.startsWith('http')) {
+		if (!imageUrl) return null
+
+		if (!imageUrl?.startsWith('http')) {
 			const baseUrl = new URL(url)
 			imageUrl = new URL(imageUrl, baseUrl).href
 		}

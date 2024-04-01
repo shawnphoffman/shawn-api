@@ -7,6 +7,14 @@ import { log } from 'next-axiom'
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from './imageUtils'
 import { addToStarWarsFeed } from './shawnbot'
 
+type PostBleetProps = {
+	contentType?: string
+	items: string
+	url?: string
+	title: string
+	desc?: string
+}
+
 const username = process.env.BSKY_USERNAME
 const password = process.env.BSKY_PASSWORD
 
@@ -16,7 +24,7 @@ const agent = new BskyAgent({
 
 const websiteTarget = `Click here for more...`
 
-const formatBleet = async (agent, { contentType, items, url, title, desc }) => {
+const formatBleet = async (agent, { contentType, items, url, title, desc }: PostBleetProps) => {
 	const hasContentType = !!contentType
 
 	const stinger = hasContentType ? `New Star Wars ${contentType}` : ''
@@ -48,7 +56,6 @@ ${websiteTarget}`
 							},
 						],
 					},
-					// eslint-disable-next-line no-mixed-spaces-and-tabs
 			  ]
 			: []),
 		...(rt.facets || []),
@@ -64,7 +71,6 @@ ${websiteTarget}`
 				uri: url ? url : '',
 				title: title || stinger,
 				description: desc || stinger || '',
-				// thumb: thumb,
 			},
 		},
 	}
@@ -79,13 +85,14 @@ ${websiteTarget}`
 			const blob = await manualUploadBlob(agent, buffer, mimetype)
 
 			if (blob) {
+				// @ts-expect-error thumb!
 				record.embed.external.thumb = blob
 			}
 		}
 	}
 
 	log.info('================')
-	log.info(record)
+	log.info('record', record)
 	log.info('================')
 
 	return record
@@ -95,11 +102,11 @@ ${websiteTarget}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleet = async ({ contentType, items, url, title, desc }) => {
+export const postBleet = async ({ contentType, items, url, title, desc }: PostBleetProps) => {
 	// Login
 	const loginResponse = await agent.login({
-		identifier: username,
-		password: password,
+		identifier: username!,
+		password: password!,
 	})
 	if (!loginResponse.success) {
 		log.error('BLUESKY LOGIN FAILED')
@@ -114,7 +121,7 @@ export const postBleet = async ({ contentType, items, url, title, desc }) => {
 	const post = await agent.post(record)
 
 	log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
-	log.info(post)
+	log.info('post', post)
 	log.info('================')
 
 	if (post?.cid) {

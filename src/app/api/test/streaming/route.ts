@@ -33,3 +33,4 @@ export async function GET() {
 
 	return new Response(stream)
 }
+// https://akava.io/blog/using-nextjs-app-router-with-vercel-edge-functions

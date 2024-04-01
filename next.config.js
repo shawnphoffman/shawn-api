@@ -8,6 +8,16 @@ module.exports = withAxiom({
 				destination: '/api/podcast-data/:path*',
 				permanent: true,
 			},
+			{
+				source: '/api/star-wars/daily-check',
+				destination: '/api/star-wars/check/daily',
+				permanent: true,
+			},
+			{
+				source: '/api/star-wars/frequent-check',
+				destination: '/api/star-wars/check/frequent',
+				permanent: true,
+			},
 		]
 	},
 })

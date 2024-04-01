@@ -1,6 +1,6 @@
 import { log } from 'next-axiom'
 
-import { getAllComics } from '@/pages/api/star-wars/get/future-comics'
+import { Comic, getAllComics } from '@/getters/star-wars/comics'
 import { postBleet } from '@/utils/bluesky'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
@@ -8,16 +8,6 @@ import redis, { RedisKey } from '@/utils/redis'
 // =================
 // COMICS
 // =================
-
-//
-// TYPES
-//
-export type Comic = {
-	title: string
-	type: string
-	pubDate: Date
-	url: string
-}
 
 //
 // FORMATTERS

@@ -1,6 +1,6 @@
 import { log } from 'next-axiom'
 
-import { getBooks } from '@/pages/api/star-wars/get/future-books'
+import { Book, getAllBooks } from '@/getters/star-wars/books'
 import { postBleet } from '@/utils/bluesky'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
@@ -8,17 +8,6 @@ import redis, { RedisKey } from '@/utils/redis'
 // =================
 // BOOKS
 // =================
-
-//
-// TYPES
-//
-export type Book = {
-	title: string
-	author: string
-	format: string
-	pubDate: Date
-	url?: string
-}
 
 //
 // FILTERS
@@ -54,10 +43,10 @@ const processItems = async ({ debug }): Promise<string> => {
 	today.setHours(0, 0, 0, 0)
 
 	// Get Books
-	const books = await getBooks()
+	const books = await getAllBooks()
 	const outBooks = books.filter(c => {
 		// Filter out blacklisted formats
-		if (c.format && formatBlacklist.some(b => c.format.toLowerCase().includes(b))) {
+		if (c.format && formatBlacklist.some(b => c.format && c.format.toLowerCase().includes(b))) {
 			return false
 		}
 		const pubDate = new Date(c.pubDate)

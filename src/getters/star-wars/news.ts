@@ -2,17 +2,19 @@ import * as cheerio from 'cheerio'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
-/**
- * const list = $('.blocks-list-view li')
- * let title = $(second).find('h3').first().text().trim()
- * let desc = $(second).find('h2').first().text().trim()
- * let link = $(second).find('a').first().prop('href')
- * let imgSrc = $(second).find('img').first().prop('src')
- */
+//
+// TYPES
+//
+export type NewsItem = {
+	title: string
+	desc: string
+	link?: string
+	imgSrc: string
+}
 
 const url = 'https://www.starwars.com/news'
 
-export async function getNews() {
+async function getOfficialNews(): Promise<NewsItem[]> {
 	const requestOptions = {
 		method: 'GET',
 	}
@@ -49,8 +51,8 @@ export async function getNews() {
 	return newsItems
 }
 
-export default async function handler(req, res) {
-	const response = await getNews()
-
-	res.status(200).send(response)
+export const getAllNews = async (): Promise<NewsItem[]> => {
+	const promNews = getOfficialNews()
+	const [news] = await Promise.all([promNews])
+	return news
 }

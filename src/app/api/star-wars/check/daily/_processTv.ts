@@ -1,6 +1,6 @@
 import { log } from 'next-axiom'
 
-import { getTV } from '@/pages/api/star-wars/get/future-tv'
+import { getAllTv, TvShow } from '@/getters/star-wars/tv'
 import { postBleet } from '@/utils/bluesky'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
@@ -8,18 +8,6 @@ import redis, { RedisKey } from '@/utils/redis'
 // =================
 // TV
 // =================
-
-//
-// TYPES
-//
-export type TvShow = {
-	series: string
-	title: string
-	episode: string
-	pubDate: Date
-	pubString: string
-	url: string
-}
 
 //
 // FORMATTERS
@@ -51,7 +39,7 @@ const processItems = async ({ debug }): Promise<string> => {
 	today.setHours(0, 0, 0, 0)
 
 	// Get TV Shows
-	const tv = await getTV()
+	const tv = await getAllTv()
 	const outTv = tv.filter(c => {
 		const pubDate = new Date(c.pubDate)
 		pubDate.setHours(0, 0, 0, 0)

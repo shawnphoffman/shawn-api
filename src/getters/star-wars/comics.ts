@@ -2,19 +2,27 @@ import * as cheerio from 'cheerio'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
-// NOTE This is ridiculously inefficient
+//
+// TYPES
+//
+export type Comic = {
+	title: string
+	type: string
+	pubDate: Date
+	url: string
+}
 
 const url = 'https://starwars.fandom.com/wiki/List_of_future_comics'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_comics'
 
-const getComicsAlt = async () => {
+const getComicsAlt = async (): Promise<Comic[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 4)
 
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 15)
+	const data = await fetchHtmlWithCache(altUrl, requestOptions, 30)
 
 	const $ = cheerio.load(data)
 
@@ -57,7 +65,7 @@ const getComicsAlt = async () => {
 		})
 		.toArray()
 		.filter(i => i !== null)
-		.sort((a, b) => a.pubDate - b.pubDate)
+		.sort((a, b) => Number(a.pubDate) - Number(b.pubDate)) as Comic[]
 
 	console.log('-----------------')
 	console.log(`ALT COMIC COUNT: ${comics.length}`)
@@ -65,11 +73,11 @@ const getComicsAlt = async () => {
 	return comics
 }
 
-const getComics = async () => {
+const getComics = async (): Promise<Comic[]> => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
+	const data = await fetchHtmlWithCache(url, requestOptions, 30)
 
 	const $ = cheerio.load(data)
 
@@ -113,19 +121,17 @@ const getComics = async () => {
 
 	// Return an object with the data extracted from the page.
 	// It will be stored to the resulting dataset.
-	const response = comics.sort((a, b) => a.pubDate - b.pubDate)
+	const response = comics.sort((a, b) => Number(a.pubDate) - Number(b.pubDate)) as Comic[]
 
 	return response
 }
 
-export async function getAllComics() {
-	const response = await getComics()
-	const response2 = await getComicsAlt()
+export const getAllComics = async (): Promise<Comic[]> => {
+	const promComics = getComics()
+	const promComicsAlt = getComicsAlt()
+	const [comics, comicsAlt] = await Promise.all([promComics, promComicsAlt])
 
-	const alt = [...response2, ...response].reduce((memo, el) => {
-		// if (memo[el.title]) {
-
-		// }
+	const merged = [...comics, ...comicsAlt].reduce((memo, el) => {
 		memo[el.title] = {
 			...memo[el.title],
 			...el,
@@ -133,13 +139,6 @@ export async function getAllComics() {
 		return memo
 	}, {})
 
-	const temp = Object.values(alt).sort((a, b) => a.pubDate - b.pubDate)
-
-	return temp
-}
-
-export default async function handler(req, res) {
-	const temp = await getAllComics()
-
-	res.status(200).send(temp)
+	const sorted = Object.values(merged).sort((a: Comic, b: Comic) => Number(a.pubDate) - Number(b.pubDate)) as Comic[]
+	return sorted
 }

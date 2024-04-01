@@ -2,10 +2,21 @@ import * as cheerio from 'cheerio'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
+//
+// TYPES
+//
+export type Book = {
+	title: string
+	author: string
+	format?: string
+	pubDate: Date
+	url?: string
+}
+
 const url = 'https://starwars.fandom.com/wiki/List_of_future_books'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_books'
 
-const getBooksAlt = async () => {
+export const getBooksAlt = async (): Promise<Book[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 2)
 
@@ -42,7 +53,7 @@ const getBooksAlt = async () => {
 				return null
 			}
 
-			// Grab the comic data
+			// Grab the book data
 			const comic = {
 				title: title,
 				type: valueMap[1],
@@ -55,7 +66,7 @@ const getBooksAlt = async () => {
 		})
 		.toArray()
 		.filter(i => i !== null)
-		.sort((a, b) => a.pubDate - b.pubDate)
+		.sort((a, b) => Number(a.pubDate) - Number(b.pubDate))
 
 	console.log('-----------------')
 	console.log(`ALT BOOK COUNT: ${books.length}`)
@@ -63,7 +74,7 @@ const getBooksAlt = async () => {
 	return books
 }
 
-export async function getBooks() {
+export const getBooks = async (): Promise<Book[]> => {
 	const requestOptions = {
 		method: 'GET',
 	}
@@ -75,6 +86,8 @@ export async function getBooks() {
 
 	// Print some information to actor log
 	console.log(`TITLE: ${pageTitle}`)
+
+	let prevDate: Date
 
 	// Retrieve the books
 	const books = $('table:last tr')
@@ -92,12 +105,18 @@ export async function getBooks() {
 			// Grab a link to the book
 			const link = $(this).find('a:first').prop('href')
 
+			// Grab the date
+			const rawDate = valueMap[3]
+			if (rawDate) {
+				prevDate = new Date(rawDate)
+			}
+
 			// Grab the book data
 			const book = {
 				title: valueMap[0],
 				author: valueMap[1],
 				format: valueMap[2],
-				pubDate: new Date(valueMap[3]),
+				pubDate: prevDate,
 				url: link,
 			}
 
@@ -113,17 +132,15 @@ export async function getBooks() {
 
 	// Return an object with the data extracted from the page.
 	// It will be stored to the resulting dataset.
-	return books.sort((a, b) => a.pubDate - b.pubDate)
+	return books.sort((a, b) => Number(a.pubDate) - Number(b.pubDate))
 }
 
-export default async function handler(req, res) {
-	const response = await getBooks()
-	const response2 = await getBooksAlt()
+export const getAllBooks = async (): Promise<Book[]> => {
+	const promBooks = getBooks()
+	const promBooksAlt = getBooksAlt()
+	const [books, booksAlt] = await Promise.all([promBooks, promBooksAlt])
 
-	const alt = [...response2, ...response].reduce((memo, el) => {
-		// if (memo[el.title]) {
-
-		// }
+	const merged = [...books, ...booksAlt].reduce((memo, el) => {
 		memo[el.title] = {
 			...memo[el.title],
 			...el,
@@ -131,7 +148,6 @@ export default async function handler(req, res) {
 		return memo
 	}, {})
 
-	const temp = Object.values(alt).sort((a, b) => a.pubDate - b.pubDate)
-
-	res.status(200).send(temp)
+	const sorted = Object.values(merged).sort((a: Book, b: Book) => Number(a.pubDate) - Number(b.pubDate)) as Book[]
+	return sorted
 }

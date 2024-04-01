@@ -1,6 +1,5 @@
 const { withAxiom } = require('next-axiom')
 module.exports = withAxiom({
-	// ... your existing config
 	async redirects() {
 		return [
 			{
@@ -22,6 +21,25 @@ module.exports = withAxiom({
 				source: '/api/patreon/:path*',
 				destination: '/api/podcast-data/patreon/:path*',
 				permanent: true,
+			},
+		]
+	},
+	async headers() {
+		return [
+			// {
+			// 		// matching all API routes
+			// 		source: "/api/:path*",
+			// 		headers: [
+			// 			 // omitted for brevity...
+			// 		]
+			// },
+			{
+				source: '/api/star-wars/name-generator',
+				headers: [
+					{ key: 'Access-Control-Allow-Origin', value: 'https://shawn.party' },
+					{ key: 'Access-Control-Allow-Methods', value: 'POST' },
+					{ key: 'Access-Control-Allow-Headers', value: '*' },
+				],
 			},
 		]
 	},

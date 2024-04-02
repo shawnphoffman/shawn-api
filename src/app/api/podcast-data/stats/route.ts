@@ -32,10 +32,10 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const requestOptions = {
+		const options = {
 			method: 'GET',
 		}
-		const data = await fetchHtmlWithCache(url, requestOptions, 15)
+		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)
 
 		const episodes = podcast.episodes

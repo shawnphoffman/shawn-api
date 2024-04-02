@@ -23,10 +23,10 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 2)
 
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 60)
+	const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 60 })
 
 	const $ = cheerio.load(data)
 
@@ -78,10 +78,10 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 }
 
 export const getBooks = async (): Promise<Book[]> => {
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 60)
+	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 60 })
 
 	const $ = cheerio.load(data)
 

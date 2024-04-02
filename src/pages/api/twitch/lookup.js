@@ -15,7 +15,7 @@ async function GetTwitchUser(username, token) {
 		redirect: 'follow',
 	}
 
-	const json = await fetchWithCache(`https://api.twitch.tv/helix/users?login=${username}`, requestOptions)
+	const json = await fetchWithCache({ url: `https://api.twitch.tv/helix/users?login=${username}`, options: requestOptions })
 
 	return json
 }

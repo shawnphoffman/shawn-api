@@ -15,7 +15,7 @@ async function GetTwitchFollowers(id, token) {
 		redirect: 'follow',
 	}
 
-	const json = await fetchWithCache(`https://api.twitch.tv/helix/users/follows?to_id=${id}&first=100`, requestOptions)
+	const json = await fetchWithCache({ url: `https://api.twitch.tv/helix/users/follows?to_id=${id}&first=100`, options: requestOptions })
 
 	return json
 }

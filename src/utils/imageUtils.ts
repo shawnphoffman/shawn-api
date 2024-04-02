@@ -63,10 +63,10 @@ export const getContentType = filename => {
 }
 
 export const getOgImageUrl = async url => {
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
+	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 
 	const $ = cheerio.load(data)
 

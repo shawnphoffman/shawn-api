@@ -16,10 +16,10 @@ async function GetTwitchAccessToken() {
 		method: 'POST',
 		headers: myHeaders,
 		body: urlencoded,
-		redirect: 'follow',
+		// redirect: 'follow',
 	}
 
-	const json = await fetchWithCache('https://id.twitch.tv/oauth2/token', requestOptions)
+	const json = await fetchWithCache({ url: 'https://id.twitch.tv/oauth2/token', options: requestOptions })
 
 	const token = json.access_token
 

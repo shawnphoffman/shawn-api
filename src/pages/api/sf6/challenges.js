@@ -7,7 +7,7 @@ const dataUrl = 'https://www.streetfighter.com/6/buckler/reward/challenge'
 
 export const getChallenges = async () => {
 	// CHEERIO BOILERPLATE
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 		headers: {
 			Referer: 'https://www.streetfighter.com/6/buckler/point/history',
@@ -27,7 +27,7 @@ export const getChallenges = async () => {
 	}
 	let data
 	try {
-		data = await fetchHtmlWithCache(dataUrl, requestOptions, 60)
+		data = await fetchHtmlWithCache({ url: dataUrl, options, cacheMinutes: 60 })
 	} catch (error) {
 		console.log(error)
 		return null

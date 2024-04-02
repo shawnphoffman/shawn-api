@@ -1,6 +1,14 @@
 import cacheData from 'memory-cache'
 
-async function fetchWithCache(url: string | URL | Request, options: RequestInit | undefined, cacheMinutes = 10) {
+// TODO redis?
+
+type FetchProps = {
+	url: string | URL | Request
+	options?: RequestInit
+	cacheMinutes?: number
+}
+
+async function fetchWithCache({ url, options, cacheMinutes = 10 }: FetchProps) {
 	const value = cacheData.get(url)
 
 	if (value) {
@@ -17,7 +25,7 @@ async function fetchWithCache(url: string | URL | Request, options: RequestInit 
 	}
 }
 
-export async function fetchHtmlWithCache(url: string | URL | Request, options: RequestInit | undefined, cacheMinutes = 10) {
+export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10 }: FetchProps) {
 	const value = cacheData.get(url)
 
 	if (value) {

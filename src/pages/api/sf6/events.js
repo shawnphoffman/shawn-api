@@ -7,7 +7,7 @@ const dataUrl = 'https://www.streetfighter.com/6/buckler/event/schedule'
 
 export const getEvents = async () => {
 	// CHEERIO BOILERPLATE
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 		headers: {
 			Referer: 'https://www.streetfighter.com/6/buckler/point/history',
@@ -16,7 +16,7 @@ export const getEvents = async () => {
 	}
 	let data
 	try {
-		data = await fetchHtmlWithCache(dataUrl, requestOptions, 60)
+		data = await fetchHtmlWithCache({ url: dataUrl, options, cacheMinutes: 60 })
 	} catch (error) {
 		console.log(error)
 		return null

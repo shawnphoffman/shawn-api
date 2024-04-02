@@ -21,10 +21,10 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 4)
 
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 30)
+	const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 30 })
 
 	const $ = cheerio.load(data)
 
@@ -76,10 +76,10 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 }
 
 const getComics = async (): Promise<Comic[]> => {
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 30)
+	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 30 })
 
 	const $ = cheerio.load(data)
 

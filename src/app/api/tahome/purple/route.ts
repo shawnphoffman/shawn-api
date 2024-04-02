@@ -78,7 +78,7 @@ export const GET = withAxiom(async () => {
 			headers: myHeaders,
 		}
 
-		const data = await fetchWithCache(sensorUrl, requestOptions)
+		const data = await fetchWithCache({ url: sensorUrl, options: requestOptions })
 
 		var pm25value = data.sensor['pm2.5']
 		var AQI = aqiFromPM(pm25value)

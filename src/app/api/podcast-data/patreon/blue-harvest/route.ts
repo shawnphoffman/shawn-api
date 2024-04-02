@@ -6,10 +6,10 @@ const newUrl = process.env.RSS_BLUE_HARVEST_PATREON
 
 export async function GET() {
 	try {
-		const requestOptions = {
+		const options = {
 			method: 'GET',
 		}
-		const data = await fetchHtmlWithCache(newUrl!, requestOptions, 15)
+		const data = await fetchHtmlWithCache({ url: newUrl!, options, cacheMinutes: 15 })
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)
 
 		if (!podcast?.episodes) {

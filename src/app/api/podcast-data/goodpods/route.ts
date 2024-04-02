@@ -22,10 +22,10 @@ const url = 'https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podca
 export async function GET(_request: Request) {
 	// return NextResponse.json({ hello: 'world' })
 	try {
-		const requestOptions = {
+		const options = {
 			method: 'GET',
 		}
-		const data = await fetchHtmlWithCache(url, requestOptions, 15)
+		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 
 		console.log('Data:', data)
 

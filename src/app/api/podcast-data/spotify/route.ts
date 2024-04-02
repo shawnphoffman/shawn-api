@@ -27,10 +27,10 @@ export async function GET(request: Request) {
 	}
 
 	try {
-		const requestOptions = {
+		const options = {
 			method: 'GET',
 		}
-		const data = await fetchHtmlWithCache(url, requestOptions, 60)
+		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 60 })
 
 		const $ = cheerio.load(data)
 

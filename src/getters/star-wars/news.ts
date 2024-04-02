@@ -15,10 +15,10 @@ export type NewsItem = {
 const url = 'https://www.starwars.com/news'
 
 async function getOfficialNews(): Promise<NewsItem[]> {
-	const requestOptions = {
+	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
+	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 
 	const $ = cheerio.load(data)
 

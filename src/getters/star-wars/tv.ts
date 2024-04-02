@@ -17,14 +17,14 @@ export type TvShow = {
 const rootUrl = 'https://thetvdb.com'
 const listUrl = `${rootUrl}/lists/13864`
 
-const requestOptions = {
+const options = {
 	method: 'GET',
 }
 
 const fetchChild = async (childUrl: string): Promise<TvShow[]> => {
 	const url = `https://thetvdb.com${childUrl}/allseasons/official`
 
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
+	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 	const $ = cheerio.load(data)
 
 	const seriesTitle = $('.crumbs a:nth-child(3)').text().trim()
@@ -80,7 +80,7 @@ const fetchChild = async (childUrl: string): Promise<TvShow[]> => {
 export async function getTv(): Promise<TvShow[]> {
 	// Response is an array of future TV episodes
 	let response: TvShow[] = []
-	const data = await fetchHtmlWithCache(listUrl, requestOptions, 15)
+	const data = await fetchHtmlWithCache({ url: listUrl, options, cacheMinutes: 15 })
 
 	const $ = cheerio.load(data)
 

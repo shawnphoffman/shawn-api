@@ -1,3 +1,5 @@
+import { withAxiom } from 'next-axiom'
+
 import fetchWithCache from '@/utils/fetchWithCache'
 
 const apiKey = process.env.PURPLE_API_KEY
@@ -66,7 +68,7 @@ function aqiFromPM(pm: number): number | '-' | undefined {
  * Retrieves the data from the PurpleAir API and calculates the AQI.
  * @returns The response containing the AQI and raw data.
  */
-export async function GET(): Promise<Response> {
+export const GET = withAxiom(async () => {
 	try {
 		const myHeaders = new Headers()
 		myHeaders.append('X-API-KEY', apiKey!)
@@ -91,6 +93,6 @@ export async function GET(): Promise<Response> {
 		console.log('Error:', error)
 		return Response.json({ error }, { status: 500 })
 	}
-}
+})
 
 export const dynamic = 'force-dynamic'

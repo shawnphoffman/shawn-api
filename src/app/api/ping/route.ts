@@ -1,5 +1,7 @@
-export const dynamic = 'force-dynamic'
+import { AxiomRequest, withAxiom } from 'next-axiom'
 
-export async function GET(_request: Request) {
+export const GET = withAxiom(async (_req: AxiomRequest) => {
 	return new Response('pong', { status: 200 })
-}
+})
+
+export const dynamic = 'force-dynamic'

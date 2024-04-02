@@ -1,10 +1,10 @@
-import { NextRequest } from 'next/server'
+import { AxiomRequest, withAxiom } from 'next-axiom'
 
 import { getOgImageUrl } from '@/utils/imageUtils'
 
 // http://localhost:3000/api/open-graph/image?scrape=https://starwars.fandom.com/wiki/Thrawn:_Alliances_2
 
-export async function GET(req: NextRequest) {
+export const GET = withAxiom(async (req: AxiomRequest) => {
 	const { searchParams } = new URL(req.url)
 	const scrape = searchParams.get('scrape')
 
@@ -21,4 +21,4 @@ export async function GET(req: NextRequest) {
 	} catch (error) {
 		return Response.json({ error }, { status: 500 })
 	}
-}
+})

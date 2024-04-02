@@ -1,13 +1,13 @@
 import cacheData from 'memory-cache'
 
-async function fetchWithCache(url, options, cacheMinutes = 10) {
+async function fetchWithCache(url: string | URL | Request, options: RequestInit | undefined, cacheMinutes = 10) {
 	const value = cacheData.get(url)
-	// console.log('-----------------')
+
 	if (value) {
-		console.log('CACHED', url)
+		console.log('🔷 CACHED', url)
 		return value
 	} else {
-		console.log('NOT CACHED', url)
+		console.log('🔶 NOT CACHED', url)
 		const res = await fetch(url, options)
 		const data = await res.json()
 		// console.log("FETCHED DATA", data);
@@ -17,14 +17,14 @@ async function fetchWithCache(url, options, cacheMinutes = 10) {
 	}
 }
 
-export async function fetchHtmlWithCache(url, options, cacheMinutes = 10) {
+export async function fetchHtmlWithCache(url: string | URL | Request, options: RequestInit | undefined, cacheMinutes = 10) {
 	const value = cacheData.get(url)
-	// console.log('-----------------')
+
 	if (value) {
-		console.log('CACHED', url)
+		console.log('🔷 CACHED', url)
 		return value
 	} else {
-		console.log('NOT CACHED', url)
+		console.log('🔶 NOT CACHED', url)
 		const res = await fetch(url, options)
 		const data = await res.text()
 		// console.log("FETCHED HTML", data);

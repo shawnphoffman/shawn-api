@@ -201,11 +201,11 @@ export const podcastFeeds: PodFeedConfig[] = [
 // 			if (feed.channel) {
 // 				const exists = await redis.sismember(RedisKey.Discord, redisMember)
 // 				if (!exists) {
-// 					console.log('+ Redis.discord.not.exists', redisMember)
+// 					console.log('⭕ Redis.discord.not.exists', redisMember)
 // 					await sendWebhook(name, item, image, feed.channel, feed.homepage)
 // 					redis.sadd(RedisKey.Discord, redisMember)
 // 				} else {
-// 					console.log('+ Redis.discord.exists', redisMember)
+// 					console.log('🆗 Redis.discord.exists', redisMember)
 // 				}
 // 			}
 
@@ -213,11 +213,11 @@ export const podcastFeeds: PodFeedConfig[] = [
 // 			if (feed.bluesky) {
 // 				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
 // 				if (!exists) {
-// 					console.log('+ Redis.bluesky.not.exists', redisMember)
+// 					console.log('⭕ Redis.bluesky.not.exists', redisMember)
 // 					postBleet({ name, item, homepage: feed.homepage, handle: feed.bskyHandle, hashtags: feed.hashtags })
 // 					redis.sadd(RedisKey.Bluesky, redisMember)
 // 				} else {
-// 					console.log('+ Redis.bluesky.exists', redisMember)
+// 					console.log('🆗 Redis.bluesky.exists', redisMember)
 // 				}
 // 			}
 
@@ -225,11 +225,11 @@ export const podcastFeeds: PodFeedConfig[] = [
 // 			if (feed.ping !== false) {
 // 				const exists = await redis.sismember(RedisKey.Overcast, redisMember)
 // 				if (!exists) {
-// 					console.log('+ Redis.overcast.not.exists', redisMember)
+// 					console.log('⭕ Redis.overcast.not.exists', redisMember)
 // 					pingOvercast(feed.url)
 // 					redis.sadd(RedisKey.Overcast, redisMember)
 // 				} else {
-// 					console.log('+ Redis.overcast.exists', redisMember)
+// 					console.log('🆗 Redis.overcast.exists', redisMember)
 // 				}
 // 			}
 

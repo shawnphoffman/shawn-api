@@ -26,7 +26,7 @@
 // 			const redisMember = `comic-check:${item.guid}`
 // 			const exists = await redis.sismember(RedisKey.ShawnApi, redisMember)
 // 			if (!exists) {
-// 				console.log('+ Redis.shawnapi.not.exists', redisMember)
+// 				console.log('⭕ Redis.shawnapi.not.exists', redisMember)
 // 				const url = `https://api.shawn.party/api/star-wars/recent-digital-comics`
 // 				const options = {
 // 					method: 'POST',
@@ -37,7 +37,7 @@
 // 				await fetch(url, options)
 // 				redis.sadd(RedisKey.ShawnApi, redisMember)
 // 			} else {
-// 				console.log('+ Redis.shawnapi.exists', redisMember)
+// 				console.log('🆗 Redis.shawnapi.exists', redisMember)
 // 			}
 // 		},
 // 	},
@@ -75,11 +75,11 @@
 // 	// 		// Post to BlueSky
 // 	// 		const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
 // 	// 		if (!exists) {
-// 	// 			console.log('+ Redis.Bluesky.not.exists', redisMember)
+// 	// 			console.log('⭕ Redis.Bluesky.not.exists', redisMember)
 // 	// 			postBleet({ name, item, homepage: item.link, hashtags: ['#StarWars'], imageOverride: imageUrl })
 // 	// 			redis.sadd(RedisKey.Bluesky, redisMember)
 // 	// 		} else {
-// 	// 			console.log('+ Redis.Bluesky.exists', redisMember)
+// 	// 			console.log('🆗 Redis.Bluesky.exists', redisMember)
 // 	// 		}
 // 	// 	},
 // 	// },

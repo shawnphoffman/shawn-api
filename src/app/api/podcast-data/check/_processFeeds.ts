@@ -59,11 +59,11 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.channel) {
 				const exists = await redis.sismember(RedisKey.TestDiscord, redisMember)
 				if (!exists) {
-					console.log('+ Redis.discord.not.exists', redisMember)
+					console.log('⭕ Redis.discord.not.exists', redisMember)
 					// await sendWebhook(config.name, episode, image, config.channel, config.homepage)
 					redis.sadd(RedisKey.TestDiscord, redisMember)
 				} else {
-					console.log('+ Redis.discord.exists', redisMember)
+					console.log('🔘 Redis.discord.exists', redisMember)
 				}
 			}
 
@@ -71,11 +71,11 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.bluesky) {
 				const exists = await redis.sismember(RedisKey.TestBluesky, redisMember)
 				if (!exists) {
-					console.log('+ Redis.bluesky.not.exists', redisMember)
+					console.log('⭕ Redis.bluesky.not.exists', redisMember)
 					// postBleet({ name: config.name, item: episode, homepage: config.homepage, handle: config.bskyHandle, hashtags: config.hashtags })
 					redis.sadd(RedisKey.TestBluesky, redisMember)
 				} else {
-					console.log('+ Redis.bluesky.exists', redisMember)
+					console.log('🔘 Redis.bluesky.exists', redisMember)
 				}
 			}
 
@@ -83,11 +83,11 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.ping !== false) {
 				const exists = await redis.sismember(RedisKey.TestOvercast, redisMember)
 				if (!exists) {
-					console.log('+ Redis.overcast.not.exists', redisMember)
+					console.log('⭕ Redis.overcast.not.exists', redisMember)
 					// pingOvercast(feed.url)
 					redis.sadd(RedisKey.TestOvercast, redisMember)
 				} else {
-					console.log('+ Redis.overcast.exists', redisMember)
+					console.log('🔘 Redis.overcast.exists', redisMember)
 				}
 			}
 

@@ -2,11 +2,11 @@
 	"crons": [
 		{
 			"path": "/api/star-wars/check/daily",
-			"schedule": "30 * * * *"
+			"schedule": "0 7 * * *"
 		},
 		{
 			"path": "/api/star-wars/check/frequent",
-			"schedule": "*/20 * * * *"
+			"schedule": "0 8 * * *"
 		}
 	]
 }

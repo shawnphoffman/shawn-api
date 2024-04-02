@@ -7,3 +7,5 @@
 <!-- #13C3FF -->
 <!-- #FBAA19 -->
 <!-- #434B57 -->
+
+<!-- NOTE: vercel.json hobby plans can only run daily cron jobs -->

@@ -44,11 +44,11 @@ const processItems = async ({ debug }): Promise<string> => {
 	const outTv = tv.filter(c => {
 		const pubDate = cleanDate(c.pubDate)
 
-		console.log('📺', {
-			type: 'tv',
-			title: c.title,
-			pubDate,
-		})
+		// console.log('📺', {
+		// 	type: 'tv',
+		// 	title: c.title,
+		// 	pubDate,
+		// })
 
 		const test = isSameDate(testDate, pubDate)
 		return test

@@ -69,7 +69,7 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 		.filter(i => i !== null)
 		.sort((a, b) => Number(a.pubDate) - Number(b.pubDate)) as Comic[]
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log(`ALT COMIC COUNT: ${comics.length}`)
 
 	return comics
@@ -117,7 +117,7 @@ const getComics = async (): Promise<Comic[]> => {
 		})
 		.toArray()
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log(`COMIC COUNT: ${comics.length}`)
 
 	// Return an object with the data extracted from the page.

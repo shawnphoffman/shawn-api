@@ -1,0 +1,31 @@
+import { DiscordWebhookConfig } from '@/third-party/discord/webhookChannels'
+
+// import FeedItem from '../rss-feed-emitter/FeedItem'
+
+export type FeedConfig = {
+	name: string
+	url: string
+	event: string
+	// refresh: number
+	channel?: DiscordWebhookConfig
+	bluesky: boolean
+	bskyHandle?: string[]
+	homepage?: string
+	hashtags?: string[]
+}
+
+export interface PodFeedConfig extends FeedConfig {
+	refreshUrls?: string[]
+	ping?: boolean
+}
+export interface MiscFeedConfig extends FeedConfig {
+	// callback?: (item: FeedItem) => Promise<void>
+}
+export interface YouTubeFeedConfig extends FeedConfig {}
+
+type YouTubeSourceType = {
+	[key: string]: {
+		channelId: string
+		rssFeed?: string
+	}
+}

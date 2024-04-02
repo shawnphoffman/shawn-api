@@ -33,7 +33,7 @@ export const sendWebhook = async (url, content, crossPost) => {
 
 	const response = await fetch(url, requestOptions)
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)

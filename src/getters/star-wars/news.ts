@@ -45,7 +45,7 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 		})
 		.toArray()
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log(`NEWS COUNT: ${newsItems.length}`)
 
 	return newsItems

@@ -1,24 +1,47 @@
 import { NextRequest } from 'next/server'
 
-import processItems from './_processItems'
+import processFeeds from './_processFeeds'
+
+import { podcastFeeds } from '@/config/feeds/podcasts'
 
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
+	// performance.mark('shawn:pod:start')
+
 	// START
 	yield encoder.encode(`========================================\n\n🚀 Starting...\n\n`)
 
-	// RECENT ITEMS
-	const feedUrl = ['https://feed.podbean.com/blueharvestpodcast/feed.xml', 'https://feeds.zencastr.com/f/l5bmy6wm.rss']
+	// PROCESS PODCASTS
+	for (const podcast of podcastFeeds) {
+		// performance.mark(`shawn:pod:${podcast?.name}:start`)
 
-	for (const feed of feedUrl) {
-		yield encoder.encode(`🎙️ Checking feed: ${feed}\n`)
-		const recentItems = await processItems({ debug, feedUrl: feed })
-		yield encoder.encode(`✅ Episodes:\n${recentItems}\n\n`)
+		yield encoder.encode(`🎙️ Processing: ${podcast?.name}\n`)
+
+		const recentItems = await processFeeds({ debug, config: podcast })
+		yield encoder.encode(`  ✅ Episodes:\n${recentItems}\n\n`)
+
+		// performance.mark(`shawn:pod:${podcast?.name}:end`)
+		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
 	}
+
+	// performance.mark('shawn:pod:end')
 
 	// FINISH
 	yield encoder.encode(`🏁 Finished!\n\n========================================`)
+
+	// performance.measure('shawn:pod', 'shawn:pod:start', 'shawn:pod:end')
+
+	// yield encoder.encode(`\n\n📊 Performance\n`)
+	// for (const entry of performance.getEntries()) {
+	// 	if (entry.name.startsWith('shawn:')) {
+	// 		if (entry.entryType === 'measure') {
+	// 			yield encoder.encode(`  - 📏 ${entry.name.replace('shawn:pod:', '').padEnd(30, '.')}: ${entry.duration}ms\n`)
+	// 		}
+	// 		performance.clearMarks(entry.name)
+	// 		performance.clearMeasures(entry.name)
+	// 	}
+	// }
 }
 
 export async function GET(req: NextRequest) {

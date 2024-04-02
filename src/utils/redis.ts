@@ -3,6 +3,15 @@ import { Redis } from '@upstash/redis'
 export const RedisKey = {
 	Discord: 'api:discord',
 	Bluesky: 'api:bsky',
+	//
+	RssDiscord: 'rss:discord',
+	RssBluesky: 'rss:bsky',
+	RssOvercast: 'rss:overcast',
+	RssShawnApi: 'rss:shawn-api',
+	//
+	TestDiscord: 'test:discord',
+	TestBluesky: 'test:bluesky',
+	TestOvercast: 'test:overcast',
 }
 
 const redis = new Redis({

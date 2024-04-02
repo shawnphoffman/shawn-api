@@ -71,7 +71,7 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 		.filter(i => i !== null)
 		.sort((a, b) => Number(a.pubDate) - Number(b.pubDate))
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log(`ALT BOOK COUNT: ${books.length}`)
 
 	return books
@@ -128,7 +128,7 @@ export const getBooks = async (): Promise<Book[]> => {
 		})
 		.toArray()
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log(`BOOK COUNT: ${books.length}`)
 	// console.log(comics)
 

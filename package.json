@@ -13,11 +13,13 @@
 	},
 	"dependencies": {
 		"@atproto/api": "^0.12.2",
+		"@googleapis/youtube": "^14.0.0",
 		"@podverse/podcast-feed-parser": "^1.1.1",
 		"@upstash/redis": "^1.29.0",
 		"@vercel/analytics": "^1.2.2",
 		"cheerio": "^1.0.0-rc.12",
 		"cors": "^2.8.5",
+		"discord.js": "^14.14.1",
 		"dotenv": "^16.4.5",
 		"eslint": "8.57.0",
 		"eslint-config-next": "^14.1.4",

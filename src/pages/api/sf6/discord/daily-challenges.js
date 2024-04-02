@@ -59,7 +59,7 @@ async function sendWebhook(url, content) {
 
 	const response = await fetch(url, requestOptions)
 
-	console.log('-----------------')
+	// console.log('-----------------')
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)

@@ -5,7 +5,7 @@ import { BskyAgent, RichText } from '@atproto/api'
 import { log } from 'next-axiom'
 
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from '../../utils/imageUtils'
-import { addToStarWarsFeed } from '../shawnbot'
+import { addToStarWarsFeed } from './shawnbot'
 
 type PostBleetProps = {
 	contentType?: string

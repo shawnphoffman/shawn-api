@@ -2,6 +2,7 @@ import { log } from 'next-axiom'
 
 import { getAllTv, TvShow } from '@/getters/star-wars/tv'
 import { postBleet } from '@/utils/bluesky'
+import { cleanDate, displayDate, getToday, isSameDate } from '@/utils/dates'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -14,7 +15,7 @@ import redis, { RedisKey } from '@/utils/redis'
 //
 const createMessageForDiscord = (tv: TvShow) => {
 	const cleanDate = new Date(tv.pubDate)
-	cleanDate.setDate(cleanDate.getDate() + 1)
+	// cleanDate.setDate(cleanDate.getDate() + 1)
 	return `
 **${tv.series} (${tv.episode})**
 - *Title:* ${tv.title}
@@ -24,10 +25,11 @@ const createMessageForDiscord = (tv: TvShow) => {
 const createMessageForBsky = (tv: TvShow) => {
 	return `  ${tv.series} (${tv.episode})
   Title: ${tv.title}
+Release Date: ${displayDate(tv.pubDate)}
 #StarWars #TV #NewRelease`
 }
 const createOutput = (tv: TvShow[]) => {
-	return tv.map(c => `	- ${c.series} - ${c.title} - ${c.episode} - ${c.pubDate.toDateString()}`).join('\n')
+	return tv.map(c => `  📺 ${c.series} - ${c.title} - ${c.episode} - ${displayDate(c.pubDate)}`).join('\n')
 }
 
 //
@@ -35,25 +37,25 @@ const createOutput = (tv: TvShow[]) => {
 //
 const processItems = async ({ debug }): Promise<string> => {
 	// Basics
-	const today = new Date()
-	today.setHours(0, 0, 0, 0)
+	const testDate = getToday()
 
 	// Get TV Shows
 	const tv = await getAllTv()
 	const outTv = tv.filter(c => {
-		const pubDate = new Date(c.pubDate)
-		pubDate.setHours(0, 0, 0, 0)
-		// log.info({
-		// 	type: 'tv',
-		// 	title: c.title,
-		// 	pubDate,
-		// })
-		const test = today.getTime() === pubDate.getTime()
+		const pubDate = cleanDate(c.pubDate)
+
+		console.log('📺', {
+			type: 'tv',
+			title: c.title,
+			pubDate,
+		})
+
+		const test = isSameDate(testDate, pubDate)
 		return test
 	})
 
 	if (!outTv.length) {
-		return '  - No TV shows today'
+		return `  - No TV shows for "${displayDate(testDate)}"`
 	}
 
 	try {
@@ -70,7 +72,7 @@ const processItems = async ({ debug }): Promise<string> => {
 				await sendWebhook(
 					process.env.DISCORD_WEBHOOK_TV,
 					{
-						username: `TV Shows Premiering (${today.toDateString()})`,
+						username: `TV Shows Premiering (${displayDate(testDate)})`,
 						content: createMessageForDiscord(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 					},

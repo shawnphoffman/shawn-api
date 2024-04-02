@@ -2,6 +2,7 @@ import { log } from 'next-axiom'
 
 import { Book, getAllBooks } from '@/getters/star-wars/books'
 import { postBleet } from '@/utils/bluesky'
+import { cleanDate, displayDate, getTomorrow, isSameDate } from '@/utils/dates'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -24,14 +25,15 @@ const createMessageForDiscord = (book: Book) => {
 	return `
 **${book.title} ${getAuthor(book.author)}**
 - ${book.format}
-[More Info Here](https://starwars.fandom.com${book.url})`
+[More Info Here](${book.url})`
 }
 const createMessageForBsky = (book: Book) => {
 	return `  ${book.title} ${getAuthor(book.author)}
+Release Date: ${displayDate(book.pubDate)}
 #StarWars #Books #NewRelease`
 }
 const createOutput = (books: Book[]) => {
-	return books.map(c => `	- ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${c.pubDate.toDateString()}`).join('\n')
+	return books.map(c => `  📙 ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${displayDate(c.pubDate)}`).join('\n')
 }
 
 //
@@ -39,8 +41,7 @@ const createOutput = (books: Book[]) => {
 //
 const processItems = async ({ debug }): Promise<string> => {
 	// Basics
-	const today = new Date()
-	today.setHours(0, 0, 0, 0)
+	const tomorrow = getTomorrow()
 
 	// Get Books
 	const books = await getAllBooks()
@@ -49,20 +50,22 @@ const processItems = async ({ debug }): Promise<string> => {
 		if (c.format && formatBlacklist.some(b => c.format && c.format.toLowerCase().includes(b))) {
 			return false
 		}
-		const pubDate = new Date(c.pubDate)
-		pubDate.setHours(0, 0, 0, 0)
-		// log.info({
+		const pubDate = cleanDate(c.pubDate)
+
+		// console.log('📗', {
 		// 	type: 'book',
 		// 	title: c.title,
 		// 	pubDate,
+		// 	tomorrow,
+		// 	test: isSameDate(tomorrow, pubDate),
 		// })
 
-		const test = today.getTime() === pubDate.getTime()
+		const test = isSameDate(tomorrow, pubDate)
 		return test
 	})
 
 	if (!outBooks.length) {
-		return '  - No books today'
+		return `  - No books for "${displayDate(tomorrow)}"`
 	}
 
 	try {
@@ -79,7 +82,7 @@ const processItems = async ({ debug }): Promise<string> => {
 				await sendWebhook(
 					process.env.DISCORD_WEBHOOK_BOOKS,
 					{
-						username: `Books Releasing (${today.toDateString()})`,
+						username: `Books Releasing (${displayDate(tomorrow)})`,
 						content: createMessageForDiscord(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
 					},
@@ -99,7 +102,7 @@ const processItems = async ({ debug }): Promise<string> => {
 					contentType: 'Book',
 					title: c.title,
 					items: createMessageForBsky(c),
-					url: `https://starwars.fandom.com${c.url}`,
+					url: c.url,
 				})
 
 				await redis.sadd(RedisKey.Bluesky, redisMember)

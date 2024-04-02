@@ -12,6 +12,8 @@ export type Comic = {
 	url: string
 }
 
+// TODO - Standardize "type" field
+
 const url = 'https://starwars.fandom.com/wiki/List_of_future_comics'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_comics'
 
@@ -57,7 +59,7 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 				title: title,
 				type: valueMap[1],
 				pubDate: date,
-				url: link,
+				url: `https://starwars.fandom.com${link}`,
 				author: valueMap[3],
 			}
 
@@ -81,10 +83,9 @@ const getComics = async (): Promise<Comic[]> => {
 
 	const $ = cheerio.load(data)
 
-	const pageTitle = $('title').text().trim()
-
+	// const pageTitle = $('title').text().trim()
 	// Print some information to actor log
-	console.log(`TITLE: ${pageTitle}`)
+	// console.log(`TITLE: ${pageTitle}`)
 
 	// Retrieve the comics
 	const comics = $('table:last tr')
@@ -107,7 +108,7 @@ const getComics = async (): Promise<Comic[]> => {
 				title: valueMap[0],
 				type: valueMap[1],
 				pubDate: new Date(valueMap[2]),
-				url: link,
+				url: `https://starwars.fandom.com${link}`,
 			}
 
 			//console.log(comic)

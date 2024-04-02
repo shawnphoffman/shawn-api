@@ -2,6 +2,7 @@ import { log } from 'next-axiom'
 
 import { Comic, getAllComics } from '@/getters/star-wars/comics'
 import { postBleet } from '@/utils/bluesky'
+import { cleanDate, displayDate, getTomorrow, isSameDate } from '@/utils/dates'
 import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -15,14 +16,15 @@ import redis, { RedisKey } from '@/utils/redis'
 const createMessageForDiscord = (comic: Comic) => {
 	return `
 **${comic.title}**
-[More Info Here](https://starwars.fandom.com${comic.url})`
+[More Info Here](${comic.url})`
 }
 const createMessageForBsky = (comic: Comic) => {
 	return `  ${comic.title}
+Release Date: ${displayDate(comic.pubDate)}
 #StarWars #Comics #NewRelease`
 }
 const createOutput = (comics: Comic[]) => {
-	return comics.map(c => `	- ${c.title} - ${c.type} - ${c.pubDate.toDateString()}`).join('\n')
+	return comics.map(c => `  🦹‍♂️ ${c.title} - ${c.type} - ${displayDate(c.pubDate)}`).join('\n')
 }
 
 //
@@ -30,25 +32,25 @@ const createOutput = (comics: Comic[]) => {
 //
 const processItems = async ({ debug }): Promise<string> => {
 	// Basics
-	const today = new Date()
-	today.setHours(0, 0, 0, 0)
+	const tomorrow = getTomorrow()
 
 	// Get Comics
 	const comics = await getAllComics()
 	const outComics = comics.filter(c => {
-		const pubDate = new Date(c.pubDate)
-		pubDate.setHours(0, 0, 0, 0)
+		const pubDate = cleanDate(c.pubDate)
+
 		// log.info({
 		// 	type: 'comic',
 		// 	title: c.title,
 		// 	pubDate,
 		// })
-		const test = today.getTime() === pubDate.getTime()
+
+		const test = isSameDate(pubDate, tomorrow)
 		return test
 	})
 
 	if (!outComics.length) {
-		return '  - No comics today'
+		return `  - No comics for "${displayDate(tomorrow)}"`
 	}
 
 	try {
@@ -65,7 +67,7 @@ const processItems = async ({ debug }): Promise<string> => {
 				await sendWebhook(
 					process.env.DISCORD_WEBHOOK_COMICS,
 					{
-						username: `Comics Releasing (${today.toDateString()})`,
+						username: `Comics Releasing (${displayDate(tomorrow)})`,
 						content: createMessageForDiscord(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 					},
@@ -85,7 +87,7 @@ const processItems = async ({ debug }): Promise<string> => {
 					contentType: 'Comic',
 					items: createMessageForBsky(c),
 					title: c.title,
-					url: `https://starwars.fandom.com${c.url}`,
+					url: c.url,
 				})
 
 				await redis.sadd(RedisKey.Bluesky, redisMember)

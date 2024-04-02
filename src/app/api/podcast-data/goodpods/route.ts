@@ -33,7 +33,7 @@ export async function GET(_request: Request) {
 
 		const pageTitle = $('h1').text().trim()
 
-		console.log(`Title: ${pageTitle}`)
+		// console.log(`Title: ${pageTitle}`)
 
 		const leaderboardImage = $('img')
 			.map((i, e) => $(e).attr('src'))

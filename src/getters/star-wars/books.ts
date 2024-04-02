@@ -15,6 +15,9 @@ export type Book = {
 
 const url = 'https://starwars.fandom.com/wiki/List_of_future_books'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_books'
+// TODO
+// https://starwars.fandom.com/wiki/List_of_novels_by_release_date#2024
+// https://youtini.com/all-upcoming-books
 
 export const getBooksAlt = async (): Promise<Book[]> => {
 	var yesterday = new Date()
@@ -23,7 +26,7 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(altUrl, requestOptions, 15)
+	const data = await fetchHtmlWithCache(altUrl, requestOptions, 60)
 
 	const $ = cheerio.load(data)
 
@@ -58,7 +61,7 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 				title: title,
 				type: valueMap[1],
 				pubDate: date,
-				url: link,
+				url: `https://starwars.fandom.com${link}`,
 				author: valueMap[3],
 			}
 
@@ -78,14 +81,13 @@ export const getBooks = async (): Promise<Book[]> => {
 	const requestOptions = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache(url, requestOptions, 15)
+	const data = await fetchHtmlWithCache(url, requestOptions, 60)
 
 	const $ = cheerio.load(data)
 
-	const pageTitle = $('title').text().trim()
-
+	// const pageTitle = $('title').text().trim()
 	// Print some information to actor log
-	console.log(`TITLE: ${pageTitle}`)
+	// console.log(`TITLE: ${pageTitle}`)
 
 	let prevDate: Date
 
@@ -117,7 +119,7 @@ export const getBooks = async (): Promise<Book[]> => {
 				author: valueMap[1],
 				format: valueMap[2],
 				pubDate: prevDate,
-				url: link,
+				url: `https://starwars.fandom.com${link}`,
 			}
 
 			//console.log(comic)

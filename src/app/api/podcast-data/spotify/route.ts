@@ -36,7 +36,7 @@ export async function GET(request: Request) {
 
 		const pageTitle = $('h1').text().trim()
 
-		console.log(`Title: ${pageTitle}`)
+		// console.log(`Title: ${pageTitle}`)
 
 		const roughRating = $('[data-testid="rating-and-topics"] button:first').text()
 		console.log(`Rough Heading: ${roughRating}`)

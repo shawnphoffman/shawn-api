@@ -9,7 +9,9 @@ const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
 	// START
-	yield encoder.encode(`========================================\n\n🚀 Starting...\n\n`)
+	yield encoder.encode(
+		`========================================\n\n🚀 Starting...\n\n⏰ Current Time:\n  - ${new Date().toUTCString()}\n\n`
+	)
 
 	// BOOKS
 	const bookResp = await processBooks({ debug })

@@ -7,9 +7,3 @@
 <!-- #13C3FF -->
 <!-- #FBAA19 -->
 <!-- #434B57 -->
-
-## To Do
-
-[] Look into https://youtini.com/all-upcoming-books for comics and books
-
-## Notes

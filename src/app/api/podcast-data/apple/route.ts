@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
 		const pageTitle = $('h1 span:first').text().trim()
 
-		console.log(`Title: ${pageTitle}`)
+		// console.log(`Title: ${pageTitle}`)
 
 		const rating = $('.we-customer-ratings__averages__display').text()
 		const ratingString = $('.we-customer-ratings__averages').text()

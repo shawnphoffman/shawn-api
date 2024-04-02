@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 	const pageTitle = $('h1').text().trim()
 
 	// // Print some information to actor log
-	console.log(`TITLE: ${pageTitle}`)
+	// console.log(`TITLE: ${pageTitle}`)
 
 	// Woof...
 	const comics = $('section.entry-content')

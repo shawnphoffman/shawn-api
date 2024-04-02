@@ -70,8 +70,8 @@ export const getOgImageUrl = async url => {
 
 	const $ = cheerio.load(data)
 
-	const pageTitle = $('h1').text().trim()
-	log.info(`TITLE: ${pageTitle}`)
+	// const pageTitle = $('h1').text().trim()
+	// log.info(`TITLE: ${pageTitle}`)
 
 	let imageUrl = $('meta[property="og:image"]').attr('content')
 
@@ -84,12 +84,10 @@ export const getOgImageUrl = async url => {
 
 		// Iterate over each image tag
 		images.each((index, element) => {
-			// TODO Fetch the images and use the largest one
-
 			// LOL for now just use the one with the longest src
 			const src = $(element).attr('src')
 
-			if (!src) {
+			if (!src || src.includes('missing/episode') || src.includes('.svg')) {
 				return
 			}
 

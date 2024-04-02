@@ -3,6 +3,10 @@
 		{
 			"path": "/api/star-wars/check/daily",
 			"schedule": "30 * * * *"
+		},
+		{
+			"path": "/api/star-wars/check/frequent",
+			"schedule": "*/20 * * * *"
 		}
 	]
 }

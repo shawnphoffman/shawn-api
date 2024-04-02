@@ -1,5 +1,6 @@
 import podcastFeedParser from '@podverse/podcast-feed-parser'
 
+import { cleanDate, getYesterday } from '@/utils/dates'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 export async function getPodcastInfo(url: string) {
@@ -35,11 +36,9 @@ export async function getRecentFeedItems(url: string) {
 			return []
 		}
 
-		const pastDate = new Date()
-		pastDate.setDate(pastDate.getDate() - 7)
-
+		const pastDate = getYesterday()
 		const filtered = podcast.episodes.filter(ep => {
-			return new Date(ep.pubDate) > pastDate
+			return cleanDate(ep.pubDate) > pastDate
 		})
 
 		const sortedDesc = filtered.sort((a, b) => {

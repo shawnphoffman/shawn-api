@@ -1,4 +1,4 @@
-import { postBleet } from '@/utils/bluesky'
+import { postBleet } from '@/third-party/bluesky/bluesky'
 // import { getOgImageUrl } from '@/components/bluesky/imageUtils'
 
 export default async function handler(req, res) {

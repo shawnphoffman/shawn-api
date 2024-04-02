@@ -35,8 +35,12 @@ async function processItems({ debug, feedUrl }) {
 	const podcast = await getPodcastInfo(feedUrl)
 	const episodes = await getRecentFeedItems(feedUrl)
 
+	console.log(`🎧 Processing podcast: ${podcast?.title}`)
+
 	if (!episodes.length) {
-		return `No recent episodes for ${feedUrl}`
+		// return `No recent episodes for ${feedUrl}`
+
+		return `  - No recent episodes for "${podcast.title}"`
 	}
 
 	try {

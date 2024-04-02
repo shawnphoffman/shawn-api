@@ -1,7 +1,7 @@
 import { log } from 'next-axiom'
 
 import { getAllNews, NewsItem } from '@/getters/star-wars/news'
-import { postBleet } from '@/utils/bluesky'
+import { postBleet } from '@/third-party/bluesky/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================

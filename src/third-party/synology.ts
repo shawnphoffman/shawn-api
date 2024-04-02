@@ -13,7 +13,7 @@ const requestOptions = {
 
 export const login = async () => {
 	console.log('+ synology.login')
-	const otp = authenticator.generate(otpKey)
+	const otp = authenticator.generate(otpKey!)
 
 	const authURL = `${host}/webapi/entry.cgi?api=SYNO.API.Auth&version=7&method=login&account=${username}&passwd=${password}&session=${sessionName}&format=sid&otp_code=${otp}`
 
@@ -45,7 +45,7 @@ export const startSearch = async sid => {
 
 	const url = `${host}/webapi/entry.cgi?api=SYNO.FileStation.Search&version=2&_sid=${encodeURIComponent(
 		sid
-	)}&method=start&folder_path=${encodeURIComponent(searchPath)}&filetype=file&recursive=true`
+	)}&method=start&folder_path=${encodeURIComponent(searchPath!)}&filetype=file&recursive=true`
 
 	const response = await fetch(url, requestOptions)
 	const json = await response.json()

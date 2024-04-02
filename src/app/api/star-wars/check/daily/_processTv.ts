@@ -1,9 +1,9 @@
 import { log } from 'next-axiom'
 
 import { getAllTv, TvShow } from '@/getters/star-wars/tv'
-import { postBleet } from '@/utils/bluesky'
+import { postBleet } from '@/third-party/bluesky/bluesky'
+import { sendWebhook } from '@/third-party/discord/discord'
 import { cleanDate, displayDate, getToday, isSameDate } from '@/utils/dates'
-import { sendWebhook } from '@/utils/discord'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================

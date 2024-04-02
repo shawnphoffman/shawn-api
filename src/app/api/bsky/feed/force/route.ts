@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 
-import { postBleet } from '@/utils/bluesky'
+import { postBleet } from '@/third-party/bluesky/bluesky'
 
 export async function POST(req: NextRequest) {
 	const { type, title, content, url, token } = await req.json()

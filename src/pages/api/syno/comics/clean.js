@@ -1,6 +1,6 @@
+import { cleanSearches, login, logout, RedisKey } from '@/third-party/synology'
 import Cors from '@/utils/cors'
 import redis from '@/utils/redis'
-import { cleanSearches, login, logout, RedisKey } from '@/utils/synology'
 
 async function handler(req, res) {
 	console.log('')

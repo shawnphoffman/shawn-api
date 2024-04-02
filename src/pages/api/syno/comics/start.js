@@ -1,6 +1,6 @@
+import { login, logout, RedisKey, startSearch } from '@/third-party/synology'
 import Cors from '@/utils/cors'
 import redis from '@/utils/redis'
-import { login, logout, RedisKey, startSearch } from '@/utils/synology'
 
 export const search = async res => {
 	// Login

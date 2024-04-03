@@ -4,6 +4,7 @@ import { log } from 'next-axiom'
 import processBooks from './_processBooks'
 import processComics from './_processComics'
 import processTv from './_processTv'
+import processWeeklyComics from './_processWeeklyComics'
 
 const encoder = new TextEncoder()
 
@@ -20,6 +21,9 @@ async function* makeIterator({ debug }) {
 	// COMICS
 	const comicResp = await processComics({ debug })
 	yield encoder.encode(`✅ Comics:\n${comicResp}\n\n`)
+
+	const comicWeeklyResp = await processWeeklyComics({ debug })
+	yield encoder.encode(`✅ Comics Weekly:\n${comicWeeklyResp}\n\n`)
 
 	// TV
 	const tvResp = await processTv({ debug })

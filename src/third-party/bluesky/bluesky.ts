@@ -65,14 +65,16 @@ ${websiteTarget}`
 		text: rt.text,
 		langs: ['en-US'],
 		facets,
-		embed: {
-			$type: 'app.bsky.embed.external',
-			external: {
-				uri: url ? url : '',
-				title: title || stinger,
-				description: desc || stinger || '',
-			},
-		},
+		embed: url
+			? {
+					$type: 'app.bsky.embed.external',
+					external: {
+						uri: url ? url : '',
+						title: title || stinger,
+						description: desc || stinger || '',
+					},
+			  }
+			: undefined,
 	}
 
 	if (url) {

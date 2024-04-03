@@ -143,3 +143,63 @@ export const getAllComics = async (): Promise<Comic[]> => {
 	const sorted = Object.values(merged).sort((a: Comic, b: Comic) => Number(a.pubDate) - Number(b.pubDate)) as Comic[]
 	return sorted
 }
+
+type WeeklyComic = {
+	publisher: string
+	issues: string[]
+}
+
+export const getWeeklyComics = async (): Promise<{ title: string; comics: WeeklyComic[] } | undefined> => {
+	const options = {
+		method: 'GET',
+	}
+
+	const ogScrape = 'https://comicdbase.com/'
+	const ogData = await fetchHtmlWithCache({ url: ogScrape, options, cacheMinutes: 15 })
+	const $$ = cheerio.load(ogData)
+
+	const scrape = $$('article a').first().attr('href')
+	console.log(`scrape: ${scrape}`)
+
+	if (!scrape) {
+		return
+	}
+
+	// const scrape = 'https://comicdbase.com/weekly-comic-list-march-27th-2024/'
+	const data = await fetchHtmlWithCache({ url: scrape, options, cacheMinutes: 15 })
+	const $ = cheerio.load(data)
+
+	const pageTitle = $('h1').text().trim()
+
+	// Print some information to actor log
+	console.log(`TITLE: ${pageTitle}`)
+
+	const distributors = $('section.entry-content > p')
+	console.log(`distributors: ${distributors.length}`)
+
+	const removeColon = (str: string) => str.replace(':', '')
+
+	let comics: any[] = []
+	distributors.each((i, el) => {
+		const text = $(el).text()
+		if (text.toLowerCase().includes('star wars')) {
+			const title = $(el).find('strong').first().text()
+			const issues = $(el)
+				.text()
+				.split('\n')
+				.filter(i => !!i)
+				.filter(i => i.toLowerCase().includes('star wars'))
+
+			comics.push({
+				publisher: removeColon(title),
+				issues,
+			})
+		}
+	})
+
+	console.log(`distributors w/star wars: ${comics.length}`)
+
+	if (comics.length) {
+		return { title: pageTitle, comics }
+	}
+}

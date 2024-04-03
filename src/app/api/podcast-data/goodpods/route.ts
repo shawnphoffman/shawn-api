@@ -31,7 +31,7 @@ export async function GET(_request: Request) {
 
 		const $ = cheerio.load(data)
 
-		const pageTitle = $('h1').text().trim()
+		// const pageTitle = $('h1').text().trim()
 
 		// console.log(`Title: ${pageTitle}`)
 

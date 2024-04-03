@@ -22,7 +22,7 @@ export async function GET(request: Request) {
 
 		const $ = cheerio.load(data)
 
-		const pageTitle = $('h1 span:first').text().trim()
+		// const pageTitle = $('h1 span:first').text().trim()
 
 		// console.log(`Title: ${pageTitle}`)
 

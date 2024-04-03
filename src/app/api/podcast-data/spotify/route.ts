@@ -34,12 +34,12 @@ export async function GET(request: Request) {
 
 		const $ = cheerio.load(data)
 
-		const pageTitle = $('h1').text().trim()
+		// const pageTitle = $('h1').text().trim()
 
 		// console.log(`Title: ${pageTitle}`)
 
 		const roughRating = $('[data-testid="rating-and-topics"] button:first').text()
-		console.log(`Rough Heading: ${roughRating}`)
+		// console.log(`Rough Heading: ${roughRating}`)
 
 		const response = parseRatingString(roughRating)
 

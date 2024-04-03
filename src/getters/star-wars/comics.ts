@@ -159,7 +159,7 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	const $$ = cheerio.load(ogData)
 
 	const scrape = $$('article a').first().attr('href')
-	console.log(`scrape: ${scrape}`)
+	// console.log(`scrape: ${scrape}`)
 
 	if (!scrape) {
 		return
@@ -172,10 +172,10 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	const pageTitle = $('h1').text().trim()
 
 	// Print some information to actor log
-	console.log(`TITLE: ${pageTitle}`)
+	// console.log(`TITLE: ${pageTitle}`)
 
 	const distributors = $('section.entry-content > p')
-	console.log(`distributors: ${distributors.length}`)
+	// console.log(`distributors: ${distributors.length}`)
 
 	const removeColon = (str: string) => str.replace(':', '')
 
@@ -197,7 +197,7 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 		}
 	})
 
-	console.log(`distributors w/star wars: ${comics.length}`)
+	// console.log(`distributors w/star wars: ${comics.length}`)
 
 	if (comics.length) {
 		return { title: pageTitle, comics }

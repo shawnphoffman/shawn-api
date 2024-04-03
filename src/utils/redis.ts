@@ -12,6 +12,8 @@ export const RedisKey = {
 	TestDiscord: 'test:discord',
 	TestBluesky: 'test:bluesky',
 	TestOvercast: 'test:overcast',
+	//
+	FetchCache: 'fetch:cache',
 }
 
 const redis = new Redis({

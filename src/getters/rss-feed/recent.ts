@@ -19,7 +19,7 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: any; episode
 		// TODO
 		// pastDate.setDate(pastDate.getDate() - 7)
 		const filtered = podcast.episodes.filter(ep => {
-			return cleanDate(ep.pubDate) > pastDate
+			return cleanDate(ep.pubDate) >= pastDate
 		})
 
 		const sortedDesc = filtered.sort((a, b) => {

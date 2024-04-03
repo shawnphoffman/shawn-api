@@ -30,9 +30,8 @@ export const getTomorrow = () => {
 }
 
 export const getYesterday = () => {
-	const d = new Date()
-	// d.setUTCHours(0, 0, 0, 0)
-	d.setDate(d.getUTCDate() - 1)
+	const curr = new Date()
+	const d = new Date(Date.UTC(curr.getUTCFullYear(), curr.getUTCMonth(), curr.getUTCDate() - 1))
 	return d
 }
 

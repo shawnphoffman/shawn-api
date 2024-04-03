@@ -3,7 +3,7 @@ import { log } from 'next-axiom'
 import { Comic, getAllComics } from '@/getters/star-wars/comics'
 import { postBleet } from '@/third-party/bluesky/bluesky'
 import { sendWebhook } from '@/third-party/discord/discord'
-import { cleanDate, displayDate, getTomorrow, isSameDate } from '@/utils/dates'
+import { cleanDate, displayDate, getToday, getTomorrow, isSameDate } from '@/utils/dates'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -32,7 +32,7 @@ const createOutput = (comics: Comic[]) => {
 //
 const processItems = async ({ debug }): Promise<string> => {
 	// Basics
-	const tomorrow = getTomorrow()
+	const today = getToday()
 
 	// Get Comics
 	const comics = await getAllComics()
@@ -45,12 +45,12 @@ const processItems = async ({ debug }): Promise<string> => {
 		// 	pubDate,
 		// })
 
-		const test = isSameDate(pubDate, tomorrow)
+		const test = isSameDate(pubDate, today)
 		return test
 	})
 
 	if (!outComics.length) {
-		return `  - No comics for "${displayDate(tomorrow)}"`
+		return `  - No comics for "${displayDate(today)}"`
 	}
 
 	try {
@@ -67,7 +67,7 @@ const processItems = async ({ debug }): Promise<string> => {
 				await sendWebhook(
 					process.env.DISCORD_WEBHOOK_COMICS,
 					{
-						username: `Comics Releasing (${displayDate(tomorrow)})`,
+						username: `Comics Releasing (${displayDate(today)})`,
 						content: createMessageForDiscord(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 					},

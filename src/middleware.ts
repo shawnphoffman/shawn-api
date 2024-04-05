@@ -1,5 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const whitelistPodSites = [
+	'blueharvest.rocks',
+	'justshillin.com',
+	'jammedtransmissions.com',
+	'scruffypod.com',
+	'myweirdfoot.com',
+	'blueypodcast.com',
+	'shawn.party',
+]
+
 const corsHeaders = {
 	'Access-Control-Allow-Origin': '*',
 	'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -10,17 +20,26 @@ export function middleware(request: NextRequest) {
 	// retrieve the current response
 	const response = NextResponse.next()
 
-	console.log('💉', request.nextUrl.pathname)
+	// console.log('💉', request.nextUrl.pathname)
+
+	if (process.env.DISABLE_CORS != 'true') {
+		if (request.nextUrl.pathname.includes('/api/podcast-data')) {
+			const origin = request.headers.get('Origin')
+			if (origin && !whitelistPodSites.some(wl => origin?.includes(wl))) {
+				return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+			}
+		}
+
+		// if the incoming is for the desired API endpoint
+		if (request.nextUrl.pathname === '/api/star-wars/name-generator') {
+			Object.entries(corsHeaders).forEach(([key, value]) => {
+				response.headers.append(key, value)
+			})
+		}
+	}
 
 	if (request.method === 'OPTIONS') {
 		return NextResponse.json({}, { headers: corsHeaders })
-	}
-
-	// if the incoming is for the desired API endpoint
-	if (request.nextUrl.pathname === '/api/star-wars/name-generator') {
-		Object.entries(corsHeaders).forEach(([key, value]) => {
-			response.headers.append(key, value)
-		})
 	}
 
 	return response

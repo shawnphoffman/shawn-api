@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server'
 
-import processFeeds from './_processFeeds'
-
 import { podcastFeeds } from '@/config/feeds/podcasts'
+
+import processFeeds from './_processFeeds'
 
 const encoder = new TextEncoder()
 

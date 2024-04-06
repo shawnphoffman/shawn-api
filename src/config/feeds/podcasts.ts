@@ -10,9 +10,9 @@
 // import { getItemImage } from '../../utils/imageUtils'
 // import { logItem } from '../utils/logging'
 // import refresh from '../../utils/refreshIntervals'
-import type { PodFeedConfig } from './types'
-
 import WebhookChannel from '@/third-party/discord/webhookChannels'
+
+import type { PodFeedConfig } from './types'
 
 export const podcastFeeds: PodFeedConfig[] = [
 	{

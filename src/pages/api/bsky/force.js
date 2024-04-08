@@ -1,4 +1,4 @@
-import { postBleet } from '@/third-party/bluesky/bluesky'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 // import { getOgImageUrl } from '@/components/bluesky/imageUtils'
 
 export default async function handler(req, res) {
@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 	}
 
 	try {
-		await postBleet({ contentType: type, title: title, items: content, url })
+		await postBleetToBsky({ contentType: type, title: title, items: content, url })
 		// postBleet({ contentType: 'ContentType', items: 'TEST (composite) #StorWors', url: scrape })
 
 		// const imageUrl = await getOgImageUrl(scrape)

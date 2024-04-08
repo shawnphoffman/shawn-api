@@ -1,13 +1,9 @@
-import { MessageFlags, WebhookClient } from 'discord.js'
-
 import { EpisodeType } from '@/getters/rss-feed/recent'
 
 import { crossPostMessage } from './discord'
 import { DiscordWebhookConfig } from './webhookChannels'
 
-// import type { DiscordWebhookConfig } from '../types'
-
-const botToken = process.env.DISCORD_BOT_TOKEN!
+// const botToken = process.env.DISCORD_BOT_TOKEN!
 
 // export const sendWebhookRaw = async (name, item, avatar, webhook, content) => {
 // 	try {
@@ -50,20 +46,27 @@ type RssDiscordWebhookProps = {
 
 export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: RssDiscordWebhookProps) => {
 	try {
-		const webhookClient = new WebhookClient({
-			id: webhook.id,
-			token: webhook.token,
-		})
-
 		const content = `**${name}**
-[*${item.title}*](${item.link || homepage})`
+		[*${item.title}*](${item.link || homepage})`
 
-		const msg = await webhookClient.send({
-			content,
-			username: `Podcast Bot (${name})`,
-			avatarURL: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
-			flags: MessageFlags.SuppressEmbeds,
-		})
+		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}`
+
+		var myHeaders = new Headers()
+		myHeaders.append('Content-Type', 'application/json')
+
+		var requestOptions = {
+			headers: myHeaders,
+			method: 'POST',
+			body: JSON.stringify({
+				content,
+				username: `Podcast Bot (${name})`,
+				avatarURL: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
+				flags: 4,
+			}),
+		}
+
+		const response = await fetch(url, requestOptions)
+		const msg = await response.json()
 
 		console.log(`Webhook Success (${item.title})`)
 
@@ -89,15 +92,21 @@ type NonPodDiscordWebhookProps = {
 
 export const sendNonPodWebhookRaw = async ({ username, webhook, content }: NonPodDiscordWebhookProps) => {
 	try {
-		const webhookClient = new WebhookClient({
-			id: webhook.id,
-			token: webhook.token,
-		})
+		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}`
 
-		await webhookClient.send({
-			content,
-			username,
-		})
+		var myHeaders = new Headers()
+		myHeaders.append('Content-Type', 'application/json')
+
+		var requestOptions = {
+			headers: myHeaders,
+			method: 'POST',
+			body: JSON.stringify({
+				content,
+				username,
+			}),
+		}
+
+		await fetch(url, requestOptions)
 	} catch (e) {
 		console.error(e)
 	}

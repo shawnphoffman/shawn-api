@@ -1,7 +1,7 @@
 import { log } from 'next-axiom'
 
 import { getWeeklyComics } from '@/getters/star-wars/comics'
-import { postBleet } from '@/third-party/bluesky/bluesky'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 // import { sendWebhook } from '@/third-party/discord/discord'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -68,7 +68,7 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 		if (!blueskyExists) {
 			log.info(`Bleeting weekly comics for: ${weeklyResp.title}`)
 
-			await postBleet({
+			await postBleetToBsky({
 				items: formatWeeklyComicsForBsky(weeklyResp.title, outComics),
 				title: `Weekly Comics: ${weeklyResp.title}`,
 			})

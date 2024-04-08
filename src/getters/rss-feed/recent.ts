@@ -3,7 +3,26 @@ import podcastFeedParser from '@podverse/podcast-feed-parser'
 import { cleanDate, getYesterday } from '@/utils/dates'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
-export async function getPodcastFeed(url: string): Promise<{ meta?: any; episodes: any[] }> {
+export type PodcastType = {
+	title: string
+	link: string
+	description: string
+	imageURL: string
+	summary: string
+}
+
+export type EpisodeType = {
+	title: string
+	pubDate: string
+	guid: string
+	// description: string // This is HTML
+	summary: string // This is clean with newlines
+	// duration: number
+	imageURL: string
+	link: string
+}
+
+export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType; episodes: EpisodeType[] }> {
 	try {
 		const options = {
 			method: 'GET',
@@ -17,7 +36,7 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: any; episode
 
 		const pastDate = getYesterday()
 		// TODO
-		// pastDate.setDate(pastDate.getDate() - 7)
+		pastDate.setDate(pastDate.getDate() - 7)
 		const filtered = podcast.episodes.filter(ep => {
 			return cleanDate(ep.pubDate) >= pastDate
 		})

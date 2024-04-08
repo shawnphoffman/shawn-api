@@ -1,8 +1,8 @@
 import { log } from 'next-axiom'
 
 import { getAllTv, TvShow } from '@/getters/star-wars/tv'
-import { postBleet } from '@/third-party/bluesky/bluesky'
-import { sendWebhook } from '@/third-party/discord/discord'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
+import { sendDiscordWebhook } from '@/third-party/discord/discord'
 import { cleanDate, displayDate, getToday, isSameDate } from '@/utils/dates'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -69,7 +69,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			// Discord
 			const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
 			if (!discordExists) {
-				await sendWebhook(
+				await sendDiscordWebhook(
 					process.env.DISCORD_WEBHOOK_TV,
 					{
 						username: `TV Shows Premiering (${displayDate(testDate)})`,
@@ -87,7 +87,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
 			if (!blueskyExists) {
 				log.info(`Bleeting TV show: ${c.title}`)
-				await postBleet({ contentType: 'TV Show', title: c.title, items: createMessageForBsky(c), url: c.url })
+				await postBleetToBsky({ contentType: 'TV Show', title: c.title, items: createMessageForBsky(c), url: c.url })
 
 				await redis.sadd(RedisKey.Bluesky, redisMember)
 			} else {

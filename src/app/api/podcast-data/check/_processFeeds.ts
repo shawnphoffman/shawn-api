@@ -2,8 +2,11 @@ import { log } from 'next-axiom'
 
 import { PodFeedConfig } from '@/config/feeds/types'
 import { getPodcastFeed } from '@/getters/rss-feed/recent'
-// import { postBleet } from '@/third-party/bluesky/bluesky-rss'
-// import { sendWebhook } from '@/third-party/discord/discord-rss'
+import { postRssBleet } from '@/third-party/bluesky/bluesky-rss'
+import { sendNonPodWebhookRaw, sendRssWebhook } from '@/third-party/discord/discord-rss'
+import WebhookChannel from '@/third-party/discord/webhookChannels'
+import pingOvercast from '@/third-party/notifiers/overcast'
+import { pingRefreshUrls } from '@/third-party/notifiers/urls'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -42,14 +45,17 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 	}
 
 	try {
+		if (debug) {
+			console.log(`🗣️`, podcast)
+		}
 		for (const episode of episodes) {
-			// if (debug) {
-			// 	console.log(`🎙️`, episode)
-			// }
+			if (debug) {
+				console.log(`🎙️`, episode)
+			}
 
 			const redisMember = `${config.event}:${episode.guid || episode.link}`
 
-			// const image = episode.imageURL
+			const image = episode.imageURL || podcast.imageURL
 
 			if (debug) {
 				continue
@@ -60,7 +66,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis.sismember(RedisKey.TestDiscord, redisMember)
 				if (!exists) {
 					console.log('⭕ Redis.discord.not.exists', redisMember)
-					// await sendWebhook(config.name, episode, image, config.channel, config.homepage)
+					await sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: config.channel, homepage: config.homepage })
 					redis.sadd(RedisKey.TestDiscord, redisMember)
 				} else {
 					console.log('🔘 Redis.discord.exists', redisMember)
@@ -72,7 +78,15 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis.sismember(RedisKey.TestBluesky, redisMember)
 				if (!exists) {
 					console.log('⭕ Redis.bluesky.not.exists', redisMember)
-					// postBleet({ name: config.name, item: episode, homepage: config.homepage, handle: config.bskyHandle, hashtags: config.hashtags })
+
+					await postRssBleet({
+						name: config.name,
+						item: episode,
+						homepage: config.homepage,
+						handle: config.bskyHandle,
+						hashtags: config.hashtags,
+					})
+
 					redis.sadd(RedisKey.TestBluesky, redisMember)
 				} else {
 					console.log('🔘 Redis.bluesky.exists', redisMember)
@@ -84,18 +98,24 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis.sismember(RedisKey.TestOvercast, redisMember)
 				if (!exists) {
 					console.log('⭕ Redis.overcast.not.exists', redisMember)
-					// pingOvercast(feed.url)
+
+					await pingOvercast(config.url)
+
 					redis.sadd(RedisKey.TestOvercast, redisMember)
 				} else {
 					console.log('🔘 Redis.overcast.exists', redisMember)
 				}
 			}
 
-			// // Ping Refresh URLs?
-			// if (feed.refreshUrls?.length > 0) {
-			// 	pingRefreshUrl(name, feed.refreshUrls)
-			// 	sendNonPodWebhookRaw('RSS Refresh URLs', WebhookChannel.ShawnDev, `Pinging refresh URLs for ${name}`)
-			// }
+			// Ping Refresh URLs?
+			if (config.refreshUrls?.length) {
+				await pingRefreshUrls(config.name, config.refreshUrls)
+				await sendNonPodWebhookRaw({
+					username: 'RSS Refresh URLs',
+					webhook: WebhookChannel.ShawnDev,
+					content: `Pinging refresh URLs for ${config.name}`,
+				})
+			}
 		}
 	} catch (error) {
 		log.error('Error processing message', error)

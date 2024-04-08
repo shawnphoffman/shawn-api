@@ -1,8 +1,8 @@
 import { log } from 'next-axiom'
 
 import { Comic, getAllComics } from '@/getters/star-wars/comics'
-import { postBleet } from '@/third-party/bluesky/bluesky'
-import { sendWebhook } from '@/third-party/discord/discord'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
+import { sendDiscordWebhook } from '@/third-party/discord/discord'
 import { cleanDate, displayDate, getToday, getTomorrow, isSameDate } from '@/utils/dates'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -64,7 +64,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			// Discord
 			const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
 			if (!discordExists) {
-				await sendWebhook(
+				await sendDiscordWebhook(
 					process.env.DISCORD_WEBHOOK_COMICS,
 					{
 						username: `Comics Releasing (${displayDate(today)})`,
@@ -83,7 +83,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			if (!blueskyExists) {
 				log.info(`Bleeting comic: ${c.title}`)
 
-				await postBleet({
+				await postBleetToBsky({
 					contentType: 'Comic',
 					items: createMessageForBsky(c),
 					title: c.title,

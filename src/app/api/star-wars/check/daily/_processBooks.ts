@@ -1,8 +1,8 @@
 import { log } from 'next-axiom'
 
 import { Book, getAllBooks } from '@/getters/star-wars/books'
-import { postBleet } from '@/third-party/bluesky/bluesky'
-import { sendWebhook } from '@/third-party/discord/discord'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
+import { sendDiscordWebhook } from '@/third-party/discord/discord'
 import { cleanDate, displayDate, getTomorrow, isSameDate } from '@/utils/dates'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -24,7 +24,6 @@ const getAuthor = (author: Book['author']) => {
 const createMessageForDiscord = (book: Book) => {
 	return `
 **${book.title} ${getAuthor(book.author)}**
-- ${book.format}
 [More Info Here](${book.url})`
 }
 const createMessageForBsky = (book: Book) => {
@@ -79,7 +78,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			// Discord
 			const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
 			if (!discordExists) {
-				await sendWebhook(
+				await sendDiscordWebhook(
 					process.env.DISCORD_WEBHOOK_BOOKS,
 					{
 						username: `Books Releasing (${displayDate(tomorrow)})`,
@@ -98,7 +97,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			if (!blueskyExists) {
 				log.info(`Bleeting book: ${c.title}`)
 
-				await postBleet({
+				await postBleetToBsky({
 					contentType: 'Book',
 					title: c.title,
 					items: createMessageForBsky(c),

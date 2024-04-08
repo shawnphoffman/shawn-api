@@ -1,5 +1,4 @@
 import { getChallenges } from '../challenges'
-// import { crossPostMessage } from '@/utils/discord'
 
 // [Official SF6 Site](https://www.streetfighter.com/6/buckler/reward/challenge)
 
@@ -38,15 +37,6 @@ const formatChallenge = challenge => {
 	)
 }
 
-// function spliceIntoChunks(arr, chunkSize = 4) {
-// 	const res = []
-// 	while (arr.length > 0) {
-// 		const chunk = arr.splice(0, chunkSize)
-// 		res.push(chunk)
-// 	}
-// 	return res
-// }
-
 async function sendWebhook(url, content) {
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
@@ -59,7 +49,6 @@ async function sendWebhook(url, content) {
 
 	const response = await fetch(url, requestOptions)
 
-	// console.log('-----------------')
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)
@@ -75,19 +64,11 @@ async function handler(req, res) {
 	const challenges = await getChallenges()
 
 	if (challenges.length) {
-		// DISCORD_WEBHOOK_SF6
-		// const resp =
 		await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
-			// const resp = await sendWebhook(process.env.DISCORD_WEBHOOK_TEMP, {
 			username: `Street Fighter 6 Challenges`,
 			content: challenges.map(formatChallenge).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_pink@2x.png',
 		})
-
-		// TODO Maybe?
-		// if (resp && resp.id && resp.channel_id && resp.author?.bot) {
-		// 	await crossPostMessage(resp.channel_id, resp.id)
-		// }
 	}
 
 	res.status(200).json({

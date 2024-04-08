@@ -1,25 +1,13 @@
-// import 'dotenv/config'
-
-// import * as Sentry from '@sentry/node'
 import { MessageFlags, WebhookClient } from 'discord.js'
+
+import { EpisodeType } from '@/getters/rss-feed/recent'
+
+import { crossPostMessage } from './discord'
+import { DiscordWebhookConfig } from './webhookChannels'
 
 // import type { DiscordWebhookConfig } from '../types'
 
 const botToken = process.env.DISCORD_BOT_TOKEN!
-
-const formatPodcastBody = (name, item, homepage) => {
-	// const cleanDate = new Date(item.pubDate).getTime() / 1000
-	// const duration = item['itunes:duration']?.['#']
-	return `**${name}**
-[*${item.title}*](${item.link || homepage})`
-	// 	*Title*: [*${item.title}*](${item.link})${
-	// 		duration
-	// 			? `
-	// *Duration*: ${duration}`
-	// 			: ''
-	// 	}`
-	// *Date*: <t:${cleanDate}:d>${
-}
 
 // export const sendWebhookRaw = async (name, item, avatar, webhook, content) => {
 // 	try {
@@ -42,26 +30,38 @@ const formatPodcastBody = (name, item, homepage) => {
 // 			await crossPostMessage(msg.channel_id, msg.id)
 // 		}
 // 	} catch (e) {
-// 		Sentry.captureException(e)
 // 		console.log(`Webhook Error: (${item.title})`)
 // 		console.error(e)
 // 	}
 // }
 
-export const sendWebhook = async (name, item, avatar, webhook, homepage) => {
+type RssDiscordWebhookProps = {
+	/** The name of the podcast/feed */
+	name: string
+	/** */
+	item: EpisodeType
+	/** */
+	avatar: string
+	/** */
+	webhook: DiscordWebhookConfig
+	/** */
+	homepage?: string
+}
+
+export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: RssDiscordWebhookProps) => {
 	try {
 		const webhookClient = new WebhookClient({
 			id: webhook.id,
 			token: webhook.token,
 		})
 
-		const content = formatPodcastBody(name, item, homepage)
+		const content = `**${name}**
+[*${item.title}*](${item.link || homepage})`
 
 		const msg = await webhookClient.send({
 			content,
 			username: `Podcast Bot (${name})`,
 			avatarURL: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
-			// embeds: [embed],
 			flags: MessageFlags.SuppressEmbeds,
 		})
 
@@ -73,47 +73,32 @@ export const sendWebhook = async (name, item, avatar, webhook, homepage) => {
 
 		return msg
 	} catch (e) {
-		// Sentry.captureException(e)
 		console.log(`Webhook Error: (${item.title})`)
 		console.error(e)
 	}
 }
 
-const crossPostMessage = async (channelId, messageId) => {
-	try {
-		const url = `https://discord.com/api/channels/${channelId}/messages/${messageId}/crosspost`
-		const options = {
-			method: 'POST',
-			headers: {
-				Authorization: `Bot ${botToken}`,
-			},
-		}
-		const resp = await fetch(url, options)
-		const json = await resp.json()
+type NonPodDiscordWebhookProps = {
+	/** */
+	username: string
+	/** */
+	webhook: DiscordWebhookConfig
+	/** */
+	content: any
+}
 
-		if (json && json.flags === 1) {
-			console.log(`CrossPost Success (${messageId})`)
-		}
+export const sendNonPodWebhookRaw = async ({ username, webhook, content }: NonPodDiscordWebhookProps) => {
+	try {
+		const webhookClient = new WebhookClient({
+			id: webhook.id,
+			token: webhook.token,
+		})
+
+		await webhookClient.send({
+			content,
+			username,
+		})
 	} catch (e) {
-		// Sentry.captureException(e)
-		console.log(`CrossPost Error (${messageId})`)
 		console.error(e)
 	}
 }
-
-// export const sendNonPodWebhookRaw = async (username: string, webhook: DiscordWebhookConfig, content: any) => {
-// 	try {
-// 		const webhookClient = new WebhookClient({
-// 			id: webhook.id,
-// 			token: webhook.token,
-// 		})
-
-// 		await webhookClient.send({
-// 			content,
-// 			username,
-// 		})
-// 	} catch (e) {
-// 		Sentry.captureException(e)
-// 		console.error(e)
-// 	}
-// }

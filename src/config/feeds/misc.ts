@@ -1,5 +1,3 @@
-// import 'dotenv/config'
-
 // // import { postBleet } from '../bluesky/bluesky'
 // import redis, { RedisKey } from '../redis/redis'
 // import type { MiscFeedConfig } from '../types'

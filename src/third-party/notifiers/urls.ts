@@ -1,6 +1,6 @@
 // import * as Sentry from '@sentry/node'
 
-const pingRefreshUrls = async (feedName: string, urls: string[]) => {
+export const pingRefreshUrls = async (feedName: string, urls: string[]) => {
 	console.log(`Ping Refresh URLs for: ${feedName}`)
 	try {
 		for (const url of urls) {
@@ -13,5 +13,3 @@ const pingRefreshUrls = async (feedName: string, urls: string[]) => {
 		console.error(` + Error`, error)
 	}
 }
-
-export default pingRefreshUrls

@@ -1,7 +1,7 @@
 import { log } from 'next-axiom'
 
 import { getAllNews, NewsItem } from '@/getters/star-wars/news'
-import { postBleet } from '@/third-party/bluesky/bluesky'
+import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -63,7 +63,7 @@ async function processItems({ debug }) {
 					url: item.link,
 					desc: item.desc,
 				}
-				await postBleet(bleet)
+				await postBleetToBsky(bleet)
 				await redis.sadd(RedisKey.Bluesky, redisMember)
 			} else {
 				log.info('+ Redis.bluesky.exists', { redisMember })

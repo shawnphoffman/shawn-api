@@ -1,5 +1,3 @@
-// import 'dotenv/config'
-
 // import { isYouTubeScheduled, isYouTubeShort } from '../../third-party/youtube'
 // import { getItemImage } from '../../utils/imageUtils'
 // import refresh from '../../utils/refreshIntervals'

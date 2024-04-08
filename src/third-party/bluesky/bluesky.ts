@@ -1,5 +1,3 @@
-import 'dotenv/config'
-
 import { BskyAgent, RichText } from '@atproto/api'
 // import { captureException, captureMessage } from '@sentry/node'
 import { log } from 'next-axiom'
@@ -85,7 +83,7 @@ ${websiteTarget}`
 
 			const mimetype = getContentType(imageUrl)
 
-			const blob = await manualUploadBlob(agent, buffer, mimetype)
+			const blob = await manualUploadBlobToBsky(agent, buffer, mimetype)
 
 			if (blob) {
 				// @ts-expect-error thumb!
@@ -105,7 +103,7 @@ ${websiteTarget}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleet = async ({ contentType, items, url, title, desc }: PostBleetProps) => {
+export const postBleetToBsky = async ({ contentType, items, url, title, desc }: PostBleetProps) => {
 	// Login
 	const loginResponse = await agent.login({
 		identifier: username!,
@@ -140,7 +138,17 @@ export const postBleet = async ({ contentType, items, url, title, desc }: PostBl
 }
 
 // eslint-disable-next-line no-unused-vars
-const manualUploadBlob = async (agent, buffer, mimetype) => {
+
+export interface ImageBlob {
+	$type: 'blob'
+	ref: {
+		$link: string
+	}
+	mimeType: 'image/jpeg'
+	size: number
+}
+
+export const manualUploadBlobToBsky = async (agent: BskyAgent, buffer: Buffer, mimetype?: string) => {
 	const jwt = agent.session?.accessJwt
 	const uploadUrl = 'https://bsky.social/xrpc/com.atproto.repo.uploadBlob'
 
@@ -148,7 +156,7 @@ const manualUploadBlob = async (agent, buffer, mimetype) => {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${jwt}`,
-			'Content-Type': mimetype,
+			'Content-Type': mimetype || 'image/jpeg',
 		},
 		body: buffer,
 	}

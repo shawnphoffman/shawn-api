@@ -1,12 +1,10 @@
-// import 'dotenv/config'
-
 import { AppBskyFeedPost } from '@atproto/api'
 import { BskyAgent, RichText } from '@atproto/api'
 
+import { EpisodeType } from '@/getters/rss-feed/recent'
 import { fetchRemoteImageBuffer } from '@/utils/imageUtils'
 
-// import { captureException, captureMessage } from '@sentry/node'
-// import { fetchRemoteImageBuffer, getItemImage } from '../utils/imageUtils'
+import { ImageBlob, manualUploadBlobToBsky } from './bluesky'
 
 const username = process.env.BSKY_USERNAME
 const password = process.env.BSKY_PASSWORD
@@ -17,7 +15,39 @@ const agent = new BskyAgent({
 
 const websiteTarget = `Check out their website...`
 
-const formatBleet = async (
+//
+// TODO - Check bsky for existing bleet
+//
+
+export const postRssBleet = async ({ name, item, homepage, handle, hashtags, imageOverride }: BleetArgs) => {
+	// Login
+	const loginResponse = await agent.login({
+		identifier: username!,
+		password: password!,
+	})
+	if (!loginResponse.success) {
+		console.error('BLUESKY LOGIN FAILED')
+	}
+
+	try {
+		// Generate Bleet
+		const record = await formatRssBleet(agent, { name, item, homepage, handle, hashtags, imageOverride })
+
+		// Post Bleet
+		const post = await agent.post(record)
+
+		console.log(`Bleeting: ${name} - ${item.title}`)
+		console.log(post)
+		console.log('================')
+
+		return post
+	} catch (error) {
+		console.error('BLUESKY POST FAILED', error)
+		return null
+	}
+}
+
+const formatRssBleet = async (
 	agent: BskyAgent,
 	{ name, item, homepage, imageOverride, handle = [], hashtags = [] }: BleetArgs
 ): Promise<BleetResponse> => {
@@ -64,12 +94,12 @@ ${hashtags.join(' ')}`
 	]
 
 	let thumb: ImageBlob | undefined
-	// const image = imageOverride ? imageOverride : getItemImage(item)
+
 	const image = imageOverride ? imageOverride : item.imageURL
 	if (image) {
 		const buffer = await fetchRemoteImageBuffer(image)
 
-		const blob = await manualUploadBlob(agent, buffer)
+		const blob = await manualUploadBlobToBsky(agent, buffer)
 
 		if (blob) {
 			thumb = blob
@@ -98,81 +128,12 @@ ${hashtags.join(' ')}`
 	return record
 }
 
-//
-// TODO - Check bsky for existing bleet
-//
-
-export const postBleet = async ({ name, item, homepage, handle, hashtags, imageOverride }: BleetArgs) => {
-	// Login
-	const loginResponse = await agent.login({
-		identifier: username!,
-		password: password!,
-	})
-	if (!loginResponse.success) {
-		console.error('BLUESKY LOGIN FAILED')
-		// captureMessage('BLUESKY LOGIN FAILED', 'error')
-	}
-
-	try {
-		// Generate Bleet
-		const record = await formatBleet(agent, { name, item, homepage, handle, hashtags, imageOverride })
-
-		// Post Bleet
-		const post = await agent.post(record)
-
-		console.log(`Bleeting: ${name} - ${item.title}`)
-		console.log(post)
-		console.log('================')
-
-		return post
-	} catch (error) {
-		console.error('BLUESKY POST FAILED', error)
-		// captureException(error)
-		return null
-	}
-}
-
-const manualUploadBlob = async (agent: BskyAgent, buffer: Buffer): Promise<ImageBlob | undefined> => {
-	const jwt = agent.session?.accessJwt
-	const uploadUrl = 'https://bsky.social/xrpc/com.atproto.repo.uploadBlob'
-
-	const options = {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${jwt}`,
-			'Content-Type': 'image/jpeg',
-		},
-		body: buffer,
-	}
-
-	try {
-		const resp = await fetch(uploadUrl, options)
-		const json = await resp.json()
-
-		// console.log('MANUAL UPLOAD BLOB', json)
-
-		return json.blob
-	} catch (error) {
-		return
-	}
-}
-
 type BleetResponse = Partial<AppBskyFeedPost.Record> & Omit<AppBskyFeedPost.Record, 'createdAt'>
 interface BleetArgs {
 	name: string
-	// item: Partial<FeedItem>
-	item: Partial<any>
+	item: Partial<EpisodeType>
 	homepage?: string
 	imageOverride?: string
 	handle?: string[]
 	hashtags?: string[]
-}
-
-interface ImageBlob {
-	$type: 'blob'
-	ref: {
-		$link: string
-	}
-	mimeType: 'image/jpeg'
-	size: number
 }

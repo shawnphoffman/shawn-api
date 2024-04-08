@@ -1,6 +1,6 @@
 const botToken = process.env.DISCORD_BOT_TOKEN
 
-export const crossPostMessage = async (channelId, messageId) => {
+export const crossPostMessage = async (channelId: string, messageId: string) => {
 	try {
 		const url = `https://discord.com/api/channels/${channelId}/messages/${messageId}/crosspost`
 		const options = {
@@ -21,7 +21,7 @@ export const crossPostMessage = async (channelId, messageId) => {
 	}
 }
 
-export const sendWebhook = async (url, content, crossPost) => {
+export const sendDiscordWebhook = async (url, content, crossPost) => {
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
 

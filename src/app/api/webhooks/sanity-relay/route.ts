@@ -14,24 +14,27 @@ export async function POST(req: NextRequest) {
 	//
 	const responses: { endpoint: string; status: string; message?: string; misc?: any; statusText?: string }[] = []
 
-	for (const endpoint of ProxyEndpoints) {
-		try {
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				body: bodyText,
-				headers: req.headers,
-			})
-			if (response.ok) {
-				responses.push({ endpoint, status: 'success' })
-			} else {
-				responses.push({ endpoint, status: 'error', message: 'Invalid response status', misc: response, statusText: response.statusText })
-				console.error(`Endpoint Error: ${endpoint}`, response.statusText, response)
+	// for (const endpoint of ProxyEndpoints) {
+	await Promise.all(
+		ProxyEndpoints.map(async endpoint => {
+			try {
+				const response = await fetch(endpoint, {
+					method: 'POST',
+					body: bodyText,
+					headers: req.headers,
+				})
+				if (response.ok) {
+					responses.push({ endpoint, status: 'success' })
+				} else {
+					responses.push({ endpoint, status: 'error', message: 'Invalid response status', misc: response, statusText: response.statusText })
+					console.error(`Endpoint Error: ${endpoint}`, response.statusText, response)
+				}
+			} catch (err) {
+				responses.push({ endpoint, status: 'exception', message: err.message })
+				console.error(`Endpoint Error: ${endpoint}`, err)
 			}
-		} catch (err) {
-			responses.push({ endpoint, status: 'exception', message: err.message })
-			console.error(`Endpoint Error: ${endpoint}`, err)
-		}
-	}
+		})
+	)
 
 	return NextResponse.json({ responses })
 }

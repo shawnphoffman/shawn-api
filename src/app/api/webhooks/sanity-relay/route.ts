@@ -3,10 +3,10 @@ import { type NextRequest, NextResponse } from 'next/server'
 const ProxyEndpoints = [
 	// 'http://localhost:3000/api/revalidate',
 	'https://justshillin.com/api/revalidate',
-	'https://dev.justshillin.com/api/revalidate',
 	'https://scruffypod.com/api/revalidate',
-	'https://dev.scruffypod.com/api/revalidate',
 	'https://blueypodcast.com/api/revalidate',
+	'https://dev.justshillin.com/api/revalidate',
+	'https://dev.scruffypod.com/api/revalidate',
 	'https://dev.blueypodcast.com/api/revalidate',
 ]
 

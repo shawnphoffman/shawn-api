@@ -48,7 +48,6 @@ export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10, redi
 	console.log('🔶 NOT CACHED', url)
 	const res = await fetch(url, options)
 	const data = await res.text()
-	// console.log("FETCHED HTML", data);
 
 	if (redisCache) {
 		// @ts-expect-error true/never

@@ -1,7 +1,6 @@
 import podcastFeedParser from '@podverse/podcast-feed-parser'
 
 import { cleanDate, getYesterday } from '@/utils/dates'
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 export type PodcastType = {
 	title: string
@@ -24,11 +23,11 @@ export type EpisodeType = {
 
 export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType; episodes: EpisodeType[] }> {
 	try {
-		const options = {
+		const res = await fetch(url, {
 			method: 'GET',
 			next: { revalidate: 60 * 10 }, // 10 minutes
-		}
-		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+		})
+		const data = await res.text()
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)
 
 		if (!podcast?.meta || !podcast?.episodes) {

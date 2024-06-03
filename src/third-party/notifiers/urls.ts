@@ -6,7 +6,7 @@ export const pingRefreshUrls = async (feedName: string, urls: string[]) => {
 		for (const url of urls) {
 			const response = await fetch(url)
 			console.log(` + ${response.status} - Ping Refresh URL: ${url}`)
-			await new Promise(resolve => setTimeout(resolve, 2000))
+			// await new Promise(resolve => setTimeout(resolve, 2000))
 		}
 	} catch (error) {
 		// Sentry.captureException(error)

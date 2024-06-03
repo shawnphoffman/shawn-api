@@ -26,6 +26,7 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType;
 	try {
 		const options = {
 			method: 'GET',
+			next: { revalidate: 60 * 10 }, // 10 minutes
 		}
 		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)

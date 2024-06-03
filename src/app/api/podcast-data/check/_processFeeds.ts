@@ -24,7 +24,7 @@ import redis, { RedisKey } from '@/utils/redis'
 // #StarWars #StarWarsNews`
 // }
 const createOutput = (episodes: any[]) => {
-	return episodes.map(c => `    ⭐ ${c.title}`).join('\n')
+	return `<ul>${episodes.map(c => `⭐ ${c.title}`).join('')}</ul>`
 }
 
 //
@@ -35,13 +35,13 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 	const { meta: podcast, episodes } = await getPodcastFeed(config.url)
 
 	if (!podcast) {
-		return `❌ No podcast feed found for "${config.url}"`
+		return `<i>❌ No podcast feed found for "${config.url}"</i>`
 	}
 
 	console.log(`🎧 Processing podcast: ${podcast?.title}`)
 
 	if (!episodes.length) {
-		return `    - No recent episodes for "${podcast.title}"`
+		return `<i>No recent episodes for "${podcast.title}"</i>`
 	}
 
 	try {

@@ -23,7 +23,7 @@ ${comics.map(c => c).join('\n')}
 #StarWars #Comics #NewReleases`
 }
 const createOutput = (comics: any[]) => {
-	return comics.map(c => c).join('\n')
+	return `<ul>${comics.map(c => c).join('')}</ul>`
 }
 
 //
@@ -35,7 +35,7 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 
 	// Filter Comics
 	if (!weeklyResp?.title) {
-		return `  - No weekly comics found`
+		return `<i>No weekly comics found</i>`
 	}
 
 	const outComics = weeklyResp.comics.reduce((memo, c) => {

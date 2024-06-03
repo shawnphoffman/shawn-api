@@ -32,7 +32,7 @@ Release Date: ${displayDate(book.pubDate)}
 #StarWars #Books #NewRelease`
 }
 const createOutput = (books: Book[]) => {
-	return books.map(c => `  📙 ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${displayDate(c.pubDate)}`).join('\n')
+	return `<ul>${books.map(c => `📙 ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${displayDate(c.pubDate)}`).join('')}</ul>`
 }
 
 //
@@ -64,7 +64,7 @@ const processItems = async ({ debug }): Promise<string> => {
 	})
 
 	if (!outBooks.length) {
-		return `  - No books for "${displayDate(tomorrow)}"`
+		return `<i>No books for "${displayDate(tomorrow)}"</i>`
 	}
 
 	try {

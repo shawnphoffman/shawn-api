@@ -29,7 +29,7 @@ Release Date: ${displayDate(tv.pubDate)}
 #StarWars #TV #NewRelease`
 }
 const createOutput = (tv: TvShow[]) => {
-	return tv.map(c => `  📺 ${c.series} - ${c.title} - ${c.episode} - ${displayDate(c.pubDate)}`).join('\n')
+	return `<ul>${tv.map(c => `📺 ${c.series} - ${c.title} - ${c.episode} - ${displayDate(c.pubDate)}`).join('')}</ul>`
 }
 
 //
@@ -55,7 +55,7 @@ const processItems = async ({ debug }): Promise<string> => {
 	})
 
 	if (!outTv.length) {
-		return `  - No TV shows for "${displayDate(testDate)}"`
+		return `<i>No TV shows for "${displayDate(testDate)}"</i>`
 	}
 
 	try {

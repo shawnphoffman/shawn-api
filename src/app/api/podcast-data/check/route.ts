@@ -5,7 +5,6 @@ import { podcastFeeds } from '@/config/feeds/podcasts'
 import processFeeds from './_processFeeds'
 
 export const dynamic = 'force-dynamic'
-// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 
@@ -13,16 +12,22 @@ async function* makeIterator({ debug }) {
 	// performance.mark('shawn:pod:start')
 
 	// START
-	yield encoder.encode(`========================================\n\n🚀 Starting...\n\n`)
+	yield encoder.encode(`<h1>🚀 Starting...</h1><hr />`)
+
+	// DEBUG
+	if (debug) {
+		await new Promise(resolve => setTimeout(resolve, 5000))
+		yield encoder.encode(`<h1>⏳ Fake Wait</h1><hr />`)
+	}
 
 	// PROCESS PODCASTS
 	for (const podcast of podcastFeeds) {
 		// performance.mark(`shawn:pod:${podcast?.name}:start`)
 
-		yield encoder.encode(`🎙️ Processing: ${podcast?.name}\n`)
+		yield encoder.encode(`<h2>🎙️ Processing: ${podcast?.name}</h2>`)
 
 		const recentItems = await processFeeds({ debug, config: podcast })
-		yield encoder.encode(`  ✅ Episodes:\n${recentItems}\n\n`)
+		yield encoder.encode(`<h3>✅ Episodes:</h3>${recentItems}<hr />`)
 
 		// performance.mark(`shawn:pod:${podcast?.name}:end`)
 		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
@@ -31,7 +36,7 @@ async function* makeIterator({ debug }) {
 	// performance.mark('shawn:pod:end')
 
 	// FINISH
-	yield encoder.encode(`🏁 Finished!\n\n========================================`)
+	yield encoder.encode(`<h1>🏁 Finished!</h1>`)
 
 	// performance.measure('shawn:pod', 'shawn:pod:start', 'shawn:pod:end')
 
@@ -47,14 +52,13 @@ async function* makeIterator({ debug }) {
 	// }
 }
 
-// export async function GET(context: { params: { foo: string } }) {
-// console.log(`EMPTY GET ${JSON.stringify(context.params)}`)
 export async function GET(req: NextRequest) {
 	// Basic
 	const { searchParams } = new URL(req.url)
 	const debug = searchParams.get('debug') === 'true'
 
 	// Processors
+	// const iterator = makeIterator({ debug: false })
 	const iterator = makeIterator({ debug })
 
 	// Response Stream
@@ -71,7 +75,7 @@ export async function GET(req: NextRequest) {
 
 	return new Response(stream, {
 		headers: {
-			'Content-Type': 'text/plain; charset=utf-8',
+			'Content-Type': 'text/html; charset=utf-8',
 		},
 	})
 }

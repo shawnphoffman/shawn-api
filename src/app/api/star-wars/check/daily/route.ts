@@ -7,33 +7,36 @@ import processTv from './_processTv'
 import processWeeklyComics from './_processWeeklyComics'
 
 export const dynamic = 'force-dynamic'
-// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
 	// START
-	yield encoder.encode(
-		`========================================\n\n🚀 Starting...\n\n⏰ Current Time:\n  - ${new Date().toUTCString()}\n\n`
-	)
+	yield encoder.encode(`<h1>🚀 Starting...</h1><h3>⏰ Current Time: ${new Date().toUTCString()}</h3>`)
+
+	// DEBUG
+	if (debug) {
+		await new Promise(resolve => setTimeout(resolve, 5000))
+		yield encoder.encode(`<h1>⏳ Fake Wait</h1>`)
+	}
 
 	// BOOKS
 	const bookResp = await processBooks({ debug })
-	yield encoder.encode(`✅ Books:\n${bookResp}\n\n`)
+	yield encoder.encode(`<h1>✅ Books:</h1>${bookResp}`)
 
 	// COMICS
 	const comicResp = await processComics({ debug })
-	yield encoder.encode(`✅ Comics:\n${comicResp}\n\n`)
+	yield encoder.encode(`<h1>✅ Comics:</h1>${comicResp}`)
 
 	const comicWeeklyResp = await processWeeklyComics({ debug })
-	yield encoder.encode(`✅ Comics Weekly:\n${comicWeeklyResp}\n\n`)
+	yield encoder.encode(`<h1>✅ Comics Weekly:</h1>${comicWeeklyResp}`)
 
 	// TV
 	const tvResp = await processTv({ debug })
-	yield encoder.encode(`✅ TV:\n${tvResp}\n\n`)
+	yield encoder.encode(`<h1>✅ TV:</h1>${tvResp}`)
 
 	// FINISH
-	yield encoder.encode(`🏁 Finished!\n\n========================================`)
+	yield encoder.encode(`<h1>🏁 Finished!</h1>`)
 }
 
 export async function GET(req: NextRequest) {
@@ -63,7 +66,7 @@ export async function GET(req: NextRequest) {
 
 	return new Response(stream, {
 		headers: {
-			'Content-Type': 'text/plain; charset=utf-8',
+			'Content-Type': 'text/html; charset=utf-8',
 		},
 	})
 }

@@ -10,19 +10,15 @@ async function* makeIterator({ debug }) {
 	// START
 	yield encoder.encode(`<h1>🚀 Starting...</h1>`)
 
-	// NEWS
+	// DEBUG
 	if (debug) {
-		await new Promise(resolve => setTimeout(resolve, 1000))
-		yield encoder.encode(`<h1>✅ Fake Wait:</h1>`)
+		await new Promise(resolve => setTimeout(resolve, 5000))
+		yield encoder.encode(`<h1>⏳ Fake Wait</h1>`)
 	}
 
+	// NEWS
 	const newsResp = await processNews({ debug: false })
 	yield encoder.encode(`<h1>✅ News:</h1>${newsResp}`)
-
-	if (debug) {
-		await new Promise(resolve => setTimeout(resolve, 1000))
-		yield encoder.encode(`<h1>✅ Another Fake Wait:</h1>`)
-	}
 
 	// FINISH
 	yield encoder.encode(`<h1>🏁 Finished!</h1>`)

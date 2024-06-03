@@ -24,7 +24,7 @@ Release Date: ${displayDate(comic.pubDate)}
 #StarWars #Comics #NewRelease`
 }
 const createOutput = (comics: Comic[]) => {
-	return comics.map(c => `  🦹‍♂️ ${c.title} - ${c.type} - ${displayDate(c.pubDate)}`).join('\n')
+	return `<ul>${comics.map(c => `🦹‍♂️ ${c.title} - ${c.type} - ${displayDate(c.pubDate)}`).join('')}</ul>`
 }
 
 //
@@ -50,7 +50,7 @@ const processItems = async ({ debug }): Promise<string> => {
 	})
 
 	if (!outComics.length) {
-		return `  - No comics for "${displayDate(today)}"`
+		return `<i>No comics for "${displayDate(today)}"</i>`
 	}
 
 	try {

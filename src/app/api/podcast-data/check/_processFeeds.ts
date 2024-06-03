@@ -94,7 +94,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			}
 
 			// Ping Overcast?
-			if (config.refreshUrls?.length) {
+			if (config.refreshUrls?.length && config.ping !== false) {
 				const exists = await redis.sismember(RedisKey.RssOvercast, redisMember)
 				if (!exists) {
 					console.log('⭕ Redis.overcast.not.exists', redisMember)

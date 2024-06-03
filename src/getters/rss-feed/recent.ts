@@ -36,7 +36,11 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType;
 
 		const pastDate = getYesterday()
 		// TODO
-		pastDate.setDate(pastDate.getDate() - 7)
+		if (process.env.NODE_ENV === 'development') {
+			pastDate.setDate(pastDate.getDate() - 7)
+		} else {
+			pastDate.setDate(pastDate.getDate() - 7)
+		}
 		const filtered = podcast.episodes.filter(ep => {
 			return cleanDate(ep.pubDate) >= pastDate
 		})

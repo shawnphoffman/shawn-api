@@ -44,7 +44,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 	// 	bluesky: true,
 	// 	bskyHandle: ['blueharvest.bsky.social', 'stonedcobra.bsky.social'],
 	// 	homepage: 'https://myweirdfoot.com',
-	// 	refreshUrls: ['https://myweirdfoot.com/refresh', 'https://myweirdfoot.com/episodes'],
+	// 	refreshUrls: ['https://myweirdfoot.com/api/revalidate/episodes', 'https://myweirdfoot.com/episodes'],
 	// 	hashtags: ['#VideoGames', '#Podcast', '#HighPotion'],
 	// },
 	// {
@@ -56,7 +56,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 	// 	bluesky: true,
 	// 	bskyHandle: ['jammedtransmissions.com'],
 	// 	homepage: 'https://jammedtransmissions.com',
-	// 	refreshUrls: ['https://jammedtransmissions.com/refresh', 'https://jammedtransmissions.com/episodes'],
+	// 	refreshUrls: ['https://jammedtransmissions.com/api/revalidate/episodes', 'https://jammedtransmissions.com/episodes'],
 	// 	hashtags: ['#StarWars', '#Podcast', '#JammedTransmissions'],
 	// },
 	// {
@@ -147,7 +147,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 	// 	// refresh: refresh.medium,
 	// 	homepage: 'https://blueypodcast.com',
 	// 	bluesky: false,
-	// 	refreshUrls: ['https://blueypodcast.com/refresh', 'https://blueypodcast.com/episodes'],
+	// 	refreshUrls: ['https://blueypodcast.com/api/revalidate/episodes', 'https://blueypodcast.com/episodes'],
 	// 	hashtags: ['#Bluey', '#Podcast', '#DinnerWithTheHeelers'],
 	// },
 	{
@@ -156,10 +156,11 @@ export const podcastFeeds: PodFeedConfig[] = [
 		event: 'just-shillin-pod',
 		// refresh: refresh.short,
 		channel: WebhookChannel.Friends,
+		// channel: WebhookChannel.ShawnDev,
 		homepage: 'https://justshillin.com',
 		bluesky: true,
 		bskyHandle: ['shawn.party', 'minganna1972.bsky.social'],
-		refreshUrls: ['https://justshillin.com/refresh', 'https://justshillin.com/episodes'],
+		refreshUrls: ['https://justshillin.com/api/revalidate/episodes', 'https://justshillin.com/episodes'],
 		hashtags: ['#StarWars', '#Podcast', '#JustShillin'],
 	},
 ]

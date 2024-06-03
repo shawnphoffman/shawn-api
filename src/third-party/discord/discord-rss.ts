@@ -49,7 +49,7 @@ export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: 
 		const content = `**${name}**
 [*${item.title}*](${item.link || homepage})`
 
-		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}`
+		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?wait=true`
 
 		var myHeaders = new Headers()
 		myHeaders.append('Content-Type', 'application/json')
@@ -60,7 +60,7 @@ export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: 
 			body: JSON.stringify({
 				content,
 				username: `Podcast Bot (${name})`,
-				avatarURL: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
+				avatar_url: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
 				flags: 4,
 			}),
 		}

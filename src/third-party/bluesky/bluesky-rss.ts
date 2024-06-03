@@ -122,7 +122,9 @@ ${hashtags.join(' ')}`
 	}
 
 	console.log('================')
+	console.log('🦋🦋🦋')
 	console.log(record)
+	console.log('🦋🦋🦋')
 	console.log('================')
 
 	return record

@@ -100,6 +100,12 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 					console.log('⭕ Redis.overcast.not.exists', redisMember)
 
 					await pingOvercast(config.url)
+					await pingRefreshUrls(config.name, config.refreshUrls)
+					await sendNonPodWebhookRaw({
+						username: 'RSS Refresh URLs',
+						webhook: WebhookChannel.ShawnDev,
+						content: `Pinging refresh URLs for ${config.name}`,
+					})
 
 					redis.sadd(RedisKey.RssOvercast, redisMember)
 				} else {
@@ -107,15 +113,15 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				}
 			}
 
-			// Ping Refresh URLs?
-			if (config.refreshUrls?.length) {
-				await pingRefreshUrls(config.name, config.refreshUrls)
-				await sendNonPodWebhookRaw({
-					username: 'RSS Refresh URLs',
-					webhook: WebhookChannel.ShawnDev,
-					content: `Pinging refresh URLs for ${config.name}`,
-				})
-			}
+			// // Ping Refresh URLs?
+			// if (config.refreshUrls?.length) {
+			// 	await pingRefreshUrls(config.name, config.refreshUrls)
+			// 	await sendNonPodWebhookRaw({
+			// 		username: 'RSS Refresh URLs',
+			// 		webhook: WebhookChannel.ShawnDev,
+			// 		content: `Pinging refresh URLs for ${config.name}`,
+			// 	})
+			// }
 		}
 	} catch (error) {
 		log.error('Error processing message', error)

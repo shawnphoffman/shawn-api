@@ -24,7 +24,7 @@ ${newsItem.desc}
 #StarWars #StarWarsNews`
 }
 const createOutput = (news: NewsItem[]) => {
-	return news.map(c => `	- ${c.title}`).join('\n')
+	return `<ul>${news.map(c => `<li>${c.title}</li>`).join('')}</ul>`
 }
 
 //
@@ -34,7 +34,7 @@ async function processItems({ debug }) {
 	const news = await getAllNews()
 
 	if (!news.length) {
-		return 'No news today'
+		return '<i>No news today</i>'
 	}
 
 	try {

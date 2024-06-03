@@ -3,20 +3,29 @@ import { NextRequest } from 'next/server'
 import processNews from './_processNews'
 
 export const dynamic = 'force-dynamic'
-// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
 	// START
-	yield encoder.encode(`========================================\n\n🚀 Starting...\n\n`)
+	yield encoder.encode(`<h1>🚀 Starting...</h1>`)
 
 	// NEWS
-	const newsResp = await processNews({ debug })
-	yield encoder.encode(`✅ News:\n${newsResp}\n\n`)
+	if (debug) {
+		await new Promise(resolve => setTimeout(resolve, 1000))
+		yield encoder.encode(`<h1>✅ Fake Wait:</h1>`)
+	}
+
+	const newsResp = await processNews({ debug: false })
+	yield encoder.encode(`<h1>✅ News:</h1>${newsResp}`)
+
+	if (debug) {
+		await new Promise(resolve => setTimeout(resolve, 1000))
+		yield encoder.encode(`<h1>✅ Another Fake Wait:</h1>`)
+	}
 
 	// FINISH
-	yield encoder.encode(`🏁 Finished!\n\n========================================`)
+	yield encoder.encode(`<h1>🏁 Finished!</h1>`)
 }
 
 export async function GET(req: NextRequest) {
@@ -39,5 +48,9 @@ export async function GET(req: NextRequest) {
 		},
 	})
 
-	return new Response(stream)
+	return new Response(stream, {
+		headers: {
+			'Content-Type': 'text/html; charset=utf-8',
+		},
+	})
 }

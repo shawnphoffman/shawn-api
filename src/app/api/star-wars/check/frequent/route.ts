@@ -2,6 +2,9 @@ import { NextRequest } from 'next/server'
 
 import processNews from './_processNews'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
+
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
@@ -38,5 +41,3 @@ export async function GET(req: NextRequest) {
 
 	return new Response(stream)
 }
-
-export const dynamic = 'force-dynamic'

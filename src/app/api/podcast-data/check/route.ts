@@ -4,6 +4,9 @@ import { podcastFeeds } from '@/config/feeds/podcasts'
 
 import processFeeds from './_processFeeds'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
+
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
@@ -70,5 +73,3 @@ export async function GET(req: NextRequest) {
 		},
 	})
 }
-
-export const dynamic = 'force-dynamic'

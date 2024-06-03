@@ -6,6 +6,9 @@ import processComics from './_processComics'
 import processTv from './_processTv'
 import processWeeklyComics from './_processWeeklyComics'
 
+export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
+
 const encoder = new TextEncoder()
 
 async function* makeIterator({ debug }) {
@@ -64,5 +67,3 @@ export async function GET(req: NextRequest) {
 		},
 	})
 }
-
-export const dynamic = 'force-dynamic'

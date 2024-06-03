@@ -1,3 +1,6 @@
+export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
+
 function iteratorToStream(iterator: any) {
 	return new ReadableStream({
 		async pull(controller) {

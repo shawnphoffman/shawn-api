@@ -5,9 +5,11 @@ const ProxyEndpoints = [
 	'https://justshillin.com/api/revalidate',
 	'https://scruffypod.com/api/revalidate',
 	'https://blueypodcast.com/api/revalidate',
+	'https://jammedtransmissions.com/api/revalidate',
 	'https://dev.justshillin.com/api/revalidate',
 	'https://dev.scruffypod.com/api/revalidate',
 	'https://dev.blueypodcast.com/api/revalidate',
+	'https://dev.jammedtransmissions.com/api/revalidate',
 ]
 
 export async function POST(req: NextRequest) {

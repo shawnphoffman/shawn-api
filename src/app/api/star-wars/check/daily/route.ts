@@ -7,7 +7,7 @@ import processTv from './_processTv'
 import processWeeklyComics from './_processWeeklyComics'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 

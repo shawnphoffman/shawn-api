@@ -5,7 +5,7 @@ import { podcastFeeds } from '@/config/feeds/podcasts'
 import processFeeds from './_processFeeds'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 
@@ -47,6 +47,8 @@ async function* makeIterator({ debug }) {
 	// }
 }
 
+// export async function GET(context: { params: { foo: string } }) {
+// console.log(`EMPTY GET ${JSON.stringify(context.params)}`)
 export async function GET(req: NextRequest) {
 	// Basic
 	const { searchParams } = new URL(req.url)

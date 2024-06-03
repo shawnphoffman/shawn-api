@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server'
 import processNews from './_processNews'
 
 export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 const encoder = new TextEncoder()
 

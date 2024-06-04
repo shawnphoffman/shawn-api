@@ -65,11 +65,11 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.channel) {
 				const exists = await redis.sismember(RedisKey.RssDiscord, redisMember)
 				if (!exists) {
-					console.log('⭕ Redis.discord.not.exists', redisMember)
+					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
 					await sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: config.channel, homepage: config.homepage })
 					redis.sadd(RedisKey.RssDiscord, redisMember)
 				} else {
-					console.log('🔘 Redis.discord.exists', redisMember)
+					console.log('    🔘 Redis.discord.exists', redisMember)
 				}
 			}
 
@@ -77,7 +77,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.bluesky) {
 				const exists = await redis.sismember(RedisKey.RssBluesky, redisMember)
 				if (!exists) {
-					console.log('⭕ Redis.bluesky.not.exists', redisMember)
+					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
 
 					await postRssBleet({
 						name: config.name,
@@ -89,7 +89,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 
 					redis.sadd(RedisKey.RssBluesky, redisMember)
 				} else {
-					console.log('🔘 Redis.bluesky.exists', redisMember)
+					console.log('    🔘 Redis.bluesky.exists', redisMember)
 				}
 			}
 
@@ -97,7 +97,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			if (config.refreshUrls?.length && config.ping !== false) {
 				const exists = await redis.sismember(RedisKey.RssOvercast, redisMember)
 				if (!exists) {
-					console.log('⭕ Redis.overcast.not.exists', redisMember)
+					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
 
 					await pingOvercast(config.url)
 					await pingRefreshUrls(config.name, config.refreshUrls)
@@ -109,7 +109,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 
 					redis.sadd(RedisKey.RssOvercast, redisMember)
 				} else {
-					console.log('🔘 Redis.overcast.exists', redisMember)
+					console.log('    🔘 Redis.overcast.exists', redisMember)
 				}
 			}
 

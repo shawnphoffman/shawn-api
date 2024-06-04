@@ -148,7 +148,7 @@
 // 			if (feed.channel) {
 // 				const exists = await redis.sismember(RedisKey.Discord, redisMember)
 // 				if (!exists) {
-// 					console.log('⭕ Redis.discord.not.exists', redisMember)
+// 					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
 // 					const payload = formatYouTubeBody(feed.name, item)
 // 					await sendWebhookRaw(name, item, image, feed.channel, payload)
 // 					redis.sadd(RedisKey.Discord, redisMember)
@@ -160,7 +160,7 @@
 // 			if (feed.bluesky) {
 // 				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
 // 				if (!exists) {
-// 					console.log('⭕ Redis.bluesky.not.exists', redisMember)
+// 					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
 // 					postBleet({ name, item, homepage: feed.homepage, handle: feed.bskyHandle, hashtags: feed.hashtags })
 // 					redis.sadd(RedisKey.Bluesky, redisMember)
 // 				} else {

@@ -2,7 +2,7 @@ const botToken = process.env.DISCORD_BOT_TOKEN
 
 export const crossPostMessage = async (channelId: string, messageId: string) => {
 	try {
-		const url = `https://discord.com/api/channels/${channelId}/messages/${messageId}/crosspost`
+		const url = `https://discord.com/api/channels/${channelId}/messages/${messageId}/crosspost?wait=true`
 		const options = {
 			method: 'POST',
 			headers: {
@@ -31,7 +31,7 @@ export const sendDiscordWebhook = async (url, content, crossPost) => {
 		body: JSON.stringify(content),
 	}
 
-	const response = await fetch(url, requestOptions)
+	const response = await fetch(`${url}?wait=true`, requestOptions)
 
 	// console.log('-----------------')
 	console.log('WEBHOOK RESPONSE')

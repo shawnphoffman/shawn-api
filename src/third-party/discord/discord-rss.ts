@@ -92,7 +92,7 @@ type NonPodDiscordWebhookProps = {
 
 export const sendNonPodWebhookRaw = async ({ username, webhook, content }: NonPodDiscordWebhookProps) => {
 	try {
-		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}`
+		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?wait=true`
 
 		var myHeaders = new Headers()
 		myHeaders.append('Content-Type', 'application/json')

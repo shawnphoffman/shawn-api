@@ -3,7 +3,7 @@ import { log } from 'next-axiom'
 import { Comic, getAllComics } from '@/getters/star-wars/comics'
 import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 import { sendDiscordWebhook } from '@/third-party/discord/discord'
-import { cleanDate, displayDate, getToday, getTomorrow, isSameDate } from '@/utils/dates'
+import { cleanDate, displayDate, getToday, isSameDate } from '@/utils/dates'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -24,7 +24,7 @@ Release Date: ${displayDate(comic.pubDate)}
 #StarWars #Comics #NewRelease`
 }
 const createOutput = (comics: Comic[]) => {
-	return `<ul>${comics.map(c => `🦹‍♂️ ${c.title} - ${c.type} - ${displayDate(c.pubDate)}`).join('')}</ul>`
+	return `<ul>${comics.map(c => `<li>🦹‍♂️ ${c.title} - ${c.type} - ${displayDate(c.pubDate)}</li>`).join('')}</ul>`
 }
 
 //

@@ -32,7 +32,7 @@ Release Date: ${displayDate(book.pubDate)}
 #StarWars #Books #NewRelease`
 }
 const createOutput = (books: Book[]) => {
-	return `<ul>${books.map(c => `📙 ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${displayDate(c.pubDate)}`).join('')}</ul>`
+	return `<ul>${books.map(c => `<li>📙 ${c.title} - ${getAuthor(c.author)} - ${c.format} - ${displayDate(c.pubDate)}</li>`).join('')}</ul>`
 }
 
 //

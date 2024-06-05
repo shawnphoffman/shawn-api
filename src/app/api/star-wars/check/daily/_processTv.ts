@@ -4,6 +4,7 @@ import { getAllTv, TvShow } from '@/getters/star-wars/tv'
 import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 import { sendDiscordWebhook } from '@/third-party/discord/discord'
 import { cleanDate, displayDate, getToday, isSameDate } from '@/utils/dates'
+import { getOgImageUrl } from '@/utils/imageUtils'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -29,7 +30,7 @@ Release Date: ${displayDate(tv.pubDate)}
 #StarWars #TV #NewRelease`
 }
 const createOutput = (tv: TvShow[]) => {
-	return `<ul>${tv.map(c => `📺 ${c.series} - ${c.title} - ${c.episode} - ${displayDate(c.pubDate)}`).join('')}</ul>`
+	return `<ul>${tv.map(c => `<li>📺 ${c.series} - ${c.title} - ${c.episode} - ${displayDate(c.pubDate)}</li>`).join('')}</ul>`
 }
 
 //
@@ -38,6 +39,8 @@ const createOutput = (tv: TvShow[]) => {
 const processItems = async ({ debug }): Promise<string> => {
 	// Basics
 	const testDate = getToday()
+	testDate.setUTCDate(testDate.getUTCDate() - 5)
+	testDate.setUTCHours(0, 0, 0, 0)
 
 	// Get TV Shows
 	const tv = await getAllTv()
@@ -50,7 +53,8 @@ const processItems = async ({ debug }): Promise<string> => {
 		// 	pubDate,
 		// })
 
-		const test = isSameDate(testDate, pubDate)
+		// const test = isSameDate(testDate, pubDate)
+		const test = pubDate >= testDate && pubDate < new Date()
 		return test
 	})
 
@@ -61,6 +65,19 @@ const processItems = async ({ debug }): Promise<string> => {
 	try {
 		for (const c of outTv) {
 			const redisMember = `tv:${c.title}`
+
+			// console.log('📺', c)
+
+			if (c.title === 'TBA') {
+				console.log('🚧 Skipping: TBA Title', c)
+				continue
+			}
+
+			const imageUrl = await getOgImageUrl(c.url)
+			if (!imageUrl) {
+				console.log('🚧 Skipping: No Image', c)
+				continue
+			}
 
 			if (debug) {
 				continue

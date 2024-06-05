@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio'
 import { log } from 'next-axiom'
 import sharp from 'sharp'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const POST_IMG_MAX = {
 	width: 600,
@@ -63,10 +63,12 @@ export const getContentType = filename => {
 }
 
 export const getOgImageUrl = async url => {
-	const options = {
+	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+	const res = await fetch(url, {
 		method: 'GET',
-	}
-	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+		next: { revalidate: 60 * 15 }, // 10 minutes
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 

@@ -23,7 +23,7 @@ ${comics.map(c => c).join('\n')}
 #StarWars #Comics #NewReleases`
 }
 const createOutput = (comics: any[]) => {
-	return `<ul>${comics.map(c => c).join('')}</ul>`
+	return `<ul>${comics.map(c => `<li>📰 ${c}</li>`).join('')}</ul>`
 }
 
 //

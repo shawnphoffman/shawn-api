@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 //
 // TYPES
@@ -18,7 +18,12 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 	const options = {
 		method: 'GET',
 	}
-	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+	const res = await fetch(url, {
+		method: 'GET',
+		next: { revalidate: 60 * 15 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 

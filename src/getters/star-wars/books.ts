@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 //
 // TYPES
@@ -23,10 +23,15 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 2)
 
-	const options = {
+	// const options = {
+	// 	method: 'GET',
+	// }
+	// const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 60 })
+	const res = await fetch(altUrl, {
 		method: 'GET',
-	}
-	const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 60 })
+		next: { revalidate: 60 * 60 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 
@@ -78,10 +83,15 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 }
 
 export const getBooks = async (): Promise<Book[]> => {
-	const options = {
+	// const options = {
+	// 	method: 'GET',
+	// }
+	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 60 })
+	const res = await fetch(url, {
 		method: 'GET',
-	}
-	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 60 })
+		next: { revalidate: 60 * 60 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 

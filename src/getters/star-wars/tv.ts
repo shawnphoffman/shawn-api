@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 //
 // TYPES
@@ -17,14 +17,20 @@ export type TvShow = {
 const rootUrl = 'https://thetvdb.com'
 const listUrl = `${rootUrl}/lists/13864`
 
-const options = {
-	method: 'GET',
-}
+// const options = {
+// 	method: 'GET',
+// }
 
 const fetchChild = async (childUrl: string): Promise<TvShow[]> => {
 	const url = `https://thetvdb.com${childUrl}/allseasons/official`
 
-	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+	const res = await fetch(url, {
+		method: 'GET',
+		next: { revalidate: 60 * 15 },
+	})
+	const data = await res.text()
+
 	const $ = cheerio.load(data)
 
 	const seriesTitle = $('.crumbs a:nth-child(3)').text().trim()
@@ -80,7 +86,13 @@ const fetchChild = async (childUrl: string): Promise<TvShow[]> => {
 export async function getTv(): Promise<TvShow[]> {
 	// Response is an array of future TV episodes
 	let response: TvShow[] = []
-	const data = await fetchHtmlWithCache({ url: listUrl, options, cacheMinutes: 15 })
+
+	// const data = await fetchHtmlWithCache({ url: listUrl, options, cacheMinutes: 15 })
+	const res = await fetch(listUrl, {
+		method: 'GET',
+		next: { revalidate: 60 * 15 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 
@@ -111,7 +123,7 @@ export async function getTv(): Promise<TvShow[]> {
 	// console.log("RETURNING");
 
 	var yesterday = new Date()
-	yesterday.setDate(yesterday.getDate() - 2)
+	yesterday.setDate(yesterday.getDate() - 5)
 
 	const filtered = response.filter(r => r.pubDate > yesterday)
 

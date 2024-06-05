@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+// import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 //
 // TYPES
@@ -21,10 +21,15 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 	var yesterday = new Date()
 	yesterday.setDate(yesterday.getDate() - 4)
 
-	const options = {
+	// const options = {
+	// 	method: 'GET',
+	// }
+	// const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 30 })
+	const res = await fetch(altUrl, {
 		method: 'GET',
-	}
-	const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 30 })
+		next: { revalidate: 60 * 30 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 
@@ -76,10 +81,15 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 }
 
 const getComics = async (): Promise<Comic[]> => {
-	const options = {
+	// const options = {
+	// 	method: 'GET',
+	// }
+	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 30 })
+	const res = await fetch(url, {
 		method: 'GET',
-	}
-	const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 30 })
+		next: { revalidate: 60 * 30 },
+	})
+	const data = await res.text()
 
 	const $ = cheerio.load(data)
 
@@ -155,7 +165,13 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	}
 
 	const ogScrape = 'https://comicdbase.com/'
-	const ogData = await fetchHtmlWithCache({ url: ogScrape, options, cacheMinutes: 15 })
+	// const ogData = await fetchHtmlWithCache({ url: ogScrape, options, cacheMinutes: 15 })
+	const res = await fetch(ogScrape, {
+		method: 'GET',
+		next: { revalidate: 60 * 15 },
+	})
+	const ogData = await res.text()
+
 	const $$ = cheerio.load(ogData)
 
 	const scrape = $$('article a').first().attr('href')
@@ -166,7 +182,12 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	}
 
 	// const scrape = 'https://comicdbase.com/weekly-comic-list-march-27th-2024/'
-	const data = await fetchHtmlWithCache({ url: scrape, options, cacheMinutes: 15 })
+	// const data = await fetchHtmlWithCache({ url: scrape, options, cacheMinutes: 15 })
+	const res2 = await fetch(scrape, {
+		method: 'GET',
+		next: { revalidate: 60 * 15 },
+	})
+	const data = await res2.text()
 	const $ = cheerio.load(data)
 
 	const pageTitle = $('h1').text().trim()

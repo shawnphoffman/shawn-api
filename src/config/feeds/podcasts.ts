@@ -31,7 +31,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		channel: WebhookChannel.BlueHarvest,
 		bluesky: false,
 		ping: false,
-		refreshUrls: ['https://blueharvest.rocks/patreon-preview'],
+		refreshUrls: ['https://blueharvest.rocks/api/revalidate/patreon', 'https://blueharvest.rocks/patreon-preview'],
 		hashtags: ['#StarWars', '#Podcast', '#BlueHarvest'],
 	},
 	{

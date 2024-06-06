@@ -1,13 +1,3 @@
-// import { postBleet } from '../bluesky/bluesky'
-// import { sendNonPodWebhookRaw, sendWebhook } from '../discord/discord'
-// import pingOvercast from '../notifiers/overcast'
-// import pingRefreshUrl from '../notifiers/urls'
-// import redis, { RedisKey } from '../redis/redis'
-// import RssFeedEmitter from '../rss-feed-emitter'
-// import FeedItem from '../rss-feed-emitter/FeedItem'
-// import { getItemImage } from '../../utils/imageUtils'
-// import { logItem } from '../utils/logging'
-// import refresh from '../../utils/refreshIntervals'
 import WebhookChannel from '@/third-party/discord/webhookChannels'
 
 import type { PodFeedConfig } from './types'
@@ -27,7 +17,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		name: 'Blue Harvest Patreon',
 		url: process.env.RSS_BLUE_HARVEST_PATREON!,
 		event: 'blue-harvest-patreon',
-		// refresh: refresh.medium,
 		channel: WebhookChannel.BlueHarvest,
 		bluesky: false,
 		ping: false,
@@ -42,7 +31,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['blueharvest.bsky.social', 'stonedcobra.bsky.social'],
 		homepage: 'https://myweirdfoot.com',
-		// refreshUrls: ['https://myweirdfoot.com/api/revalidate/episodes', 'https://myweirdfoot.com/episodes'],
 		refreshUrls: ['https://myweirdfoot.com/api/revalidate/episodes'],
 		hashtags: ['#VideoGames', '#Podcast', '#HighPotion'],
 	},
@@ -54,7 +42,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['jammedtransmissions.com'],
 		homepage: 'https://jammedtransmissions.com',
-		// refreshUrls: ['https://jammedtransmissions.com/api/revalidate/episodes', 'https://jammedtransmissions.com/episodes'],
 		refreshUrls: ['https://jammedtransmissions.com/api/revalidate/episodes'],
 		hashtags: ['#StarWars', '#Podcast', '#JammedTransmissions'],
 	},
@@ -83,7 +70,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		event: 'scruffys',
 		channel: WebhookChannel.Friends,
 		bluesky: true,
-		// refreshUrls: ['https://scruffypod.com/api/revalidate/episodes', 'https://scruffypod.com/episodes'],
 		refreshUrls: ['https://scruffypod.com/api/revalidate/episodes'],
 		homepage: 'https://scruffypod.com',
 		hashtags: ['#StarWars', '#Podcast', '#ScruffyLookingPodcasters'],
@@ -100,7 +86,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 	},
 	{
 		name: 'Star Wars Spelt Out',
-		// url: 'https://feed.podbean.com/starwarsspeltout/feed.xml',
 		url: 'https://anchor.fm/s/f4ac5590/podcast/rss',
 		event: 'spelt-out',
 		channel: WebhookChannel.Friends,
@@ -140,7 +125,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		event: 'bluey-pod',
 		homepage: 'https://blueypodcast.com',
 		bluesky: false,
-		// refreshUrls: ['https://blueypodcast.com/api/revalidate/episodes', 'https://blueypodcast.com/episodes'],
 		refreshUrls: ['https://blueypodcast.com/api/revalidate/episodes'],
 		hashtags: ['#Bluey', '#Podcast', '#DinnerWithTheHeelers'],
 	},
@@ -153,87 +137,6 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['shawn.party', 'minganna1972.bsky.social'],
 		refreshUrls: ['https://justshillin.com/api/revalidate/episodes'],
-		// refreshUrls: ['https://justshillin.com/api/revalidate/episodes', 'https://justshillin.com/episodes'],
 		hashtags: ['#StarWars', '#Podcast', '#JustShillin'],
 	},
 ]
-
-// const init = (feeder: RssFeedEmitter) => {
-// 	console.log('================')
-// 	console.log('INIT PODCASTS...')
-// 	console.log('================')
-
-// 	podcasts.forEach(feed => {
-// 		// Add the feed
-// 		console.log(`Adding feed: ${feed.name}`)
-// 		feeder.add({
-// 			url: feed.url,
-// 			refresh: feed.refresh,
-// 			eventName: feed.event,
-// 		})
-
-// 		// Register the event
-// 		console.log(`Adding event: ${feed.event}`)
-// 		feeder.on(feed.event, async function (item: FeedItem) {
-// 			const name = feed.name
-// 			const image = getItemImage(item)
-
-// 			const yesterday = new Date()
-// 			yesterday.setDate(yesterday.getDate() - 1)
-// 			if (item.date < yesterday) {
-// 				// console.log('TOO OLD', `${name}: ${item.title}`)
-// 				return
-// 			}
-
-// 			logItem(name, item)
-
-// 			const redisMember = `${feed.event}:${item.guid}`
-
-// 			// Post to Discord?
-// 			if (feed.channel) {
-// 				const exists = await redis.sismember(RedisKey.Discord, redisMember)
-// 				if (!exists) {
-// 					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
-// 					await sendWebhook(name, item, image, feed.channel, feed.homepage)
-// 					redis.sadd(RedisKey.Discord, redisMember)
-// 				} else {
-// 					console.log('🆗 Redis.discord.exists', redisMember)
-// 				}
-// 			}
-
-// 			// Post to BlueSky?
-// 			if (feed.bluesky) {
-// 				const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
-// 				if (!exists) {
-// 					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
-// 					postBleet({ name, item, homepage: feed.homepage, handle: feed.bskyHandle, hashtags: feed.hashtags })
-// 					redis.sadd(RedisKey.Bluesky, redisMember)
-// 				} else {
-// 					console.log('🆗 Redis.bluesky.exists', redisMember)
-// 				}
-// 			}
-
-// 			// Ping Overcast?
-// 			if (feed.ping !== false) {
-// 				const exists = await redis.sismember(RedisKey.Overcast, redisMember)
-// 				if (!exists) {
-// 					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
-// 					pingOvercast(feed.url)
-// 					redis.sadd(RedisKey.Overcast, redisMember)
-// 				} else {
-// 					console.log('🆗 Redis.overcast.exists', redisMember)
-// 				}
-// 			}
-
-// 			// Ping Refresh URLs?
-// 			if (feed.refreshUrls?.length > 0) {
-// 				pingRefreshUrl(name, feed.refreshUrls)
-// 				sendNonPodWebhookRaw('RSS Refresh URLs', WebhookChannel.ShawnDev, `Pinging refresh URLs for ${name}`)
-// 			}
-// 		})
-
-// 		console.log('')
-// 	})
-// }
-
-// export default init

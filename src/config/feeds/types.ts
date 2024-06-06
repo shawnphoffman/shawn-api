@@ -6,7 +6,6 @@ export type FeedConfig = {
 	name: string
 	url: string
 	event: string
-	// refresh: number
 	channel?: DiscordWebhookConfig
 	bluesky: boolean
 	bskyHandle?: string[]

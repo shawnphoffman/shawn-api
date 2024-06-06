@@ -40,9 +40,15 @@ export async function GET(request: Request) {
 		})
 
 		if (matchingImages.length === 0) {
-			return {
-				error: 'No matching images found',
-			}
+			return NextResponse.json(
+				{
+					error: {
+						error: 'No matching images found',
+						url,
+					},
+				},
+				{ status: 400 }
+			)
 		}
 
 		const mainStar = matchingImages[0]
@@ -61,7 +67,7 @@ export async function GET(request: Request) {
 						url,
 					},
 				},
-				{ status: 500 }
+				{ status: 400 }
 			)
 		}
 

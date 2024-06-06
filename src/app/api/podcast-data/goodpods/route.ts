@@ -1,10 +1,6 @@
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
 
-import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
-
-export const dynamic = 'force-dynamic'
-
 // Source URL
 // https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podcast-277737
 
@@ -17,63 +13,56 @@ export const dynamic = 'force-dynamic'
 // https://storage.googleapis.com/goodpods-images-bucket/leaderboard_badges/leisure_all-leisure_top50_month.avif
 // https://storage.googleapis.com/goodpods-images-bucket/leaderboard_badges/leisure_all-leisure_top50_month.png
 
-const url = 'https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podcast-277737'
+// const url = 'https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podcast-277737'
 
-export async function GET(_request: Request) {
-	// return NextResponse.json({ hello: 'world' })
+export async function GET(request: Request) {
+	const { searchParams } = new URL(request.url)
+	const url = searchParams.get('url')
+
+	if (!url) {
+		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
 	try {
-		const options = {
-			method: 'GET',
-		}
-		const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
+		const res = await fetch(url, {
+			next: {
+				revalidate: 60 * 15,
+			},
+		})
+		const data = await res.text()
 
-		console.log('Data:', data)
+		// console.log('Data:', data)
 
 		const $ = cheerio.load(data)
 
-		// const pageTitle = $('h1').text().trim()
+		const matchingImages = $('img').filter(function () {
+			return Boolean($(this).attr('alt') && $(this).attr('alt')!.toLowerCase().includes('star filled'))
+		})
 
-		// console.log(`Title: ${pageTitle}`)
-
-		const leaderboardImage = $('img')
-			.map((i, e) => $(e).attr('src'))
-			.toArray()
-
-		// const rating = $('.we-customer-ratings__averages__display').text()
-		// const ratingString = $('.we-customer-ratings__averages').text()
-
-		// console.log(`Rating: ${rating}, RatingString: ${ratingString}`)
-
-		// // Collect Reviews
-		// const reviews = $('.we-customer-review')
-		// 	.map(function () {
-		// 		const title = $(this).find('h3').text().trim()
-		// 		const author = $(this).find('.we-customer-review__user').text().trim()
-		// 		const date = $(this).find('time').text().trim()
-		// 		const text = $(this).find('p').text().trim()
-		// 		const stars = $(this).find('figure').attr('aria-label').replace(' out of 5', '')
-
-		// 		return {
-		// 			title,
-		// 			author,
-		// 			date,
-		// 			text,
-		// 			stars,
-		// 		}
-		// 	})
-		// 	.toArray()
-
-		// console.log(`Review Count: ${reviews.length}`)
-
-		const response = {
-			// rating,
-			// ratingString,
-			// ratingsUrl: url,
-			// reviews,
-			leaderboardImage,
+		if (matchingImages.length === 0) {
+			return {
+				error: 'No matching images found',
+			}
 		}
 
-		// res.status(200).send({ ...response, url })
+		const mainStar = matchingImages[0]
+		// console.log('Star: ', $(mainStar).attr('src'))
+
+		const mainSiblings = $(mainStar).siblings()
+		// console.log('Sibling: ', $(mainSiblings).text())
+
+		const parsedRatingNumber = parseFloat($(mainSiblings)?.text())
+
+		if (isNaN(parsedRatingNumber)) {
+			return {
+				error: 'No rating found',
+			}
+		}
+
+		const response = {
+			rating: parsedRatingNumber,
+		}
+
 		return NextResponse.json({ ...response, url })
 	} catch (error) {
 		console.log('Error:', error)

@@ -54,9 +54,15 @@ export async function GET(request: Request) {
 		const parsedRatingNumber = parseFloat($(mainSiblings)?.text())
 
 		if (isNaN(parsedRatingNumber)) {
-			return {
-				error: 'No rating found',
-			}
+			return NextResponse.json(
+				{
+					error: {
+						message: 'No rating found',
+						url,
+					},
+				},
+				{ status: 500 }
+			)
 		}
 
 		const response = {

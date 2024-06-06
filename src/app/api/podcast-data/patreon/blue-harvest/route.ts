@@ -25,12 +25,13 @@ export async function GET() {
 		})
 
 		const response = sorted.slice(0, 20).map(i => {
-			const { guid, title, pubDate, link } = i
+			const { guid, title, pubDate, link, description } = i
 			return {
 				title,
 				guid: guid.$t,
 				pubDate,
 				link,
+				description,
 			}
 		})
 

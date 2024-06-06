@@ -6,12 +6,14 @@ const ProxyEndpoints = [
 	// 'http://localhost:3000/api/revalidate',
 	'https://justshillin.com/api/revalidate',
 	'https://scruffypod.com/api/revalidate',
-	'https://blueypodcast.com/api/revalidate',
 	'https://jammedtransmissions.com/api/revalidate',
+	'https://blueharvest.rocks/api/revalidate',
+	'https://blueypodcast.com/api/revalidate',
 	'https://dev.justshillin.com/api/revalidate',
 	'https://dev.scruffypod.com/api/revalidate',
-	'https://dev.blueypodcast.com/api/revalidate',
 	'https://dev.jammedtransmissions.com/api/revalidate',
+	'https://dev.blueharvest.rocks.com/api/revalidate',
+	'https://dev.blueypodcast.com/api/revalidate',
 ]
 
 export async function POST(req: NextRequest) {

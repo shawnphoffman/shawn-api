@@ -12,7 +12,7 @@ const ProxyEndpoints = [
 	'https://dev.justshillin.com/api/revalidate',
 	'https://dev.scruffypod.com/api/revalidate',
 	'https://dev.jammedtransmissions.com/api/revalidate',
-	'https://dev.blueharvest.rocks.com/api/revalidate',
+	'https://dev.blueharvest.rocks/api/revalidate',
 	'https://dev.blueypodcast.com/api/revalidate',
 ]
 

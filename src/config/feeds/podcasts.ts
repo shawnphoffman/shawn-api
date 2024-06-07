@@ -11,6 +11,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['blueharvest.bsky.social'],
 		homepage: 'https://blueharvest.rocks',
+		refreshUrls: ['https://blueharvest.rocks/api/revalidate/episodes'],
 		hashtags: ['#StarWars', '#Podcast', '#BlueHarvest'],
 	},
 	{
@@ -20,7 +21,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		channel: WebhookChannel.BlueHarvest,
 		bluesky: false,
 		ping: false,
-		refreshUrls: ['https://blueharvest.rocks/api/revalidate/patreon', 'https://blueharvest.rocks/patreon-preview'],
+		refreshUrls: ['https://blueharvest.rocks/api/revalidate/patreon?force=true', 'https://blueharvest.rocks/patreon-preview'],
 		hashtags: ['#StarWars', '#Podcast', '#BlueHarvest'],
 	},
 	{

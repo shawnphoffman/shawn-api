@@ -11,7 +11,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['blueharvest.bsky.social'],
 		homepage: 'https://blueharvest.rocks',
-		refreshUrls: ['https://blueharvest.rocks/api/revalidate/episodes'],
+		refreshUrls: ['https://blueharvest.rocks/api/revalidate/episodes?force=true'],
 		hashtags: ['#StarWars', '#Podcast', '#BlueHarvest'],
 	},
 	{
@@ -32,7 +32,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['blueharvest.bsky.social', 'stonedcobra.bsky.social'],
 		homepage: 'https://myweirdfoot.com',
-		refreshUrls: ['https://myweirdfoot.com/api/revalidate/episodes'],
+		refreshUrls: ['https://myweirdfoot.com/api/revalidate/episodes?force=true'],
 		hashtags: ['#VideoGames', '#Podcast', '#HighPotion'],
 	},
 	{
@@ -43,7 +43,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bluesky: true,
 		bskyHandle: ['jammedtransmissions.com'],
 		homepage: 'https://jammedtransmissions.com',
-		refreshUrls: ['https://jammedtransmissions.com/api/revalidate/episodes'],
+		refreshUrls: ['https://jammedtransmissions.com/api/revalidate/episodes?force=true'],
 		hashtags: ['#StarWars', '#Podcast', '#JammedTransmissions'],
 	},
 	{
@@ -71,7 +71,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		event: 'scruffys',
 		channel: WebhookChannel.Friends,
 		bluesky: true,
-		refreshUrls: ['https://scruffypod.com/api/revalidate/episodes'],
+		refreshUrls: ['https://scruffypod.com/api/revalidate/episodes?force=true'],
 		homepage: 'https://scruffypod.com',
 		hashtags: ['#StarWars', '#Podcast', '#ScruffyLookingPodcasters'],
 	},
@@ -126,7 +126,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		event: 'bluey-pod',
 		homepage: 'https://blueypodcast.com',
 		bluesky: false,
-		refreshUrls: ['https://blueypodcast.com/api/revalidate/episodes'],
+		refreshUrls: ['https://blueypodcast.com/api/revalidate/episodes?force=true'],
 		hashtags: ['#Bluey', '#Podcast', '#DinnerWithTheHeelers'],
 	},
 	{
@@ -137,7 +137,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		homepage: 'https://justshillin.com',
 		bluesky: true,
 		bskyHandle: ['shawn.party', 'minganna1972.bsky.social'],
-		refreshUrls: ['https://justshillin.com/api/revalidate/episodes'],
+		refreshUrls: ['https://justshillin.com/api/revalidate/episodes?force=true'],
 		hashtags: ['#StarWars', '#Podcast', '#JustShillin'],
 	},
 ]

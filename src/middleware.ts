@@ -8,6 +8,7 @@ const whitelistPodSites = [
 	'myweirdfoot.com',
 	'blueypodcast.com',
 	'shawn.party',
+	'localhost',
 ]
 
 const corsHeaders = {
@@ -31,7 +32,7 @@ export function middleware(request: NextRequest) {
 		}
 
 		// if the incoming is for the desired API endpoint
-		if (request.nextUrl.pathname === '/api/star-wars/name-generator') {
+		if (request.nextUrl.pathname === '/api/star-wars/name-generator' || request.nextUrl.pathname.includes('/open-graph')) {
 			Object.entries(corsHeaders).forEach(([key, value]) => {
 				response.headers.append(key, value)
 			})

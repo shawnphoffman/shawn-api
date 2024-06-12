@@ -94,34 +94,33 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 			}
 
 			// Ping Overcast?
-			if (config.refreshUrls?.length && config.ping !== false) {
+			if (config.ping !== false) {
 				const exists = await redis.sismember(RedisKey.RssOvercast, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
-
 					await pingOvercast(config.url)
-					await pingRefreshUrls(config.name, config.refreshUrls)
-					await sendNonPodWebhookRaw({
-						username: 'RSS Refresh URLs',
-						webhook: WebhookChannel.ShawnDev,
-						content: `Pinging refresh URLs for ${config.name}`,
-					})
-
 					redis.sadd(RedisKey.RssOvercast, redisMember)
 				} else {
 					console.log('    🔘 Redis.overcast.exists', redisMember)
 				}
 			}
 
-			// // Ping Refresh URLs?
-			// if (config.refreshUrls?.length) {
-			// 	await pingRefreshUrls(config.name, config.refreshUrls)
-			// 	await sendNonPodWebhookRaw({
-			// 		username: 'RSS Refresh URLs',
-			// 		webhook: WebhookChannel.ShawnDev,
-			// 		content: `Pinging refresh URLs for ${config.name}`,
-			// 	})
-			// }
+			// Ping Refresh URLs?
+			if (config.refreshUrls?.length) {
+				const exists = await redis.sismember(RedisKey.RssRefresh, redisMember)
+				if (!exists) {
+					console.log('    ⚪️ Redis.refresh.not.exists', redisMember)
+					await pingRefreshUrls(config.name, config.refreshUrls)
+					await sendNonPodWebhookRaw({
+						username: 'RSS Refresh URLs',
+						webhook: WebhookChannel.ShawnDev,
+						content: `Pinging refresh URLs for ${config.name}`,
+					})
+					redis.sadd(RedisKey.RssRefresh, redisMember)
+				} else {
+					console.log('    🔘 Redis.refresh.exists', redisMember)
+				}
+			}
 		}
 	} catch (error) {
 		log.error('Error processing message', error)

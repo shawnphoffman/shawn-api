@@ -7,6 +7,7 @@ export const RedisKey = {
 	RssDiscord: 'rss:discord',
 	RssBluesky: 'rss:bsky',
 	RssOvercast: 'rss:overcast',
+	RssRefresh: 'rss:refresh',
 	RssShawnApi: 'rss:shawn-api',
 	//
 	TestDiscord: 'test:discord',

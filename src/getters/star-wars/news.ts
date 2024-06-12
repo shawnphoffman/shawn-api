@@ -21,7 +21,7 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 	const res = await fetch(url, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 },
+		next: { revalidate: 900 },
 	})
 	const data = await res.text()
 

@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 	try {
 		const res = await fetch(url, {
 			next: {
-				revalidate: 60 * 15,
+				revalidate: 900,
 			},
 		})
 		const data = await res.text()

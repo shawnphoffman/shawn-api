@@ -29,7 +29,7 @@ export const getBooksAlt = async (): Promise<Book[]> => {
 	// const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 60 })
 	const res = await fetch(altUrl, {
 		method: 'GET',
-		next: { revalidate: 60 * 60 },
+		next: { revalidate: 3600 },
 	})
 	const data = await res.text()
 
@@ -89,7 +89,7 @@ export const getBooks = async (): Promise<Book[]> => {
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 60 })
 	const res = await fetch(url, {
 		method: 'GET',
-		next: { revalidate: 60 * 60 },
+		next: { revalidate: 3600 },
 	})
 	const data = await res.text()
 

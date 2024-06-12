@@ -27,7 +27,8 @@ const fetchChild = async (childUrl: string): Promise<TvShow[]> => {
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 	const res = await fetch(url, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 },
+		cache: 'no-store',
+		// next: { revalidate: 60 * 15 },
 	})
 	const data = await res.text()
 
@@ -90,7 +91,7 @@ export async function getTv(): Promise<TvShow[]> {
 	// const data = await fetchHtmlWithCache({ url: listUrl, options, cacheMinutes: 15 })
 	const res = await fetch(listUrl, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 },
+		next: { revalidate: 300 },
 	})
 	const data = await res.text()
 

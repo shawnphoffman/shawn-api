@@ -21,7 +21,7 @@ export const GET = withAxiom(async (req: AxiomRequest) => {
 		// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 		const res = await fetch(scrape, {
 			method: 'GET',
-			next: { revalidate: 60 * 15 }, // 10 minutes
+			next: { revalidate: 300 },
 		})
 		const data = await res.text()
 

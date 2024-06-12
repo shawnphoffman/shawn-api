@@ -27,7 +27,7 @@ const getComicsAlt = async (): Promise<Comic[]> => {
 	// const data = await fetchHtmlWithCache({ url: altUrl, options, cacheMinutes: 30 })
 	const res = await fetch(altUrl, {
 		method: 'GET',
-		next: { revalidate: 60 * 30 },
+		next: { revalidate: 1800 },
 	})
 	const data = await res.text()
 
@@ -87,7 +87,7 @@ const getComics = async (): Promise<Comic[]> => {
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 30 })
 	const res = await fetch(url, {
 		method: 'GET',
-		next: { revalidate: 60 * 30 },
+		next: { revalidate: 1800 },
 	})
 	const data = await res.text()
 
@@ -168,7 +168,7 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	// const ogData = await fetchHtmlWithCache({ url: ogScrape, options, cacheMinutes: 15 })
 	const res = await fetch(ogScrape, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 },
+		next: { revalidate: 900 },
 	})
 	const ogData = await res.text()
 
@@ -185,7 +185,7 @@ export const getWeeklyComics = async (): Promise<{ title: string; comics: Weekly
 	// const data = await fetchHtmlWithCache({ url: scrape, options, cacheMinutes: 15 })
 	const res2 = await fetch(scrape, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 },
+		next: { revalidate: 900 },
 	})
 	const data = await res2.text()
 	const $ = cheerio.load(data)

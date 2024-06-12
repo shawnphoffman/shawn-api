@@ -66,7 +66,7 @@ export const getOgImageUrl = async url => {
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 	const res = await fetch(url, {
 		method: 'GET',
-		next: { revalidate: 60 * 15 }, // 10 minutes
+		next: { revalidate: 600 },
 	})
 	const data = await res.text()
 

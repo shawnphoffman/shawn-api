@@ -24,7 +24,7 @@ import redis, { RedisKey } from '@/utils/redis'
 // #StarWars #StarWarsNews`
 // }
 const createOutput = (episodes: any[]) => {
-	return `<ul>${episodes.map(c => `⭐ ${c.title}`).join('')}</ul>`
+	return `<ul>${episodes.map(c => `<li>⭐ ${c.title}</li>`).join('')}</ul>`
 }
 
 //

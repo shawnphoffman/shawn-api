@@ -25,7 +25,8 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType;
 	try {
 		const res = await fetch(url, {
 			method: 'GET',
-			next: { revalidate: 600 }, // 10 minutes
+			// next: { revalidate: 60 }, // 10 minutes
+			cache: 'no-store',
 		})
 		const data = await res.text()
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)

@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 	const bodyText = await req.text()
 
 	try {
-		log.info('API Sanity Webhook Body', { bodyText })
+		log.info('API Sanity Webhook Body', { body: JSON.parse(bodyText) })
 	} catch (error) {
 		console.error('API Sanity Webhook Body Catch', error)
 	}

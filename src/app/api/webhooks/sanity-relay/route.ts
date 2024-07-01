@@ -22,6 +22,13 @@ const ProxyEndpoints = [
 export async function POST(req: NextRequest) {
 	//
 	const bodyText = await req.text()
+
+	try {
+		log.info('API Sanity Webhook Body', { bodyText })
+	} catch (error) {
+		console.error('API Sanity Webhook Body Catch', error)
+	}
+
 	//
 	const responses: { endpoint: string; status: string; message?: string; misc?: any; statusText?: string }[] = []
 	//
@@ -45,12 +52,6 @@ export async function POST(req: NextRequest) {
 			}
 		})
 	)
-
-	try {
-		log.info('API Sanity Webhook Body', { bodyText })
-	} catch {
-		log.error('API Sanity Webhook Body Catch', { bodyText })
-	}
 
 	return NextResponse.json({ responses })
 }

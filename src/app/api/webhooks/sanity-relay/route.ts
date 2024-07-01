@@ -1,10 +1,5 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { log } from 'next-axiom'
-import { parseBody } from 'next-sanity/webhook'
-
-type WebhookPayload = {
-	_type: string
-}
 
 export const maxDuration = 60
 
@@ -51,10 +46,11 @@ export async function POST(req: NextRequest) {
 		})
 	)
 
-	const { body } = await parseBody<WebhookPayload>(req, process.env.SANITY_REVALIDATE_SECRET)
-	if (body) {
-		log.info('API Sanity Webhook Body', JSON.parse(JSON.stringify(body)))
-	}
+	try {
+		if (bodyText) {
+			log.info('API Sanity Webhook Body', JSON.parse(bodyText))
+		}
+	} catch {}
 
 	return NextResponse.json({ responses })
 }

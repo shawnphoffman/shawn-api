@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
 
 	const { body } = await parseBody<WebhookPayload>(req, process.env.SANITY_REVALIDATE_SECRET)
 	if (body) {
-		log.info('API Sanity Webhook Body', body)
+		log.info('API Sanity Webhook Body', JSON.parse(JSON.stringify(body)))
 	}
 
 	return NextResponse.json({ responses })

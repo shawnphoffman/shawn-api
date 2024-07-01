@@ -47,10 +47,10 @@ export async function POST(req: NextRequest) {
 	)
 
 	try {
-		if (bodyText) {
-			log.info('API Sanity Webhook Body', JSON.parse(bodyText))
-		}
-	} catch {}
+		log.info('API Sanity Webhook Body', { bodyText })
+	} catch {
+		log.error('API Sanity Webhook Body Catch', { bodyText })
+	}
 
 	return NextResponse.json({ responses })
 }

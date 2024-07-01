@@ -1,4 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server'
+import { log } from 'next-axiom'
+import { parseBody } from 'next-sanity/webhook'
+
+type WebhookPayload = {
+	_type: string
+}
 
 export const maxDuration = 60
 
@@ -23,8 +29,7 @@ export async function POST(req: NextRequest) {
 	const bodyText = await req.text()
 	//
 	const responses: { endpoint: string; status: string; message?: string; misc?: any; statusText?: string }[] = []
-
-	// for (const endpoint of ProxyEndpoints) {
+	//
 	await Promise.all(
 		ProxyEndpoints.map(async endpoint => {
 			try {
@@ -37,14 +42,19 @@ export async function POST(req: NextRequest) {
 					responses.push({ endpoint, status: 'success' })
 				} else {
 					responses.push({ endpoint, status: 'error', message: 'Invalid response status', misc: response, statusText: response.statusText })
-					console.error(`Endpoint Error: ${endpoint}`, response.statusText, response)
+					console.error(`API Sanity Webhook Error: ${endpoint}`, response.statusText, response)
 				}
 			} catch (err) {
 				responses.push({ endpoint, status: 'exception', message: err.message })
-				console.error(`Endpoint Error: ${endpoint}`, err)
+				console.error(`API Sanity Webhook Exception: ${endpoint}`, err)
 			}
 		})
 	)
+
+	const { body } = await parseBody<WebhookPayload>(req, process.env.SANITY_REVALIDATE_SECRET)
+	if (body) {
+		log.info('API Sanity Webhook Body', body)
+	}
 
 	return NextResponse.json({ responses })
 }

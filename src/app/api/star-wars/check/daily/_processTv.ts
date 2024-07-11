@@ -65,6 +65,7 @@ const processItems = async ({ debug }): Promise<string> => {
 	try {
 		for (const c of outTv) {
 			const redisMember = `tv:${c.title}`
+			// TODO Change this to use the link instead
 
 			// console.log('📺', c)
 
@@ -89,7 +90,7 @@ const processItems = async ({ debug }): Promise<string> => {
 				await sendDiscordWebhook(
 					process.env.DISCORD_WEBHOOK_TV,
 					{
-						username: `TV Shows Premiering (${displayDate(testDate)})`,
+						username: `TV Shows Premiering`,
 						content: createMessageForDiscord(c),
 						avatar_url: 'https://blueharvest.rocks/bots/bh_teal@2x.png',
 					},

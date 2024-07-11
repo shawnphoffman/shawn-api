@@ -17,12 +17,18 @@ const blacklistWords = ['quiz', 'trivia', 'recipe']
 // FORMATTERS
 //
 const formatNewsForBsky = (newsItem: NewsItem) => {
-	return `${newsItem.title}
+	let news = `${newsItem.title}`
+	// return `${newsItem.title}
 
-${newsItem.desc}
+	if (newsItem.desc) {
+		news += `\n\n${newsItem.desc}`
+	}
 
-#StarWars #StarWarsNews`
+	news += `\n\n#StarWars #StarWarsNews`
+
+	return news
 }
+
 const createOutput = (news: NewsItem[]) => {
 	return `<ul>${news.map(c => `<li>${c.title}</li>`).join('')}</ul>`
 }

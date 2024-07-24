@@ -47,7 +47,7 @@ type RssDiscordWebhookProps = {
 export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: RssDiscordWebhookProps) => {
 	try {
 		const content = `**${name}**
-[*${item.title}*](${item.link || homepage})`
+[*${item.title.trim()}*](${item.link || homepage})`
 
 		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?wait=true`
 

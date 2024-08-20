@@ -26,19 +26,23 @@ export async function GET(request: Request) {
 
 		// console.log(`Title: ${pageTitle}`)
 
-		const rating = $('.we-customer-ratings__averages__display').text()
-		const ratingString = $('.we-customer-ratings__averages').text()
+		// const rating = $('.we-customer-ratings__averages__display').text()
+		const rating = $('.stats div:first').text()
+		// const ratingString = $('.we-customer-ratings__averages').text()
+		const ratingString = $('.stats').text()
+		const ratingCount = $('.numbers__count').text()?.replace(' Ratings', '')
 
 		console.log(`Rating: ${rating}, RatingString: ${ratingString}`)
 
 		// Collect Reviews
-		const reviews = $('.we-customer-review')
+		// const reviews = $('.we-customer-review')
+		const reviews = $('.review')
 			.map(function () {
 				const title = $(this).find('h3').text().trim()
-				const author = $(this).find('.we-customer-review__user').text().trim()
-				const date = $(this).find('time').text().trim()
-				const text = $(this).find('p').text().trim()
-				const stars = $(this).find('figure').attr('aria-label')?.replace(' out of 5', '')
+				const author = $(this).find($('.author')).text().trim()
+				const date = $(this).find($('.date')).text().trim()
+				const text = $(this).find($('.content')).text().trim()
+				const stars = $(this).find($('.star')).length
 
 				return {
 					title,
@@ -53,6 +57,7 @@ export async function GET(request: Request) {
 		console.log(`Review Count: ${reviews.length}`)
 
 		const response = {
+			ratingCount,
 			rating,
 			ratingString,
 			ratingsUrl: url,

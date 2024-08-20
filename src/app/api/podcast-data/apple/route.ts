@@ -27,7 +27,13 @@ export async function GET(request: Request) {
 		// console.log(`Title: ${pageTitle}`)
 
 		// const rating = $('.we-customer-ratings__averages__display').text()
-		const rating = $('.stats div:first').text()
+		const ratingRaw = $('.stats div:first').text()
+		let rating: string | undefined
+		if (ratingRaw) {
+			try {
+				rating = parseFloat(ratingRaw)?.toFixed(1)
+			} catch {}
+		}
 		// const ratingString = $('.we-customer-ratings__averages').text()
 		const ratingString = $('.stats').text()
 		const ratingCount = $('.numbers__count').text()?.replace(' Ratings', '')

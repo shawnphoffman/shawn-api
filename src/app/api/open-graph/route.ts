@@ -68,7 +68,10 @@ export const GET = withAxiom(async (req: AxiomRequest) => {
 				if (temp.includes('icon')) return
 				src = new URL(src, scrape).href
 				const width = parseInt($(el).attr('width') || '') || undefined
+				if (width && width < 200) return
+
 				const height = parseInt($(el).attr('height') || '') || undefined
+				if (height && height < 200) return
 				images.push({ src, width, height })
 			}
 		})

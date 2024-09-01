@@ -62,6 +62,10 @@ export const GET = withAxiom(async (req: AxiomRequest) => {
 		$('img').each((_i, el) => {
 			let src = $(el).attr('src')
 			if (src) {
+				let temp = src.toLowerCase()
+				if (temp.includes('.svg')) return
+				if (temp.includes('.gif')) return
+				if (temp.includes('icon')) return
 				src = new URL(src, scrape).href
 				const width = parseInt($(el).attr('width') || '') || undefined
 				const height = parseInt($(el).attr('height') || '') || undefined

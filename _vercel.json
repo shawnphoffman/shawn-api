@@ -1,8 +1,8 @@
 {
 	"crons": [
 		{
-			"path": "/api/star-wars/check/daily",
-			"schedule": "0 7 * * *"
+			"path": "/api/podcast-data/episodes",
+			"schedule": "0 0 * * SUN"
 		},
 		{
 			"path": "/api/star-wars/check/frequent",

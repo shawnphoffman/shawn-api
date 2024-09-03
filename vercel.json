@@ -1,0 +1,13 @@
+{
+	"crons": [
+		{
+			"path": "/api/podcast-data/episodes",
+			"schedule": "0 0 * * SUN"
+		}
+	],
+	"functions": {
+		"pages/api/podcast-data/**/*": {
+			"maxDuration": 60
+		}
+	}
+}

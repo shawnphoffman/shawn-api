@@ -34,7 +34,11 @@ export async function GET(request: Request) {
 		const vals = await page.evaluate(() => {
 			// @ts-ignore
 			const btnVals = [...document.querySelectorAll('button._yl4tOZxcpoUt28k6B8I span')] as HTMLElement[]
-			const [rating, reviews] = btnVals.map(x => x.innerText)
+			console.log('btnVals.length', btnVals.length)
+			const [rating, reviews] = btnVals.map(x => {
+				console.log('btnVals.x', x?.innerText)
+				return x?.innerText
+			})
 
 			// @ts-ignore
 			const title = document.querySelector('h1').innerText

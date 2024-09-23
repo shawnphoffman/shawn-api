@@ -1,21 +1,6 @@
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
 
-// function parseRatingString(inputString: string) {
-// 	const regex = /^(\d+(\.\d+)?)\((\d+)\)$/
-// 	const match = inputString.match(regex)
-// 	if (match) {
-// 		const rating = parseFloat(match[1])
-// 		const ratingCount = parseInt(match[3], 10)
-// 		return {
-// 			rating: rating,
-// 			ratingCount: ratingCount,
-// 		}
-// 	} else {
-// 		return {}
-// 	}
-// }y
-
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')

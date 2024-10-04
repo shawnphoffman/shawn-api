@@ -1,5 +1,11 @@
 import * as cheerio from 'cheerio'
 
+const UserAgents = {
+	FacebookBot: 'facebookexternalhit/1.1',
+	Generic: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',
+	GoogleBot: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+}
+
 // import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 //
@@ -22,6 +28,9 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 	const res = await fetch(url, {
 		method: 'GET',
 		next: { revalidate: 900 },
+		headers: {
+			'User-Agent': UserAgents.Generic,
+		},
 	})
 	const data = await res.text()
 
@@ -54,6 +63,11 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 	console.log(`NEWS COUNT: ${newsItems.length}`)
 
 	return newsItems
+}
+
+async function getFriendNews(): Promise<NewsItem[]> {
+	// https://theroguerebels.com/feed/
+	return []
 }
 
 export const getAllNews = async (): Promise<NewsItem[]> => {

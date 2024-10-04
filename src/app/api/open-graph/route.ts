@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio'
 import { AxiomRequest, withAxiom } from 'next-axiom'
 
-const temp = 'https://scruffypodcasters.podbean.com/e/ep-250-3-quid-each/'
+// const temp = 'https://scruffypodcasters.podbean.com/e/ep-250-3-quid-each/'
 
 const UserAgents = {
 	FacebookBot: 'facebookexternalhit/1.1',
@@ -33,7 +33,6 @@ export const GET = withAxiom(async (req: AxiomRequest) => {
 			},
 		})
 		const data = await res.text()
-
 
 		const $ = cheerio.load(data)
 

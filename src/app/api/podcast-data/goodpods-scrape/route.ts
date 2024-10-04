@@ -23,7 +23,9 @@ export async function GET(request: Request) {
 		const responsePromise = new Promise(resolve => {
 			page.on('response', async response => {
 				const respUrl = response.url()
-				if (respUrl.startsWith('https://v2.goodpods.com/podcast/details')) {
+				const method = response.request().method().toUpperCase()
+				const isOptions = method === 'OPTIONS'
+				if (!isOptions && respUrl.startsWith('https://v2.goodpods.com/podcast/details')) {
 					const respJson = await response?.json()
 					console.log('✅', respJson)
 					// collectedResponses.push(respJson)

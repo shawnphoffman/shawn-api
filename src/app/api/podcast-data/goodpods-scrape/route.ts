@@ -89,7 +89,10 @@ export async function GET(request: Request) {
 				period = '_week'
 			}
 
-			award.imageUrl = `https://storage.googleapis.com/goodpods-images-bucket/leaderboard_badges/${slug}_top${position}${period}.png`
+			award.imageUrl = `https://storage.googleapis.com/goodpods-images-bucket/leaderboard_badges/${slug.replace(
+				'/',
+				'_'
+			)}_top${position}${period}.png`
 
 			return award
 		})

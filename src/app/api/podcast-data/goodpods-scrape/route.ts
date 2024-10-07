@@ -56,13 +56,14 @@ export async function GET(request: Request) {
 				award.frequency = 'Weekly'
 			}
 
-			award.linkUrl = `https://goodpods.com/leaderboard/top-100-shows-by-category/${leaderboard.url_slug}?indie=${leaderboard.indie_only}&period=${leaderboard.period_type}#${leaderboard.leaderboard_id}`
-
-			let slug = leaderboard.url_slug
-			if (slug === 'tv-and-film') {
-				slug = 'tv-and-film_all-tv-and-film'
+			let slug = ''
+			if (leaderboard.url_slug.includes('/')) {
+				slug = leaderboard.url_slug
+			} else {
+				slug = `${leaderboard.url_slug}/all-${leaderboard.url_slug}`
 			}
-			slug = slug.replace('/', '_')
+
+			award.linkUrl = `https://goodpods.com/leaderboard/top-100-shows-by-category/${slug}?indie=${leaderboard.indie_only}&period=${leaderboard.period_type}#${leaderboard.leaderboard_id}`
 
 			let position = 100
 			if (leaderboard.current_position === 1) {

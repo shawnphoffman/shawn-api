@@ -22,18 +22,27 @@ const url = 'https://www.starwars.com/news'
 
 async function getOfficialNews(): Promise<NewsItem[]> {
 	console.log('getOfficialNews.start')
-	// const options = {
-	// 	method: 'GET',
-	// }
-	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
-	const res = await fetch(url, {
-		method: 'GET',
-		next: { revalidate: 900 },
-		// headers: {
-		// 	'User-Agent': UserAgents.GoogleBot,
-		// },
-	})
-	const data = await res.text()
+
+	let data = ''
+
+	try {
+		const res = await fetch(url, {
+			method: 'GET',
+			// next: { revalidate: 900 },
+			// headers: {
+			// 	'User-Agent': UserAgents.GoogleBot,
+			// },
+		})
+		data = await res.text()
+	} catch (error) {
+		console.error('getOfficialNews.error', error)
+		return []
+	}
+
+	if (!data) {
+		console.error('getOfficialNews.noData')
+		return []
+	}
 
 	console.log('getOfficialNews.data', data)
 

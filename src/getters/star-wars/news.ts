@@ -21,18 +21,21 @@ export type NewsItem = {
 const url = 'https://www.starwars.com/news'
 
 async function getOfficialNews(): Promise<NewsItem[]> {
-	const options = {
-		method: 'GET',
-	}
+	console.log('getOfficialNews.start')
+	// const options = {
+	// 	method: 'GET',
+	// }
 	// const data = await fetchHtmlWithCache({ url, options, cacheMinutes: 15 })
 	const res = await fetch(url, {
 		method: 'GET',
 		next: { revalidate: 900 },
-		headers: {
-			'User-Agent': UserAgents.Generic,
-		},
+		// headers: {
+		// 	'User-Agent': UserAgents.GoogleBot,
+		// },
 	})
 	const data = await res.text()
+
+	console.log('getOfficialNews.data', data)
 
 	const $ = cheerio.load(data)
 

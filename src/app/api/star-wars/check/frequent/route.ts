@@ -17,6 +17,7 @@ async function* makeIterator({ debug }) {
 	}
 
 	// NEWS
+	yield encoder.encode(`<h1>🚧 Processing the news...</h1>`)
 	const newsResp = await processNews({ debug: false })
 	yield encoder.encode(`<h1>✅ News:</h1>${newsResp}`)
 

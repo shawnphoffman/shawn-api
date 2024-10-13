@@ -1,5 +1,6 @@
 const { withAxiom } = require('next-axiom')
 module.exports = withAxiom({
+	output: 'standalone',
 	async redirects() {
 		return [
 			{

@@ -24,6 +24,7 @@ jobs:
       # Step 3: Authenticate to GitHub Packages for pulling private GitHub packages
       - name: Authenticate to GitHub Packages
         run: |
+          echo "@shawnphoffman:registry=https://npm.pkg.github.com/" >> ~/.npmrc
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" > ~/.npmrc
 
       # Step 4: Install dependencies with Yarn (including private GitHub packages)

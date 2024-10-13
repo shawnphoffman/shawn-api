@@ -47,6 +47,10 @@ jobs:
 
       # Step 7: Build the Docker image
       - name: Build Docker image
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+          PUPPETEER_WSS: ${{ secrets.PUPPETEER_WSS }}
+          SANITY_REVALIDATE_SECRET: ${{ secrets.SANITY_REVALIDATE_SECRET }}
         run: |
           docker build --pull --no-cache -t ghcr.io/${{ github.repository }}/nextjs-app:latest .
 

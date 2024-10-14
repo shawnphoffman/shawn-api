@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
+import { kv } from '@vercel/kv'
 
 import type { GoodpodsAward, Podcast } from './goodpodsData'
+import { KvPrefix } from '@/utils/kv'
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
@@ -9,6 +11,14 @@ export async function GET(request: Request) {
 
 	if (!url) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
+	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
+
+	const cachedResponse = (await kv.get(kvUrl)) as string | null
+	if (cachedResponse) {
+		console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ awards: cachedResponse, url, cached: true })
 	}
 
 	const launchArgs = JSON.stringify({ stealth: true })
@@ -34,13 +44,13 @@ export async function GET(request: Request) {
 			})
 		})
 
-		// await page.goto(url, { waitUntil: 'networkidle0', timeout: 5000});
-		await page.goto(url, { timeout: 5000 })
+		await page.goto(url, { waitUntil: 'networkidle0' })
+		// await page.goto(url, { timeout: 5000 })
 		const podData = await responsePromise
 
 		const vals: Podcast = JSON.parse(JSON.stringify(podData))
 
-		console.log('vals', vals)
+		// console.log('vals', vals)
 
 		const awards: Array<GoodpodsAward> = vals.leaderboard_info_list.map(leaderboard => {
 			const award = {
@@ -95,6 +105,10 @@ export async function GET(request: Request) {
 			)}_top${position}${period}.png`
 
 			return award
+		})
+
+		kv.set(kvUrl, JSON.stringify(awards), {
+			ex: 60 * 60 * 24 * 3,
 		})
 
 		return NextResponse.json({ awards, url })

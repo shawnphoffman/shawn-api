@@ -44,8 +44,9 @@ export async function GET(request: Request) {
 			})
 		})
 
-		await page.goto(url, { waitUntil: 'networkidle0' })
+		// await page.goto(url, { waitUntil: 'networkidle0' })
 		// await page.goto(url, { timeout: 5000 })
+		await page.goto(url)
 		const podData = await responsePromise
 
 		const vals: Podcast = JSON.parse(JSON.stringify(podData))

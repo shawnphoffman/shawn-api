@@ -16,10 +16,10 @@ export async function GET(request: Request) {
 	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
 
 	const cachedResponse = (await kv.get(kvUrl)) as string | null
-	// if (cachedResponse) {
-	// 	console.log('cachedResponse', cachedResponse)
-	// 	return NextResponse.json({ awards: cachedResponse, url, cached: true })
-	// }
+	if (cachedResponse) {
+		console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ awards: cachedResponse, url, cached: true })
+	}
 
 	const launchArgs = JSON.stringify({ stealth: true })
 	const browser = await puppeteer.connect({

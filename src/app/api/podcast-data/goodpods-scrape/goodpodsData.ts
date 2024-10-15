@@ -77,4 +77,6 @@ export interface GoodpodsAward {
 	imageWidth: number
 	/** 77 */
 	imageHeight: number
+	/** animation-and-manga */
+	category: string
 }

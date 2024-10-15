@@ -16,10 +16,10 @@ export async function GET(request: Request) {
 	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
 
 	const cachedResponse = (await kv.get(kvUrl)) as string | null
-	if (cachedResponse) {
-		console.log('cachedResponse', cachedResponse)
-		return NextResponse.json({ awards: cachedResponse, url, cached: true })
-	}
+	// if (cachedResponse) {
+	// 	console.log('cachedResponse', cachedResponse)
+	// 	return NextResponse.json({ awards: cachedResponse, url, cached: true })
+	// }
 
 	const launchArgs = JSON.stringify({ stealth: true })
 	const browser = await puppeteer.connect({
@@ -50,12 +50,13 @@ export async function GET(request: Request) {
 
 		const vals: Podcast = JSON.parse(JSON.stringify(podData))
 
-		// console.log('vals', vals)
+		console.log('vals', vals)
 
 		const awards: Array<GoodpodsAward> = vals.leaderboard_info_list.map(leaderboard => {
 			const award = {
 				imageHeight: 77,
 				imageWidth: 250,
+				category: leaderboard.category_tag,
 			} as GoodpodsAward
 
 			if (leaderboard.period_type === 'alltime') {

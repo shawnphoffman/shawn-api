@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+const whitelistScrapeSites = ['hoffstuff.com', 'localhost']
 const whitelistPodSites = [
 	'blueharvest.rocks',
 	'justshillin.com',
@@ -31,8 +32,19 @@ export function middleware(request: NextRequest) {
 			}
 		}
 
+		if (request.nextUrl.pathname.includes('scrape')) {
+			const origin = request.headers.get('Origin')
+			if (origin && !whitelistScrapeSites.some(wl => origin?.includes(wl))) {
+				return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+			}
+		}
+
 		// if the incoming is for the desired API endpoint
-		if (request.nextUrl.pathname === '/api/star-wars/name-generator' || request.nextUrl.pathname.includes('/open-graph')) {
+		if (
+			request.nextUrl.pathname === '/api/star-wars/name-generator' ||
+			request.nextUrl.pathname.includes('/open-graph') ||
+			request.nextUrl.pathname.includes('/scrape')
+		) {
 			Object.entries(corsHeaders).forEach(([key, value]) => {
 				response.headers.append(key, value)
 			})

@@ -3,29 +3,6 @@ import puppeteer, { Page } from 'puppeteer'
 
 export const maxDuration = 60
 
-// async function scrapeItems(
-//   page,
-//   extractItems,
-//   itemCount,
-//   scrollDelay = 800,
-// ) {
-//   let items = [];
-//   try {
-//     let previousHeight;
-//     while (items.length < itemCount) {
-//       items = await page.evaluate(extractItems);
-//       previousHeight = await page.evaluate('document.body.scrollHeight');
-//       await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-//       await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
-//       await page.waitForTimeout(scrollDelay);
-//     }
-//   } catch(e) { }
-//   return items;
-// }
-
-// Melissa: https://www.amazon.com/hz/wishlist/ls/171GNLZ1NNLL8?ref_=list_d_wl_lfu_nav_9
-// Shawn: https://www.amazon.com/hz/wishlist/ls/3TBI1L7T5L35V/ref=nav_wishlist_lists_1
-
 function extractItems() {
 	console.log('extracting')
 	const items = document.querySelectorAll('ul#g-items li')

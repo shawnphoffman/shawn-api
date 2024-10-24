@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
+import { kv } from '@vercel/kv'
+import { KvPrefix } from '@/utils/kv'
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
@@ -7,6 +9,14 @@ export async function GET(request: Request) {
 
 	if (!url) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
+	const kvUrl = `${KvPrefix.PodSpotify}:${url}`
+
+	const cachedResponse = (await kv.get(kvUrl)) as string | null
+	if (cachedResponse) {
+		console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ awards: cachedResponse, url, cached: true })
 	}
 
 	const launchArgs = JSON.stringify({ stealth: true })
@@ -34,6 +44,10 @@ export async function GET(request: Request) {
 				rating,
 				reviews,
 			}
+		})
+
+		kv.set(kvUrl, JSON.stringify(vals), {
+			ex: 60 * 60 * 24 * 3,
 		})
 
 		return NextResponse.json({ vals, url })

@@ -13,10 +13,10 @@ export async function GET(request: Request) {
 
 	const kvUrl = `${KvPrefix.PodSpotify}:${url}`
 
-	const cachedResponse = (await kv.get(kvUrl)) as string | null
+	const cachedResponse = (await kv.get(kvUrl)) as any | null
 	if (cachedResponse) {
 		console.log('cachedResponse', cachedResponse)
-		return NextResponse.json({ awards: cachedResponse, url, cached: true })
+		return NextResponse.json({ ...cachedResponse, url, cached: true })
 	}
 
 	const launchArgs = JSON.stringify({ stealth: true })

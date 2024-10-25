@@ -15,7 +15,7 @@ export async function GET(request: Request) {
 
 	const cachedResponse = (await kv.get(kvUrl)) as any | null
 	if (cachedResponse) {
-		console.log('cachedResponse', cachedResponse)
+		// console.log('cachedResponse', cachedResponse)
 		return NextResponse.json({ vals: cachedResponse, url, cached: true })
 	}
 

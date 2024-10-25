@@ -1,5 +1,8 @@
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
+import { kv } from '@vercel/kv'
+
+import { KvPrefix } from '@/utils/kv'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
@@ -12,6 +15,14 @@ export async function GET(request: Request) {
 
 	if (!url) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
+	const kvUrl = `${KvPrefix.PodApple}:${url}`
+
+	const cachedResponse = (await kv.get(kvUrl)) as any | null
+	if (cachedResponse) {
+		// console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ ...cachedResponse, url, cached: true })
 	}
 
 	try {
@@ -69,6 +80,11 @@ export async function GET(request: Request) {
 			ratingsUrl: url,
 			reviews,
 		}
+
+		kv.set(kvUrl, JSON.stringify(response), {
+			ex: 60 * 60 * 24 * 3,
+		})
+
 		return NextResponse.json({ ...response, url })
 	} catch (error) {
 		console.log('Error:', error)

@@ -89,8 +89,8 @@ export async function GET(request: Request) {
 				position = 5
 			} else if (leaderboard.current_position <= 10) {
 				position = 10
-			} else if (leaderboard.current_position <= 20) {
-				position = 20
+				// } else if (leaderboard.current_position <= 20) {
+				// 	position = 20
 			} else if (leaderboard.current_position <= 50) {
 				position = 50
 			}

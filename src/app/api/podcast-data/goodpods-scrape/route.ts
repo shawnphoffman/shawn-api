@@ -1,9 +1,10 @@
+import { kv } from '@vercel/kv'
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
-import { kv } from '@vercel/kv'
+
+import { KvPrefix } from '@/utils/kv'
 
 import type { GoodpodsAward, Podcast } from './goodpodsData'
-import { KvPrefix } from '@/utils/kv'
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)

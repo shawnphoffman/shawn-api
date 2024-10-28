@@ -1,10 +1,9 @@
+import { kv } from '@vercel/kv'
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
-import { kv } from '@vercel/kv'
-
-import { KvPrefix } from '@/utils/kv'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+import { KvPrefix } from '@/utils/kv'
 
 // https://podcasts.apple.com/us/podcast/jammed-transmissions-a-star-wars-podcast/id1445333816?see-all=reviews
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews

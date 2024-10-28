@@ -36,3 +36,5 @@ yarn-error.log*
 NOTES.md
 src/pages/api/temp
 **/temp
+
+.npmrc

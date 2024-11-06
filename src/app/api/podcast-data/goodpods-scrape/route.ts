@@ -110,9 +110,11 @@ export async function GET(request: Request) {
 			return award
 		})
 
-		kv.set(kvUrl, JSON.stringify(awards), {
-			ex: 60 * 60 * 24 * 3,
-		})
+		if (awards.length > 0) {
+			kv.set(kvUrl, JSON.stringify(awards), {
+				ex: 60 * 60 * 24 * 3,
+			})
+		}
 
 		return NextResponse.json({ awards, url })
 	} catch (error) {

@@ -99,7 +99,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		url: 'https://feed.podbean.com/thatgeekpod/feed.xml',
 		event: 'geek-pod',
 		channel: WebhookChannel.Friends,
-		bskyHandle: ['catherinekneen.bsky.social'],
+		bskyHandle: ['catherinekneen.bsky.social', 'thatgeekpod.bsky.social'],
 		bluesky: true,
 		hashtags: ['#StarWars', '#Podcast', '#ThatGeekPod'],
 	},

@@ -108,6 +108,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		url: 'https://feeds.acast.com/public/shows/6d969aa5-8ed7-4683-88f6-d9dce2d9b226',
 		event: 'steele-wars',
 		homepage: 'http://steelewars.com/',
+		bskyHandle: ['steelewars.bsky.social'],
 		bluesky: true,
 		hashtags: ['#StarWars', '#Podcast', '#SteeleWars'],
 	},

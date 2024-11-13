@@ -74,7 +74,9 @@ export async function GET(request: Request) {
 			return data
 		})
 
-		return NextResponse.json(metaData)
+		const daFuq = JSON.parse(JSON.stringify(metaData))
+
+		return NextResponse.json(daFuq)
 		// return NextResponse.json({ ...response, url })
 	} catch (error) {
 		console.log('Error:', error)

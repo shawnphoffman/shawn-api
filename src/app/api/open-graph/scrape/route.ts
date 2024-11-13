@@ -1,5 +1,10 @@
+import { kv } from '@vercel/kv'
 import { NextResponse } from 'next/server'
 import puppeteer from 'puppeteer'
+
+import { KvPrefix } from '@/utils/kv'
+
+// TODO - Cache the response in case it fucks up
 
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
@@ -7,6 +12,14 @@ export async function GET(request: Request) {
 
 	if (!url) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
+	const kvUrl = `${KvPrefix.Scrape}:${url}`
+
+	const cachedResponse = (await kv.get(kvUrl)) as string | null
+	if (cachedResponse) {
+		console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ ...(cachedResponse as any), cached: true })
 	}
 
 	const launchArgs = JSON.stringify({ stealth: true })
@@ -90,6 +103,12 @@ export async function GET(request: Request) {
 		})
 
 		const daFuq = JSON.parse(JSON.stringify(metaData))
+
+		if (daFuq.meta.title) {
+			kv.set(kvUrl, JSON.stringify(daFuq), {
+				ex: 60 * 10,
+			})
+		}
 
 		return NextResponse.json(daFuq)
 		// return NextResponse.json({ ...response, url })

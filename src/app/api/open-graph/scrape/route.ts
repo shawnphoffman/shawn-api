@@ -15,7 +15,19 @@ export async function GET(request: Request) {
 	})
 	try {
 		const page = await browser.newPage()
-		await page.goto(url, { waitUntil: 'domcontentloaded' })
+
+		page.setRequestInterception(true)
+
+		page.on('request', request => {
+			if (['stylesheet', 'font'].indexOf(request.resourceType()) !== -1) {
+				// request.abort();
+				request.respond({ status: 200, body: 'aborted' })
+			} else {
+				request.continue()
+			}
+		})
+
+		await page.goto(url, { waitUntil: 'networkidle0' })
 
 		const metaData = await page.evaluate(() => {
 			const data: { meta: Record<string, string>; og: Record<string, string>; images: { src: string }[] } = {
@@ -67,6 +79,9 @@ export async function GET(request: Request) {
 			images.forEach(img => {
 				const src = img.getAttribute('src')
 				if (src) {
+					if (src.startsWith('data:') || src.includes('.svg') || src.includes('.gif') || src.includes('beacon')) {
+						return
+					}
 					data.images.push({ src })
 				}
 			})

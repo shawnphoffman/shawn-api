@@ -1,4 +1,4 @@
-import { log } from 'next-axiom'
+// import { log } from 'next-axiom'
 
 import { getWeeklyComics } from '@/getters/star-wars/comics'
 import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
@@ -30,8 +30,14 @@ const createOutput = (comics: any[]) => {
 // PROCESSOR
 //
 const processWeeklyComics = async ({ debug }): Promise<string> => {
-	// Get Weekly Comics
-	const weeklyResp = await getWeeklyComics()
+	let weeklyResp
+	try {
+		// Get Weekly Comics
+		weeklyResp = await getWeeklyComics()
+	} catch (err) {
+		console.error('Error getting weekly comics', { err })
+		return `<i>Error getting weekly comics</i>`
+	}
 
 	// Filter Comics
 	if (!weeklyResp?.title) {
@@ -60,22 +66,38 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 		// 	// )
 		// 	// await redis.sadd(RedisKey.Discord, redisMember)
 		// } else {
-		// 	log.info('+ Redis.discord.exists', { redisMember })
+		// 	console.log('+ Redis.discord.exists', { redisMember })
 		// }
 
 		// Bluesky
 		const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
 		if (!blueskyExists) {
-			log.info(`Bleeting weekly comics for: ${weeklyResp.title}`)
+			console.log(`Bleeting weekly comics for: ${weeklyResp.title}`)
 
-			await postBleetToBsky({
-				items: formatWeeklyComicsForBsky(weeklyResp.title, outComics),
-				title: `Weekly Comics: ${weeklyResp.title}`,
-			})
+			const count = outComics.length
+			const comicsPerBleet = 3
+			const bleetCount = Math.ceil(count / comicsPerBleet)
+			const isMultiPart = bleetCount > 1
+
+			for (let i = 0; i < bleetCount; i++) {
+				const start = i * comicsPerBleet
+				const end = start + comicsPerBleet
+
+				const items = formatWeeklyComicsForBsky(weeklyResp.title, outComics.slice(start, end))
+				const multiPartTitle = isMultiPart ? ` Part ${i + 1}` : ''
+				const title = `Weekly Comics${multiPartTitle}: ${weeklyResp.title} (${start + 1}-${end})`
+
+				// console.log(multiPartTitle, { items, title })
+
+				await postBleetToBsky({
+					items,
+					title,
+				})
+			}
 
 			await redis.sadd(RedisKey.Bluesky, redisMember)
 		} else {
-			log.info('+ Redis.bluesky.exists', { redisMember })
+			console.log('+ Redis.bluesky.exists', { redisMember })
 		}
 	}
 

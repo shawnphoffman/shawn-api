@@ -38,3 +38,5 @@ src/pages/api/temp
 **/temp
 
 .npmrc
+
+Docker.md

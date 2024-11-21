@@ -82,7 +82,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		channel: WebhookChannel.Friends,
 		bluesky: true,
 		homepage: 'https://theroguerebels.com/',
-		bskyHandle: ['theroguerebels.bsky.social'],
+		bskyHandle: ['theroguerebels.com'],
 		hashtags: ['#StarWars', '#Podcast', '#RogueRebels'],
 	},
 	{
@@ -137,7 +137,7 @@ export const podcastFeeds: PodFeedConfig[] = [
 		channel: WebhookChannel.Friends,
 		homepage: 'https://justshillin.com',
 		bluesky: true,
-		bskyHandle: ['shawn.party', 'minganna1972.bsky.social'],
+		bskyHandle: ['shawn.justshillin.com', 'minganna1972.bsky.social'],
 		refreshUrls: ['https://justshillin.com/api/revalidate/episodes?force=true', 'https://justshillin.com/episodes'],
 		hashtags: ['#StarWars', '#Podcast', '#JustShillin'],
 	},

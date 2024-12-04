@@ -15,11 +15,15 @@ export async function GET(request: Request) {
 	}
 
 	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
-
-	const cachedResponse = (await kv.get(kvUrl)) as string | null
-	if (cachedResponse) {
-		console.log('cachedResponse', cachedResponse)
-		return NextResponse.json({ awards: cachedResponse, url, cached: true })
+	try {
+		const cachedResponse = (await kv.get(kvUrl)) as string | null
+		if (cachedResponse) {
+			console.log('cachedResponse', cachedResponse)
+			// @ts-expect-error xxx
+			return NextResponse.json({ ...cachedResponse, url, cached: true })
+		}
+	} catch (error) {
+		console.error('Error getting cached response', error)
 	}
 
 	const launchArgs = JSON.stringify({ stealth: true })
@@ -54,7 +58,10 @@ export async function GET(request: Request) {
 
 		console.log('vals', vals)
 
-		const awards: Array<GoodpodsAward> = vals.leaderboard_info_list.map(leaderboard => {
+		const review_average = vals?.review_average
+		const total_reviews = vals?.total_reviews
+
+		const awards: Array<GoodpodsAward> = vals?.leaderboard_info_list.map(leaderboard => {
 			const award = {
 				imageHeight: 77,
 				imageWidth: 250,
@@ -111,12 +118,20 @@ export async function GET(request: Request) {
 		})
 
 		if (awards.length > 0) {
-			kv.set(kvUrl, JSON.stringify(awards), {
-				ex: 60 * 60 * 24 * 3,
-			})
+			kv.set(
+				kvUrl,
+				JSON.stringify({
+					awards,
+					review_average,
+					total_reviews,
+				}),
+				{
+					ex: 60 * 60 * 24 * 3,
+				}
+			)
 		}
 
-		return NextResponse.json({ awards, url })
+		return NextResponse.json({ awards, url, review_average, total_reviews })
 	} catch (error) {
 		console.log('Error:', error)
 		return NextResponse.json({ error }, { status: 500 })

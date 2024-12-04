@@ -1,5 +1,8 @@
+import { kv } from '@vercel/kv'
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
+
+import { KvPrefix } from '@/utils/kv'
 
 // Source URL
 // https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podcast-277737
@@ -21,6 +24,20 @@ export async function GET(request: Request) {
 
 	if (!url) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
+	}
+
+	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
+	try {
+		const cachedResponse = (await kv.get(kvUrl)) as string | null
+		if (cachedResponse) {
+			const rating = JSON.parse(JSON.stringify(cachedResponse))?.review_average
+			console.log('cachedResponse', { cachedResponse, rating })
+			if (rating) {
+				return NextResponse.json({ rating, url, cached: true })
+			}
+		}
+	} catch (error) {
+		console.error('Error getting cached response', error)
 	}
 
 	try {

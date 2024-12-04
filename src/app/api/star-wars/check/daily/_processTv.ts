@@ -102,15 +102,15 @@ const processItems = async ({ debug }): Promise<string> => {
 			}
 
 			// Bluesky
-			const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
-			if (!blueskyExists) {
-				log.info(`Bleeting TV show: ${c.title}`)
-				await postBleetToBsky({ contentType: 'TV Show', title: c.title, items: createMessageForBsky(c), url: c.url })
+			// const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+			// if (!blueskyExists) {
+			// 	log.info(`Bleeting TV show: ${c.title}`)
+			// 	await postBleetToBsky({ contentType: 'TV Show', title: c.title, items: createMessageForBsky(c), url: c.url })
 
-				await redis.sadd(RedisKey.Bluesky, redisMember)
-			} else {
-				log.info('+ Redis.bluesky.exists', { redisMember })
-			}
+			// 	await redis.sadd(RedisKey.Bluesky, redisMember)
+			// } else {
+			// 	log.info('+ Redis.bluesky.exists', { redisMember })
+			// }
 		}
 	} catch (error) {
 		log.error('Error bleeting message', error)

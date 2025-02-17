@@ -18,6 +18,7 @@ const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_books'
 // TODO
 // https://starwars.fandom.com/wiki/List_of_novels_by_release_date#2024
 // https://youtini.com/all-upcoming-books
+// https://youtini.com/release-schedule#recently-released
 
 export const getBooksAlt = async (): Promise<Book[]> => {
 	var yesterday = new Date()

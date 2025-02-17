@@ -13,7 +13,7 @@ export type Comic = {
 }
 
 // TODO - Standardize "type" field
-
+// // https://youtini.com/release-schedule#recently-released
 const url = 'https://starwars.fandom.com/wiki/List_of_future_comics'
 const altUrl = 'https://starwars.fandom.com/wiki/Timeline_of_canon_comics'
 

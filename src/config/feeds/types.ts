@@ -20,6 +20,9 @@ export interface PodFeedConfig extends FeedConfig {
 export interface MiscFeedConfig extends FeedConfig {
 	// callback?: (item: FeedItem) => Promise<void>
 }
+export interface RssFeedConfig extends FeedConfig {
+	// callback?: (item: FeedItem) => Promise<void>
+}
 export interface YouTubeFeedConfig extends FeedConfig {}
 
 type YouTubeSourceType = {

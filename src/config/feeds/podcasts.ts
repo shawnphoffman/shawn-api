@@ -85,6 +85,16 @@ export const podcastFeeds: PodFeedConfig[] = [
 		bskyHandle: ['theroguerebels.com'],
 		hashtags: ['#StarWars', '#Podcast', '#RogueRebels'],
 	},
+	// {
+	// 	name: 'Rogue Rebels Blog',
+	// 	url: 'https://theroguerebels.com/feed',
+	// 	event: 'rogue-rebels-blog',
+	// 	channel: WebhookChannel.Friends,
+	// 	bluesky: true,
+	// 	homepage: 'https://theroguerebels.com/',
+	// 	bskyHandle: ['theroguerebels.com'],
+	// 	hashtags: ['#StarWars', '#RogueRebels'],
+	// },
 	{
 		name: 'Star Wars Spelt Out',
 		url: 'https://anchor.fm/s/f4ac5590/podcast/rss',

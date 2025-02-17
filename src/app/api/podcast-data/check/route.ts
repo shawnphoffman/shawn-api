@@ -1,8 +1,10 @@
 import { NextRequest } from 'next/server'
 
 import { podcastFeeds } from '@/config/feeds/podcasts'
+import { rssFeeds } from '@/config/feeds/rss'
 
 import processFeeds from './_processFeeds'
+import processRssFeeds from './_processRssFeeds'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -29,6 +31,19 @@ async function* makeIterator({ debug }) {
 
 		const recentItems = await processFeeds({ debug, config: podcast })
 		yield encoder.encode(`<h3>✅ Episodes:</h3>${recentItems}<hr />`)
+
+		// performance.mark(`shawn:pod:${podcast?.name}:end`)
+		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
+	}
+
+	// PROCESS RSS FEEDS
+	for (const rssFeed of rssFeeds) {
+		// performance.mark(`shawn:pod:${podcast?.name}:start`)
+
+		yield encoder.encode(`<h2>🎙️ Processing: ${rssFeed?.name}</h2>`)
+
+		const recentItems = await processRssFeeds({ debug, config: rssFeed })
+		yield encoder.encode(`<h3>✅ Items:</h3>${recentItems}<hr />`)
 
 		// performance.mark(`shawn:pod:${podcast?.name}:end`)
 		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)

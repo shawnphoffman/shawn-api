@@ -85,6 +85,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 						homepage: config.homepage,
 						handle: config.bskyHandle,
 						hashtags: config.hashtags,
+						imageOverride: episode.imageURL ? undefined : podcast.imageURL,
 					})
 
 					redis.sadd(RedisKey.RssBluesky, redisMember)

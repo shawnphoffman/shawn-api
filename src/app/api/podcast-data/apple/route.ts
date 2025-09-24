@@ -1,42 +1,16 @@
+import { kv } from '@vercel/kv'
+import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
 
+import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
+import { KvPrefix } from '@/utils/kv'
+
 export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-export const revalidate = false
-
-// Only import these modules at runtime, not during build
-let kv: any
-let cheerio: any
-let fetchHtmlWithCache: any
-let KvPrefix: any
-
-// Lazy load modules only when needed
-async function loadModules() {
-	if (!kv) {
-		kv = (await import('@vercel/kv')).kv
-		cheerio = await import('cheerio')
-		fetchHtmlWithCache = (await import('@/utils/fetchWithCache')).fetchHtmlWithCache
-		KvPrefix = (await import('@/utils/kv')).KvPrefix
-	}
-}
 
 // https://podcasts.apple.com/us/podcast/jammed-transmissions-a-star-wars-podcast/id1445333816?see-all=reviews
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 
 export async function GET(request: Request) {
-	// Early return to prevent any execution during build
-	if (process.env.NODE_ENV === 'production') {
-		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
-	}
-
-	// Additional check for build context
-	if (process.env.NEXT_PHASE === 'phase-production-build') {
-		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
-	}
-
-	// Load modules only when needed
-	await loadModules()
-
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 

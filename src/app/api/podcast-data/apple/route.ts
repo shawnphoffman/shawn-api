@@ -6,11 +6,33 @@ import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import { KvPrefix } from '@/utils/kv'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = false
 
 // https://podcasts.apple.com/us/podcast/jammed-transmissions-a-star-wars-podcast/id1445333816?see-all=reviews
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 
 export async function GET(request: Request) {
+	// Prevent execution during build time
+	if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
+	// Additional build-time check
+	if (typeof window === 'undefined' && process.env.NODE_ENV === 'production') {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
+	// Check if we're in a build context
+	if (process.env.NEXT_PHASE === 'phase-production-build') {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
+	// Check if we're in a build context (alternative)
+	if (process.env.NEXT_PHASE === 'phase-production-build' || process.env.NEXT_PHASE === 'phase-production-server') {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 

@@ -50,3 +50,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
           cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+          build-args: |
+            NPM_GITHUB_TOKEN=${{ secrets.NPM_GITHUB_TOKEN }}

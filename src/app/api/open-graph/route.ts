@@ -3,6 +3,8 @@ import { AxiomRequest, withAxiom } from 'next-axiom'
 
 // const temp = 'https://scruffypodcasters.podbean.com/e/ep-250-3-quid-each/'
 
+export const dynamic = 'force-dynamic'
+
 const UserAgents = {
 	FacebookBot: 'facebookexternalhit/1.1',
 	Generic: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36',

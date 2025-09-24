@@ -4,6 +4,8 @@ import { getOgImageUrl } from '@/utils/imageUtils'
 
 // http://localhost:3000/api/open-graph/image?scrape=https://starwars.fandom.com/wiki/Thrawn:_Alliances_2
 
+export const dynamic = 'force-dynamic'
+
 export const GET = withAxiom(async (req: AxiomRequest) => {
 	const { searchParams } = new URL(req.url)
 	const scrape = searchParams.get('scrape')

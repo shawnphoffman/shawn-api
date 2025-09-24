@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
+export const dynamic = 'force-dynamic'
+
 const secondsToDhms = (seconds: number) => {
 	seconds = Number(seconds)
 	var d = Math.floor(seconds / (3600 * 24))

@@ -5,6 +5,8 @@ import { NextResponse } from 'next/server'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 import { KvPrefix } from '@/utils/kv'
 
+export const dynamic = 'force-dynamic'
+
 // https://podcasts.apple.com/us/podcast/jammed-transmissions-a-star-wars-podcast/id1445333816?see-all=reviews
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 

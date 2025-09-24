@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server'
 
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
+export const dynamic = 'force-dynamic'
+
 function parseRatingString(inputString: string) {
 	const regex = /^(\d+(\.\d+)?)\((\d+)\)$/
 	const match = inputString.match(regex)

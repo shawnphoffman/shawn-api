@@ -6,6 +6,8 @@ import { KvPrefix } from '@/utils/kv'
 
 // TODO - Cache the response in case it fucks up
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
@@ -69,13 +71,13 @@ export async function GET(request: Request) {
 					if (name === 'description' || name === 'title') {
 						addMetaTag('meta', name, content)
 					}
-					if (name.startsWith('twitter:')) {
+					if (name?.startsWith('twitter:')) {
 						addMetaTag('meta', name, content) // Assuming Twitter tags under 'meta'
 					}
 				}
 
 				// Open Graph meta tags (og:*)
-				if (property && property.startsWith('og:')) {
+				if (property && property?.startsWith('og:')) {
 					addMetaTag('og', property, content)
 				}
 			})

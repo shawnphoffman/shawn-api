@@ -4,6 +4,8 @@ import puppeteer from 'puppeteer'
 
 import { KvPrefix } from '@/utils/kv'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')

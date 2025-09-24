@@ -6,6 +6,8 @@ import { KvPrefix } from '@/utils/kv'
 
 import type { GoodpodsAward, Podcast } from './goodpodsData'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
@@ -40,7 +42,7 @@ export async function GET(request: Request) {
 				const respUrl = response.url()
 				const method = response.request().method().toUpperCase()
 				const isOptions = method === 'OPTIONS'
-				if (!isOptions && respUrl.startsWith('https://v2.goodpods.com/podcast/details')) {
+				if (!isOptions && respUrl?.startsWith('https://v2.goodpods.com/podcast/details')) {
 					const respJson = await response?.json()
 					console.log('✅', respJson)
 					// collectedResponses.push(respJson)

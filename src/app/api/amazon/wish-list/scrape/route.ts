@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import puppeteer, { Page } from 'puppeteer'
 
 export const maxDuration = 60
+export const dynamic = 'force-dynamic'
 
 function extractItems() {
 	console.log('extracting')

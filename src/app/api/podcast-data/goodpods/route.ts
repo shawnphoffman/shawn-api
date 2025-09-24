@@ -4,6 +4,8 @@ import { NextResponse } from 'next/server'
 
 import { KvPrefix } from '@/utils/kv'
 
+export const dynamic = 'force-dynamic'
+
 // Source URL
 // https://goodpods.com/podcasts/dinner-with-the-heelers-a-bluey-podcast-277737
 

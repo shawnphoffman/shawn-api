@@ -9,7 +9,7 @@
 		"lint": "next lint"
 	},
 	"engines": {
-		"node": "18.x"
+		"node": ">=22.0.0"
 	},
 	"dependencies": {
 		"@atproto/api": "^0.12.2",
@@ -34,8 +34,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"sharp": "^0.32.0",
-		"typescript": "^5.4.4",
-		"xml2json": "^0.12.0"
+		"typescript": "^5.4.4"
 	},
 	"devDependencies": {
 		"@shawnphoffman/eslint-config": "^1.0.4",

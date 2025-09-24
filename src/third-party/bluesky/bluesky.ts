@@ -55,7 +55,7 @@ ${websiteTarget}`
 							},
 						],
 					},
-			  ]
+				]
 			: []),
 		...(rt.facets || []),
 	]
@@ -72,7 +72,7 @@ ${websiteTarget}`
 						title: title || stinger,
 						description: desc || stinger || '',
 					},
-			  }
+				}
 			: undefined,
 	}
 
@@ -152,13 +152,13 @@ export const manualUploadBlobToBsky = async (agent: BskyAgent, buffer: Buffer, m
 	const jwt = agent.session?.accessJwt
 	const uploadUrl = 'https://bsky.social/xrpc/com.atproto.repo.uploadBlob'
 
-	const options = {
+	const options: RequestInit = {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${jwt}`,
 			'Content-Type': mimetype || 'image/jpeg',
 		},
-		body: buffer,
+		body: buffer as BodyInit,
 	}
 
 	// try {

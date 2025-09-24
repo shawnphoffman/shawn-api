@@ -7,6 +7,8 @@ import processFeeds from './_processFeeds'
 import processRssFeeds from './_processRssFeeds'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+export const revalidate = false
 export const maxDuration = 60
 
 const encoder = new TextEncoder()
@@ -69,6 +71,11 @@ async function* makeIterator({ debug }) {
 }
 
 export async function GET(req: NextRequest) {
+	// Check if we're in a build context (alternative)
+	if (process.env.NEXT_PHASE === 'phase-production-build' || process.env.NEXT_PHASE === 'phase-production-server') {
+		return new Response('Not available during build', { status: 503 })
+	}
+
 	// Basic
 	const { searchParams } = new URL(req.url)
 	const debug = searchParams.get('debug') === 'true'

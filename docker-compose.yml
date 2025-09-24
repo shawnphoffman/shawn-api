@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  shawn-api:
+    image: ghcr.io/${GH_OWNER:-${COMPOSE_PROJECT_NAME:-shawnhoffman}}/shawn-api:latest
+    container_name: shawn-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "3001:3000"
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+      - "com.centurylinklabs.watchtower.scope=shawn"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --cleanup --interval 300 --label-enable --scope shawn
+

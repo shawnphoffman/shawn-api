@@ -6,9 +6,16 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat make gcc g++ python3
 WORKDIR /app
 
+# Accept build arguments for npm authentication
+ARG NPM_GITHUB_TOKEN
+
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-COPY .npmrc .npmrc
+
+# Create .npmrc with authentication tokens
+RUN echo "registry=https://registry.npmjs.org/" > .npmrc && \
+	echo "//npm.pkg.github.com/:_authToken=${NPM_GITHUB_TOKEN}" >> .npmrc && \
+	echo "@shawnphoffman:registry=https://npm.pkg.github.com" >> .npmrc
 
 RUN yarn --frozen-lockfile
 

@@ -22,7 +22,7 @@
 // 			console.log('New Weekly Comic Release Link', item.link)
 
 // 			const redisMember = `comic-check:${item.guid}`
-// 			const exists = await redis.sismember(RedisKey.ShawnApi, redisMember)
+// 			const exists = await redis().sismember(RedisKey.ShawnApi, redisMember)
 // 			if (!exists) {
 // 				console.log('    ⚪️ Redis.shawnapi.not.exists', redisMember)
 // 				const url = `https://api.shawn.party/api/star-wars/recent-digital-comics`
@@ -33,7 +33,7 @@
 // 					}),
 // 				}
 // 				await fetch(url, options)
-// 				redis.sadd(RedisKey.ShawnApi, redisMember)
+// 				redis().sadd(RedisKey.ShawnApi, redisMember)
 // 			} else {
 // 				console.log('🆗 Redis.shawnapi.exists', redisMember)
 // 			}
@@ -71,11 +71,11 @@
 // 	// 		const redisMember = `star-wars-official:${item.guid}`
 
 // 	// 		// Post to BlueSky
-// 	// 		const exists = await redis.sismember(RedisKey.Bluesky, redisMember)
+// 	// 		const exists = await redis().sismember(RedisKey.Bluesky, redisMember)
 // 	// 		if (!exists) {
 // 	// 			console.log('    ⚪️ Redis.Bluesky.not.exists', redisMember)
 // 	// 			postBleet({ name, item, homepage: item.link, hashtags: ['#StarWars'], imageOverride: imageUrl })
-// 	// 			redis.sadd(RedisKey.Bluesky, redisMember)
+// 	// 			redis().sadd(RedisKey.Bluesky, redisMember)
 // 	// 		} else {
 // 	// 			console.log('🆗 Redis.Bluesky.exists', redisMember)
 // 	// 		}

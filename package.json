@@ -16,7 +16,7 @@
 		"@googleapis/youtube": "^14.0.0",
 		"@podverse/podcast-feed-parser": "^1.1.1",
 		"@upstash/qstash": "^2.4.3",
-		"@upstash/redis": "^1.29.0",
+		"@upstash/redis": "^1.35.4",
 		"@vercel/analytics": "^1.2.2",
 		"@vercel/kv": "^3.0.0",
 		"cheerio": "^1.0.0",

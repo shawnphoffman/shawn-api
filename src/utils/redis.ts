@@ -17,9 +17,16 @@ export const RedisKey = {
 	FetchCache: 'fetch:cache',
 }
 
-const redis = new Redis({
-	url: process.env.UPSTASH_REDIS_REST_URL!,
-	token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-})
+let redis: Redis | null = null
 
-export default redis
+function getRedis() {
+	if (!redis) {
+		redis = new Redis({
+			url: process.env.UPSTASH_REDIS_REST_URL!,
+			token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+		})
+	}
+	return redis
+}
+
+export default getRedis

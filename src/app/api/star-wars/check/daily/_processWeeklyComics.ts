@@ -53,7 +53,7 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 
 	if (!debug) {
 		// // Discord
-		// const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
+		// const discordExists = await redis().sismember(RedisKey.Discord, redisMember)
 		// if (!discordExists) {
 		// 	// await sendWebhook(
 		// 	// 	process.env.DISCORD_WEBHOOK_COMICS,
@@ -64,13 +64,13 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 		// 	// 	},
 		// 	// 	true
 		// 	// )
-		// 	// await redis.sadd(RedisKey.Discord, redisMember)
+		// 	// await redis().sadd(RedisKey.Discord, redisMember)
 		// } else {
 		// 	console.log('+ Redis.discord.exists', { redisMember })
 		// }
 
 		// Bluesky
-		const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+		const blueskyExists = await redis().sismember(RedisKey.Bluesky, redisMember)
 		if (!blueskyExists) {
 			console.log(`Bleeting weekly comics for: ${weeklyResp.title}`)
 
@@ -95,7 +95,7 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 				})
 			}
 
-			await redis.sadd(RedisKey.Bluesky, redisMember)
+			await redis().sadd(RedisKey.Bluesky, redisMember)
 		} else {
 			console.log('+ Redis.bluesky.exists', { redisMember })
 		}

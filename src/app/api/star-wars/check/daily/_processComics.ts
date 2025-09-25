@@ -62,7 +62,7 @@ const processItems = async ({ debug }): Promise<string> => {
 			}
 
 			// Discord
-			const discordExists = await redis.sismember(RedisKey.Discord, redisMember)
+			const discordExists = await redis().sismember(RedisKey.Discord, redisMember)
 			if (!discordExists) {
 				await sendDiscordWebhook(
 					process.env.DISCORD_WEBHOOK_COMICS,
@@ -73,13 +73,13 @@ const processItems = async ({ debug }): Promise<string> => {
 					},
 					true
 				)
-				await redis.sadd(RedisKey.Discord, redisMember)
+				await redis().sadd(RedisKey.Discord, redisMember)
 			} else {
 				log.info('+ Redis.discord.exists', { redisMember })
 			}
 
 			// Bluesky
-			const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+			const blueskyExists = await redis().sismember(RedisKey.Bluesky, redisMember)
 			if (!blueskyExists) {
 				log.info(`Bleeting comic: ${c.title}`)
 
@@ -90,7 +90,7 @@ const processItems = async ({ debug }): Promise<string> => {
 					url: c.url,
 				})
 
-				await redis.sadd(RedisKey.Bluesky, redisMember)
+				await redis().sadd(RedisKey.Bluesky, redisMember)
 			} else {
 				log.info('+ Redis.bluesky.exists', { redisMember })
 			}

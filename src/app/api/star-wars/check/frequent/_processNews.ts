@@ -60,7 +60,7 @@ async function processItems({ debug }) {
 			// TODO - Discord
 
 			// Bluesky
-			const blueskyExists = await redis.sismember(RedisKey.Bluesky, redisMember)
+			const blueskyExists = await redis().sismember(RedisKey.Bluesky, redisMember)
 			if (!blueskyExists) {
 				log.info(`Bleeting news: ${item.title}`)
 				const bleet = {
@@ -70,7 +70,7 @@ async function processItems({ debug }) {
 					desc: item.desc,
 				}
 				await postBleetToBsky(bleet)
-				await redis.sadd(RedisKey.Bluesky, redisMember)
+				await redis().sadd(RedisKey.Bluesky, redisMember)
 			} else {
 				log.info('+ Redis.bluesky.exists', { redisMember })
 			}

@@ -94,7 +94,7 @@ export async function GET(request: Request) {
 			images.forEach(img => {
 				const src = img.getAttribute('src')
 				if (src) {
-					if (src.startsWith('data:') || src.includes('.svg') || src.includes('.gif') || src.includes('beacon')) {
+					if (src?.startsWith('data:') || src.includes('.svg') || src.includes('.gif') || src.includes('beacon')) {
 						return
 					}
 					data.images.push({ src })

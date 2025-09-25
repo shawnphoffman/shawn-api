@@ -38,7 +38,7 @@ export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10, redi
 			return value
 		}
 	} else {
-		value = await redis.get(RedisKey.FetchCache)
+		value = await redis().get(RedisKey.FetchCache)
 		if (value) {
 			console.log('🔷 REDIS CACHED', url)
 			return value
@@ -51,7 +51,7 @@ export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10, redi
 
 	if (redisCache) {
 		// @ts-expect-error true/never
-		await redis.set(redisKey, data, { ex: cacheMinutes * 60, keepTtl: true })
+		await redis().set(redisKey, data, { ex: cacheMinutes * 60, keepTtl: true })
 	}
 	cacheData.put(url, data, cacheMinutes * 1000 * 60)
 	return data

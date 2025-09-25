@@ -6,18 +6,18 @@ FROM base AS deps
 RUN apk add --no-cache libc6-compat make gcc g++ python3
 WORKDIR /app
 
-# Accept build arguments for npm authentication
-ARG NPM_GITHUB_TOKEN
-
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-# Create .npmrc with authentication tokens
-RUN echo "registry=https://registry.npmjs.org/" > .npmrc && \
-	echo "//npm.pkg.github.com/:_authToken=${NPM_GITHUB_TOKEN}" >> .npmrc && \
+# Create .npmrc with authentication tokens using BuildKit secrets
+RUN --mount=type=secret,id=npm_token \
+	echo "registry=https://registry.npmjs.org/" > .npmrc && \
+	echo "//npm.pkg.github.com/:_authToken=$(cat /run/secrets/npm_token)" >> .npmrc && \
 	echo "@shawnphoffman:registry=https://npm.pkg.github.com" >> .npmrc
 
-RUN yarn --frozen-lockfile
+# Install dependencies with cache mount for better performance
+RUN --mount=type=cache,target=/root/.yarn \
+	yarn --frozen-lockfile
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -30,7 +30,9 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN yarn run build;
+# Build with Next.js cache mount for better performance
+RUN --mount=type=cache,target=/app/.next/cache \
+	yarn run build;
 
 # Production image, copy all the files and run next
 FROM base AS runner

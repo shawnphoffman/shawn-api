@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import puppeteer, { Page } from 'puppeteer'
 
 export const maxDuration = 60
@@ -74,7 +74,7 @@ async function scrapeItems(page: Page, extractItems, itemCount, scrollDelay = 20
 	return items
 }
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 

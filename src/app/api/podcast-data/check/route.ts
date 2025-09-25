@@ -71,8 +71,18 @@ async function* makeIterator({ debug }) {
 }
 
 export async function GET(req: NextRequest) {
-	// Check if we're in a build context (alternative)
-	if (process.env.NEXT_PHASE === 'phase-production-build' || process.env.NEXT_PHASE === 'phase-production-server') {
+	// Prevent execution during build time
+	if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+		return new Response('Not available during build', { status: 503 })
+	}
+
+	// Additional build-time check
+	if (process.env.NEXT_PHASE === 'phase-production-build') {
+		return new Response('Not available during build', { status: 503 })
+	}
+
+	// Check if we're in a Docker build context
+	if (process.env.DOCKER_BUILDKIT === '1' || process.env.BUILDKIT_PROGRESS === 'plain') {
 		return new Response('Not available during build', { status: 503 })
 	}
 

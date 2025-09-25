@@ -11,6 +11,21 @@ export const dynamic = 'force-dynamic'
 // https://podcasts.apple.com/us/podcast/id${POD_ID}?see-all=reviews
 
 export async function GET(request: Request) {
+	// Prevent execution during build time
+	if (process.env.NODE_ENV === 'production' && !process.env.VERCEL) {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
+	// Additional build-time check
+	if (process.env.NEXT_PHASE === 'phase-production-build') {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
+	// Check if we're in a Docker build context
+	if (process.env.DOCKER_BUILDKIT === '1' || process.env.BUILDKIT_PROGRESS === 'plain') {
+		return NextResponse.json({ error: 'Not available during build' }, { status: 503 })
+	}
+
 	const { searchParams } = new URL(request.url)
 	const url = searchParams.get('url')
 

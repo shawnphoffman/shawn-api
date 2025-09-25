@@ -10,7 +10,7 @@ import { pingRefreshUrls } from '@/third-party/notifiers/urls'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
-// PODCASTS
+// RSS FEEDS
 // =================
 
 //

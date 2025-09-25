@@ -2,6 +2,7 @@ import podcastFeedParser from '@podverse/podcast-feed-parser'
 import { XMLParser } from 'fast-xml-parser'
 
 import { cleanDate, getYesterday } from '@/utils/dates'
+import { ParsedYouTubeRSS, YouTubeRSSEntry } from '@/types/youtube-rss'
 
 export type PodcastType = {
 	title: string
@@ -30,6 +31,11 @@ export type FeedType = {
 	summary: string
 }
 
+export type YouTubeFeedType = {
+	title: string
+	link: string
+}
+
 export type ItemType = {
 	title: string
 	pubDate: string
@@ -39,6 +45,14 @@ export type ItemType = {
 	// duration: number
 	imageURL: string
 	link: string
+}
+
+export type YouTubeItemType = {
+	title: string
+	pubDate: string
+	guid: string
+	link: string
+	imageURL?: string | undefined
 }
 
 export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType; episodes: EpisodeType[] }> {
@@ -153,6 +167,72 @@ export async function getRssFeed(url: string): Promise<{ feed?: FeedType; items:
 			pastDate.setDate(pastDate.getDate() - 7)
 		} else {
 			pastDate.setDate(pastDate.getDate() - 7)
+		}
+		output.items = output.items.filter(item => {
+			return cleanDate(item.pubDate) >= pastDate
+		})
+
+		// console.log('filtered', output.items)
+
+		return output
+	} catch (error) {
+		console.error('Error:', error)
+		return { items: [] }
+	}
+}
+
+export async function getYouTubeFeed(url: string): Promise<{ feed?: YouTubeFeedType; items: YouTubeItemType[] }> {
+	try {
+		const res = await fetch(url, {
+			method: 'GET',
+			// next: { revalidate: 60 }, // 10 minutes
+			cache: 'no-store',
+		})
+		const data = await res.text()
+		const parser = new XMLParser(options)
+		const rawJson: ParsedYouTubeRSS = parser.parse(data)
+
+		// console.log('rawJson', rawJson)
+
+		const output = {
+			feed: {
+				title: rawJson.feed.title,
+				link: rawJson.feed.author.uri,
+			},
+			items: rawJson.feed.entry.map((item: YouTubeRSSEntry) => {
+				// console.log('item', item)
+				try {
+					return {
+						title: item.title,
+						guid: item['yt:videoId'],
+						link: item.link?.['@_href'],
+						pubDate: item.published,
+						// summary: item['media:group']?.['media:description'],
+						imageURL: item['media:group']?.['media:thumbnail']['@_url'],
+					}
+				} catch (error) {
+					return {
+						title: item.title,
+						guid: item['yt:videoId'],
+						link: item.link?.['@_href'],
+						pubDate: item.published,
+					}
+				}
+			}),
+		}
+
+		// console.log('output', output)
+
+		if (!output?.feed?.title || !output?.items?.length) {
+			return { feed: output?.feed, items: [] }
+		}
+
+		const pastDate = getYesterday()
+		// TODO
+		if (process.env.NODE_ENV === 'development') {
+			pastDate.setDate(pastDate.getDate() - 2)
+		} else {
+			pastDate.setDate(pastDate.getDate() - 2)
 		}
 		output.items = output.items.filter(item => {
 			return cleanDate(item.pubDate) >= pastDate

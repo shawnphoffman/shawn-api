@@ -24,10 +24,3 @@ export interface RssFeedConfig extends FeedConfig {
 	// callback?: (item: FeedItem) => Promise<void>
 }
 export interface YouTubeFeedConfig extends FeedConfig {}
-
-type YouTubeSourceType = {
-	[key: string]: {
-		channelId: string
-		rssFeed?: string
-	}
-}

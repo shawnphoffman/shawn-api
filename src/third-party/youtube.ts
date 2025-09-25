@@ -14,7 +14,7 @@ export const isYouTubeShort = async (videoId: string) => {
 	})
 	// console.log('isYouTubeShort', resp)
 
-	return resp.status === 200
+	return resp.ok
 }
 
 export const isYouTubeScheduled = async (videoId: string) => {

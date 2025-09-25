@@ -2,14 +2,16 @@ import { NextRequest } from 'next/server'
 
 import { podcastFeeds } from '@/config/feeds/podcasts'
 import { rssFeeds } from '@/config/feeds/rss'
+import { youtubeFeeds } from '@/config/feeds/youtube'
 
 import processFeeds from './_processFeeds'
 import processRssFeeds from './_processRssFeeds'
+import processYoutubeFeeds from './_processYouTubeFeeds'
 
-export const dynamic = 'force-dynamic'
-export const runtime = 'nodejs'
-export const revalidate = false
-export const maxDuration = 60
+// export const dynamic = 'force-dynamic'
+// export const runtime = 'nodejs'
+// export const revalidate = false
+// export const maxDuration = 60
 
 const encoder = new TextEncoder()
 
@@ -26,29 +28,42 @@ async function* makeIterator({ debug }) {
 	}
 
 	// PROCESS PODCASTS
-	for (const podcast of podcastFeeds) {
-		// performance.mark(`shawn:pod:${podcast?.name}:start`)
+	// for (const podcast of podcastFeeds) {
+	// 	// performance.mark(`shawn:pod:${podcast?.name}:start`)
 
-		yield encoder.encode(`<h2>🎙️ Processing: ${podcast?.name}</h2>`)
+	// 	yield encoder.encode(`<h2>🎙️ Processing: ${podcast?.name}</h2>`)
 
-		const recentItems = await processFeeds({ debug, config: podcast })
-		yield encoder.encode(`<h3>✅ Episodes:</h3>${recentItems}<hr />`)
+	// 	const recentItems = await processFeeds({ debug, config: podcast })
+	// 	yield encoder.encode(`<h3>✅ Episodes:</h3>${recentItems}<hr />`)
 
-		// performance.mark(`shawn:pod:${podcast?.name}:end`)
-		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
-	}
+	// 	// performance.mark(`shawn:pod:${podcast?.name}:end`)
+	// 	// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
+	// }
 
-	// PROCESS RSS FEEDS
-	for (const rssFeed of rssFeeds) {
-		// performance.mark(`shawn:pod:${podcast?.name}:start`)
+	// // PROCESS RSS FEEDS
+	// for (const rssFeed of rssFeeds) {
+	// 	// performance.mark(`shawn:pod:${podcast?.name}:start`)
 
-		yield encoder.encode(`<h2>🎙️ Processing: ${rssFeed?.name}</h2>`)
+	// 	yield encoder.encode(`<h2>🎙️ Processing: ${rssFeed?.name}</h2>`)
 
-		const recentItems = await processRssFeeds({ debug, config: rssFeed })
+	// 	const recentItems = await processRssFeeds({ debug, config: rssFeed })
+	// 	yield encoder.encode(`<h3>✅ Items:</h3>${recentItems}<hr />`)
+
+	// 	// performance.mark(`shawn:pod:${podcast?.name}:end`)
+	// 	// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
+	// }
+
+	// PROCESS YOUTUBE FEEDS
+	for (const youtubeFeed of youtubeFeeds) {
+		performance.mark(`shawn:yt:${youtubeFeed?.name}:start`)
+
+		yield encoder.encode(`<h2>🎙️ Processing: ${youtubeFeed?.name}</h2>`)
+		const recentItems = await processYoutubeFeeds({ debug, config: youtubeFeed })
+
 		yield encoder.encode(`<h3>✅ Items:</h3>${recentItems}<hr />`)
 
-		// performance.mark(`shawn:pod:${podcast?.name}:end`)
-		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
+		performance.mark(`shawn:yt:${youtubeFeed?.name}:end`)
+		performance.measure(`shawn:yt:${youtubeFeed?.name}`, `shawn:yt:${youtubeFeed?.name}:start`, `shawn:yt:${youtubeFeed?.name}:end`)
 	}
 
 	// performance.mark('shawn:pod:end')

@@ -16,11 +16,11 @@ services:
         max-size: "10m"
         max-file: "3"
 
-  watchtower-api:
-    image: containrrr/watchtower:latest
-    container_name: watchtower-api
-    restart: unless-stopped
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --cleanup --interval 300 --label-enable --scope shawn
+  # watchtower-api:
+  #   image: containrrr/watchtower:latest
+  #   container_name: watchtower-api
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --cleanup --interval 300 --label-enable --scope shawn
 

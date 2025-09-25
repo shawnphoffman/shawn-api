@@ -70,5 +70,5 @@ jobs:
             type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-deps,mode=max
             type=registry,ref=ghcr.io/${{ github.repository }}:buildcache-build,mode=max
             type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
-          build-args: |
-            NPM_GITHUB_TOKEN=${{ secrets.NPM_GITHUB_TOKEN }}
+          secrets: |
+            npm_token=${{ secrets.NPM_GITHUB_TOKEN }}

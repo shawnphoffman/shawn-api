@@ -82,9 +82,8 @@ export async function GET(request: NextRequest) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
 	}
 
-	const launchArgs = JSON.stringify({ stealth: true })
 	const browser = await puppeteer.connect({
-		browserWSEndpoint: `${process.env.PUPPETEER_WSS}&launch=${launchArgs}`,
+		browserWSEndpoint: `${process.env.PUPPETEER_WSS}&stealth=true&headless=true`,
 	})
 
 	try {

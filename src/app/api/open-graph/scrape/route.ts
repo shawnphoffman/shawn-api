@@ -24,9 +24,8 @@ export async function GET(request: Request) {
 		return NextResponse.json({ ...(cachedResponse as any), cached: true })
 	}
 
-	const launchArgs = JSON.stringify({ stealth: true })
 	const browser = await puppeteer.connect({
-		browserWSEndpoint: `${process.env.PUPPETEER_WSS}&launch=${launchArgs}`,
+		browserWSEndpoint: `${process.env.PUPPETEER_WSS}&stealth=true&headless=true`,
 	})
 	try {
 		const page = await browser.newPage()

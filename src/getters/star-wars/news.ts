@@ -82,6 +82,97 @@ async function getFriendNews(): Promise<NewsItem[]> {
 	return []
 }
 
+export async function getYoutiniNews(): Promise<NewsItem[]> {
+	console.log('getYoutiniNews.start')
+
+	const url = 'https://youtini.com/articles'
+	// https://youtini.com/articles
+	let data = ''
+
+	try {
+		const res = await fetch(url, {
+			method: 'GET',
+			// next: { revalidate: 900 },
+			// headers: {
+			// 	'User-Agent': UserAgents.GoogleBot,
+			// },
+		})
+		data = await res.text()
+	} catch (error) {
+		console.error('getYoutiniNews.error', error)
+		return []
+	}
+
+	if (!data) {
+		console.error('getYoutiniNews.noData')
+		return []
+	}
+
+	console.log('getYoutiniNews.data', data)
+
+	const $ = cheerio.load(data)
+
+	// Retrieve the primary news section
+	// const newsItems = $('.blocks-list-view li')
+	const newsItems: NewsItem[] = $('[data-framer-name="Full  / Desktop"]')
+		.map(function () {
+			// const title = $(this).find('h3').first().text().trim()
+			// const desc = $(this).find('h2').first().text().trim()
+			const textContainerChildren = $(this).find('a').eq(2).find('div')
+			const title = textContainerChildren.first().text().trim()
+			const desc = textContainerChildren.last().text().trim()
+			const link = $(this).find('a').first().prop('href')
+			let imgSrc: string | null = null
+			const img = $(this).find('img').first()
+			if (img.length) {
+				imgSrc = img.attr('src') || null
+				if (!imgSrc) {
+					const srcset = img.attr('srcset')
+					if (srcset) {
+						// srcset is a comma-separated list of "url size"
+						const firstSrc = srcset.split(',')[0].trim().split(' ')[0]
+						imgSrc = firstSrc
+					}
+				}
+			}
+
+			if (imgSrc) {
+				const url = new URL(imgSrc)
+				url.search = ''
+				imgSrc = url.toString()
+			}
+
+			return {
+				title,
+				desc,
+				link,
+				imgSrc,
+			} as NewsItem
+		})
+		.toArray()
+
+	// console.log('-----------------')
+	console.log(`NEWS COUNT: ${newsItems.length}`)
+
+	// Remove duplicates based on link property while preserving order
+	const seenLinks = new Set<string>()
+	const deduplicatedNews = newsItems.filter(item => {
+		if (!item.link) {
+			// Keep items without links
+			return true
+		}
+		if (seenLinks.has(item.link)) {
+			return false
+		}
+		seenLinks.add(item.link)
+		return true
+	})
+
+	console.log(`DEDUPLICATED NEWS COUNT: ${deduplicatedNews.length}`)
+
+	return deduplicatedNews
+}
+
 export const getAllNews = async (): Promise<NewsItem[]> => {
 	const promNews = getOfficialNews()
 	const [news] = await Promise.all([promNews])

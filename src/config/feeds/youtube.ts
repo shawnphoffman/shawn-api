@@ -20,6 +20,7 @@ export const YouTubeSource = {
 	StarWarsExplained: createYouTubeSource('UCIKlsX1qfGqKPt4KAW-JOZg'),
 	SithList: createYouTubeSource('UC-WaYsQiHNrRGLXGHnL1Fuw'),
 	StarWarsSpeltOut: createYouTubeSource('UCsgw0WcCmz2UT1tSpZnGmpA'),
+	StarWarsYouTube: createYouTubeSource('UCZGYJFUizSax-yElQaFDp5Q'),
 } as const
 
 export const youtubeFeeds: YouTubeFeedConfig[] = [
@@ -58,6 +59,15 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 		bskyHandle: ['sithlist.bsky.social'],
 		homepage: 'https://sithlist.com/',
 		hashtags: ['#StarWars', '#SithList'],
+	},
+	{
+		name: 'Star Wars YouTube',
+		url: YouTubeSource.StarWarsYouTube.rssFeed,
+		event: 'star-wars-youtube',
+		bluesky: true,
+		// bskyHandle: ['sithlist.bsky.social'],
+		homepage: 'https://starwars.com/',
+		hashtags: ['#StarWars'],
 	},
 	// {
 	// 	name: 'Star Wars Spelt Out YouTube',

@@ -25,7 +25,7 @@ async function* makeIterator({ debug }) {
 	// YOUTINI
 	yield encoder.encode(`<h1>🚧 Processing the Youtini news...</h1>`)
 	const youtiniResp = await processYoutini({ debug: false })
-	yield encoder.encode(`<h1>✅ Youtini News:</h1>${newsResp}`)
+	yield encoder.encode(`<h1>✅ Youtini News:</h1>${youtiniResp}`)
 
 	// FINISH
 	yield encoder.encode(`<h1>🏁 Finished!</h1>`)

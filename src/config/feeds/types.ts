@@ -1,3 +1,4 @@
+import { YouTubeItemType } from '@/getters/rss-feed/recent'
 import { DiscordWebhookConfig } from '@/third-party/discord/webhookChannels'
 
 // import FeedItem from '../rss-feed-emitter/FeedItem'
@@ -23,4 +24,6 @@ export interface MiscFeedConfig extends FeedConfig {
 export interface RssFeedConfig extends FeedConfig {
 	// callback?: (item: FeedItem) => Promise<void>
 }
-export interface YouTubeFeedConfig extends FeedConfig {}
+export interface YouTubeFeedConfig extends FeedConfig {
+	isValid?: (item: YouTubeItemType) => boolean
+}

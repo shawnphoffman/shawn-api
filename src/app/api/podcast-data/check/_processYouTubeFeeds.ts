@@ -3,7 +3,7 @@ import { log } from 'next-axiom'
 import { YouTubeFeedConfig } from '@/config/feeds/types'
 import { getYouTubeFeed, YouTubeItemType } from '@/getters/rss-feed/recent'
 import { postRssBleet } from '@/third-party/bluesky/bluesky-rss'
-import { isYouTubeScheduled,isYouTubeShort } from '@/third-party/youtube'
+import { isYouTubeScheduled, isYouTubeShort } from '@/third-party/youtube'
 import redis, { RedisKey } from '@/utils/redis'
 
 // =================
@@ -55,11 +55,11 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 
 			const [isShort, isScheduled] = await Promise.all([isShortPromise, isScheduledPromise])
 
-			if (isShort || isScheduled) {
+			if (isShort || isScheduled || (config.isValid && !config.isValid(item))) {
 				continue
-			} else {
-				outputItems.push(item)
 			}
+
+			outputItems.push(item)
 
 			if (debug) {
 				console.log(`🎙️`, {

@@ -44,7 +44,7 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 		return []
 	}
 
-	console.log('getOfficialNews.data', data)
+	// console.log('getOfficialNews.data', data)
 
 	const $ = cheerio.load(data)
 
@@ -72,7 +72,7 @@ async function getOfficialNews(): Promise<NewsItem[]> {
 		.toArray()
 
 	// console.log('-----------------')
-	console.log(`NEWS COUNT: ${newsItems.length}`)
+	console.log(`OFFICIAL NEWS COUNT: ${newsItems.length}`)
 
 	return newsItems
 }
@@ -108,7 +108,7 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 		return []
 	}
 
-	console.log('getYoutiniNews.data', data)
+	// console.log('getYoutiniNews.data', data)
 
 	const $ = cheerio.load(data)
 
@@ -152,7 +152,7 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 		.toArray()
 
 	// console.log('-----------------')
-	console.log(`NEWS COUNT: ${newsItems.length}`)
+	console.log(`YOUTININEWS COUNT: ${newsItems.length}`)
 
 	// Remove duplicates based on link property while preserving order
 	const seenLinks = new Set<string>()
@@ -168,7 +168,7 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 		return true
 	})
 
-	console.log(`DEDUPLICATED NEWS COUNT: ${deduplicatedNews.length}`)
+	console.log(`DEDUPLICATED YOUTININ NEWS COUNT: ${deduplicatedNews.length}`)
 
 	return deduplicatedNews
 }

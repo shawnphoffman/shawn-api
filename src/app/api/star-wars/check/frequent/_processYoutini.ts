@@ -1,6 +1,4 @@
-import { log } from 'next-axiom'
-
-import { getAllNews, getYoutiniNews, NewsItem } from '@/getters/star-wars/news'
+import { getYoutiniNews, NewsItem } from '@/getters/star-wars/news'
 import { postBleetToBsky } from '@/third-party/bluesky/bluesky'
 import redis, { RedisKey } from '@/utils/redis'
 
@@ -44,6 +42,8 @@ const createOutput = (news: NewsItem[]) => {
 async function processItems({ debug }) {
 	const news = await getYoutiniNews()
 
+	console.log(`📰 Processing Youtini Star Wars News`)
+
 	if (!news.length) {
 		return '<i>No youtini news today</i>'
 	}
@@ -53,12 +53,13 @@ async function processItems({ debug }) {
 			const redisMember = `youtini-news:${item.title}`
 
 			if (debug) {
+				console.log(`🗞️`, item)
 				continue
 			}
 
 			// Filter out items by title
 			if (blacklistWords.some(b => item.title.toLowerCase().includes(b))) {
-				log.info('🗑️ Blacklisted Word', { title: item.title })
+				console.log('    🗑️ Blacklisted Word', { title: item.title })
 				continue
 			}
 
@@ -67,7 +68,7 @@ async function processItems({ debug }) {
 			// Bluesky
 			const blueskyExists = await redis().sismember(RedisKey.Bluesky, redisMember)
 			if (!blueskyExists) {
-				log.info(`Bleeting youtininews: ${item.title}`)
+				console.log(`    ⚪️ Redis.bluesky.not.exists`, redisMember)
 				const bleet = {
 					title: item.title,
 					items: formatNewsForBsky(item),
@@ -77,11 +78,11 @@ async function processItems({ debug }) {
 				await postBleetToBsky(bleet)
 				await redis().sadd(RedisKey.Bluesky, redisMember)
 			} else {
-				log.info('+ Redis.bluesky.exists', { redisMember })
+				console.log('    🔘 Redis.bluesky.exists', redisMember)
 			}
 		}
 	} catch (error) {
-		log.error('Error bleeting message', error)
+		console.error('    🔴 Error bleeting message', error)
 	}
 
 	return createOutput(news)

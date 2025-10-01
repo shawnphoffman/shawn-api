@@ -4,7 +4,7 @@ import { log } from 'next-axiom'
 
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from '@/utils/imageUtils'
 
-import { addToStarWarsFeed } from './shawnbot'
+// import { addToStarWarsFeed } from './shawnbot'
 
 type PostBleetProps = {
 	contentType?: string
@@ -125,9 +125,9 @@ export const postBleetToBsky = async ({ contentType, items, url, title, desc }: 
 	log.info('post', post)
 	log.info('================')
 
-	if (post?.cid) {
-		await addToStarWarsFeed({ cid: post.cid, uri: post.uri, indexedAt: new Date().toISOString() })
-	}
+	// if (post?.cid) {
+	// 	await addToStarWarsFeed({ cid: post.cid, uri: post.uri, indexedAt: new Date().toISOString() })
+	// }
 
 	return post
 	// } catch (error) {

@@ -86,7 +86,6 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 	console.log('getYoutiniNews.start')
 
 	const url = 'https://youtini.com/articles'
-	// https://youtini.com/articles
 	let data = ''
 
 	try {
@@ -116,10 +115,13 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 	// const newsItems = $('.blocks-list-view li')
 	const newsItems: NewsItem[] = $('[data-framer-name="Full  / Desktop"]')
 		.map(function () {
-			// const title = $(this).find('h3').first().text().trim()
-			// const desc = $(this).find('h2').first().text().trim()
 			const textContainerChildren = $(this).find('a').eq(2).find('div')
 			const title = textContainerChildren.first().text().trim()
+			const audioIcon = $(this).find('[data-framer-name="audio icon"]').first()
+			if (audioIcon.length) {
+				console.log('    🙈 Ignoring youtiniaudio news item', title)
+				return null
+			}
 			const desc = textContainerChildren.last().text().trim()
 			const link = $(this).find('a').first().prop('href')
 			let imgSrc: string | null = null
@@ -150,9 +152,10 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 			} as NewsItem
 		})
 		.toArray()
+		.filter(Boolean)
 
 	// console.log('-----------------')
-	console.log(`YOUTININEWS COUNT: ${newsItems.length}`)
+	console.log(`    YOUTININEWS COUNT: ${newsItems.length}`)
 
 	// Remove duplicates based on link property while preserving order
 	const seenLinks = new Set<string>()
@@ -168,7 +171,7 @@ export async function getYoutiniNews(): Promise<NewsItem[]> {
 		return true
 	})
 
-	console.log(`DEDUPLICATED YOUTININ NEWS COUNT: ${deduplicatedNews.length}`)
+	console.log(`    DEDUPLICATED YOUTININ NEWS COUNT: ${deduplicatedNews.length}`)
 
 	return deduplicatedNews
 }

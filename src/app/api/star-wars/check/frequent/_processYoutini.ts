@@ -69,10 +69,19 @@ async function processItems({ debug }) {
 			const blueskyExists = await redis().sismember(RedisKey.Bluesky, redisMember)
 			if (!blueskyExists) {
 				console.log(`    ⚪️ Redis.bluesky.not.exists`, redisMember)
+				let link: string | undefined
+				try {
+					if (item.link) {
+						link = new URL(item.link, 'https://youtini.com').toString()
+					}
+				} catch {
+					link = item.link
+				}
+
 				const bleet = {
 					title: item.title,
 					items: formatNewsForBsky(item),
-					url: item.link,
+					url: link,
 					desc: item.desc,
 				}
 				await postBleetToBsky(bleet)

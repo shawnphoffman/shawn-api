@@ -79,23 +79,27 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 			const bleetCount = Math.ceil(count / comicsPerBleet)
 			const isMultiPart = bleetCount > 1
 
-			for (let i = 0; i < bleetCount; i++) {
-				const start = i * comicsPerBleet
-				const end = start + comicsPerBleet
-
-				const items = formatWeeklyComicsForBsky(weeklyResp.title, outComics.slice(start, end))
-				const multiPartTitle = isMultiPart ? ` Part ${i + 1}` : ''
-				const title = `Weekly Comics${multiPartTitle}: ${weeklyResp.title} (${start + 1}-${end})`
-
-				// console.log(multiPartTitle, { items, title })
-
-				await postBleetToBsky({
-					items,
-					title,
-				})
-			}
-
 			await redis().sadd(RedisKey.Bluesky, redisMember)
+
+			for (let i = 0; i < bleetCount; i++) {
+				try {
+					const start = i * comicsPerBleet
+					const end = start + comicsPerBleet
+
+					const items = formatWeeklyComicsForBsky(weeklyResp.title, outComics.slice(start, end))
+					const multiPartTitle = isMultiPart ? ` Part ${i + 1}` : ''
+					const title = `Weekly Comics${multiPartTitle}: ${weeklyResp.title} (${start + 1}-${end})`
+
+					// console.log(multiPartTitle, { items, title })
+
+					await postBleetToBsky({
+						items,
+						title,
+					})
+				} catch (error) {
+					console.error('Error bleeting message', error)
+				}
+			}
 		} else {
 			console.log('+ Redis.bluesky.exists', { redisMember })
 		}

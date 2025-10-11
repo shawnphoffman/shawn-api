@@ -136,12 +136,13 @@ export async function getRssFeed(url: string): Promise<{ feed?: FeedType; items:
 			items: rawJson.rss.channel.item.map((item: any) => {
 				// console.log('item', item)
 				try {
+					const imageURL = item?.image || item.enclosure?.['@_url'] || item['media:thumbnail']?.['@_url']
 					return {
 						title: item.title,
 						pubDate: item.pubDate,
 						guid: item.guid['#text'],
 						summary: item.description,
-						imageURL: item.image || item['media:thumbnail']['@_url'],
+						imageURL,
 						link: item.link,
 					}
 				} catch (error) {

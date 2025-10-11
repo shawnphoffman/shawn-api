@@ -53,7 +53,17 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				console.log(`🎙️`, item)
 			}
 
-			const redisMember = `${config.event}:${item.guid || item.link}`
+			// Safely extract guid or link, handling both string and object cases
+			const getGuidOrLink = (item: any) => {
+				if (item.guid) {
+					// Handle case where guid might be an object with #text property
+					return typeof item.guid === 'string' ? item.guid : item.guid?.['#text'] || item.guid?.toString() || ''
+				}
+				return item.link || ''
+			}
+
+			const redisMember = `${config.event}:${getGuidOrLink(item)}`
+			// console.log('redisMember', redisMember)
 
 			const image = item.imageURL || feed.imageURL
 
@@ -90,18 +100,6 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 					redis().sadd(RedisKey.RssBluesky, redisMember)
 				} else {
 					console.log('    🔘 Redis.bluesky.exists', redisMember)
-				}
-			}
-
-			// Ping Overcast?
-			if (config.ping !== false) {
-				const exists = await redis().sismember(RedisKey.RssOvercast, redisMember)
-				if (!exists) {
-					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
-					await pingOvercast(config.url)
-					redis().sadd(RedisKey.RssOvercast, redisMember)
-				} else {
-					console.log('    🔘 Redis.overcast.exists', redisMember)
 				}
 			}
 

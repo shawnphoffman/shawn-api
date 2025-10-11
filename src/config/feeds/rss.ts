@@ -13,4 +13,13 @@ export const rssFeeds: RssFeedConfig[] = [
 		bskyHandle: ['theroguerebels.com'],
 		hashtags: ['#StarWars', '#RogueRebels'],
 	},
+	{
+		name: 'Now This Is Lit',
+		url: 'https://starwarslitpod.substack.com/feed',
+		event: 'now-this-is-lit-substack',
+		bluesky: true,
+		bskyHandle: ['starwarslitpod.bsky.social'],
+		homepage: 'https://starwarslitpod.substack.com/',
+		hashtags: ['#StarWars', '#NowThisIsLit'],
+	},
 ]

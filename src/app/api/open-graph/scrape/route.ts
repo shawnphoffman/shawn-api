@@ -314,11 +314,10 @@ export async function GET(request: Request) {
 		}
 
 		const metaData = await page.evaluate(() => {
-			const data: { meta: Record<string, string>; og: Record<string, string>; images: { src: string }[]; html: string } = {
+			const data: { meta: Record<string, string>; og: Record<string, string>; images: { src: string }[] } = {
 				meta: {},
 				og: {},
 				images: [],
-				html: document.body.innerText,
 			}
 
 			// Function to add meta tag to the result object

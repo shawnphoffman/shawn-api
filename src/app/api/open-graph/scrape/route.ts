@@ -18,11 +18,11 @@ export async function GET(request: Request) {
 
 	const kvUrl = `${KvPrefix.Scrape}:${url}`
 
-	// const cachedResponse = (await kv.get(kvUrl)) as string | null
-	// if (cachedResponse) {
-	// 	console.log('cachedResponse', cachedResponse)
-	// 	return NextResponse.json({ ...(cachedResponse as any), cached: true })
-	// }
+	const cachedResponse = (await kv.get(kvUrl)) as string | null
+	if (cachedResponse) {
+		console.log('cachedResponse', cachedResponse)
+		return NextResponse.json({ ...(cachedResponse as any), cached: true })
+	}
 
 	const browser = await puppeteer.connect({
 		// browserWSEndpoint: `${process.env.PUPPETEER_WSS}&stealth=true&headless=false`,

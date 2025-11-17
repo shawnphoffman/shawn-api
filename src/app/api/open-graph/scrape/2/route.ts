@@ -14,7 +14,7 @@ export async function GET(request: Request) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
 	}
 
-	const kvUrl = `${KvPrefix.Scrape}:${url}`
+	const kvUrl = `${KvPrefix.Scrape2}:${url}`
 
 	const cachedResponse = (await kv.get(kvUrl)) as string | null
 	if (cachedResponse) {

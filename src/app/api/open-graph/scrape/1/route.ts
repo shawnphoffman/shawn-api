@@ -311,27 +311,6 @@ export async function GET(request: Request) {
 			// Ignore interaction errors
 		}
 
-		// Simulate "Press & Hold" button interaction
-		try {
-			// Focus on the button with the Tab button
-			await page.keyboard.press('Enter')
-			await new Promise(resolve => setTimeout(resolve, 5000))
-			await page.keyboard.press('Tab')
-			await new Promise(resolve => setTimeout(resolve, 5000))
-
-			// Press and hold the Enter key to simulate "Press & Hold"
-			await page.keyboard.down('Enter')
-			await new Promise(resolve => setTimeout(resolve, 10000))
-
-			// Release the Enter key after pressing it for 10 seconds
-			await page.keyboard.up('Enter')
-
-			// Keep holding for 10s
-			await new Promise(resolve => setTimeout(resolve, 10000))
-		} catch (error) {
-			console.log(`An ${error} occurred and PRESS & HOLD button not found`)
-		}
-
 		const metaData = await page.evaluate(() => {
 			const data: { meta: Record<string, string>; og: Record<string, string>; images: { src: string }[] } = {
 				meta: {},

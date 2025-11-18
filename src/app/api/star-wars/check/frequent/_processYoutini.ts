@@ -84,7 +84,7 @@ async function processItems({ debug }) {
 					url: link,
 					desc: item.desc,
 				}
-				// await postBleetToBsky(bleet)
+				await postBleetToBsky(bleet)
 				await redis().sadd(RedisKey.Bluesky, redisMember)
 			} else {
 				console.log('    🔘 Redis.bluesky.exists', redisMember)

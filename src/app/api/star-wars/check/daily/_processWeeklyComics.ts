@@ -92,10 +92,10 @@ const processWeeklyComics = async ({ debug }): Promise<string> => {
 
 					// console.log(multiPartTitle, { items, title })
 
-					// await postBleetToBsky({
-					// 	items,
-					// 	title,
-					// })
+					await postBleetToBsky({
+						items,
+						title,
+					})
 				} catch (error) {
 					console.error('Error bleeting message', error)
 				}

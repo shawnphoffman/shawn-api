@@ -76,7 +76,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis().sismember(RedisKey.RssDiscord, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
-					// await sendRssWebhook({ name: config.name, item: item, avatar: image, webhook: config.channel, homepage: config.homepage })
+					await sendRssWebhook({ name: config.name, item: item, avatar: image, webhook: config.channel, homepage: config.homepage })
 					redis().sadd(RedisKey.RssDiscord, redisMember)
 				} else {
 					console.log('    🔘 Redis.discord.exists', redisMember)
@@ -89,13 +89,13 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				if (!exists) {
 					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
 
-					// await postRssBleet({
-					// 	name: config.name,
-					// 	item: item,
-					// 	homepage: config.homepage,
-					// 	handle: config.bskyHandle,
-					// 	hashtags: config.hashtags,
-					// })
+					await postRssBleet({
+						name: config.name,
+						item: item,
+						homepage: config.homepage,
+						handle: config.bskyHandle,
+						hashtags: config.hashtags,
+					})
 
 					redis().sadd(RedisKey.RssBluesky, redisMember)
 				} else {
@@ -108,12 +108,12 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis().sismember(RedisKey.RssRefresh, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.refresh.not.exists', redisMember)
-					// await pingRefreshUrls(config.name, config.refreshUrls)
-					// await sendNonPodWebhookRaw({
-					// 	username: 'RSS Refresh URLs',
-					// 	webhook: WebhookChannel.ShawnDev,
-					// 	content: `Pinging refresh URLs for ${config.name}`,
-					// })
+					await pingRefreshUrls(config.name, config.refreshUrls)
+					await sendNonPodWebhookRaw({
+						username: 'RSS Refresh URLs',
+						webhook: WebhookChannel.ShawnDev,
+						content: `Pinging refresh URLs for ${config.name}`,
+					})
 					redis().sadd(RedisKey.RssRefresh, redisMember)
 				} else {
 					console.log('    🔘 Redis.refresh.exists', redisMember)

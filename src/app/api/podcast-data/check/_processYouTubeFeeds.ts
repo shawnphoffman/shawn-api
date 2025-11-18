@@ -97,13 +97,13 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				if (!exists) {
 					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
 
-					// await postRssBleet({
-					// 	name: config.name,
-					// 	item: item,
-					// 	homepage: config.homepage,
-					// 	handle: config.bskyHandle,
-					// 	hashtags: config.hashtags,
-					// })
+					await postRssBleet({
+						name: config.name,
+						item: item,
+						homepage: config.homepage,
+						handle: config.bskyHandle,
+						hashtags: config.hashtags,
+					})
 
 					redis().sadd(RedisKey.RssBluesky, redisMember)
 				} else {

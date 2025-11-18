@@ -66,7 +66,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis().sismember(RedisKey.RssDiscord, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
-					await sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: config.channel, homepage: config.homepage })
+					// await sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: config.channel, homepage: config.homepage })
 					redis().sadd(RedisKey.RssDiscord, redisMember)
 				} else {
 					console.log('    🔘 Redis.discord.exists', redisMember)
@@ -79,14 +79,14 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				if (!exists) {
 					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
 
-					await postRssBleet({
-						name: config.name,
-						item: episode,
-						homepage: config.homepage,
-						handle: config.bskyHandle,
-						hashtags: config.hashtags,
-						imageOverride: episode.imageURL ? undefined : podcast.imageURL,
-					})
+					// await postRssBleet({
+					// 	name: config.name,
+					// 	item: episode,
+					// 	homepage: config.homepage,
+					// 	handle: config.bskyHandle,
+					// 	hashtags: config.hashtags,
+					// 	imageOverride: episode.imageURL ? undefined : podcast.imageURL,
+					// })
 
 					redis().sadd(RedisKey.RssBluesky, redisMember)
 				} else {
@@ -99,7 +99,7 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis().sismember(RedisKey.RssOvercast, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
-					await pingOvercast(config.url)
+					// await pingOvercast(config.url)
 					redis().sadd(RedisKey.RssOvercast, redisMember)
 				} else {
 					console.log('    🔘 Redis.overcast.exists', redisMember)
@@ -111,12 +111,12 @@ async function processItems({ debug, config }: ProcessItemsProps) {
 				const exists = await redis().sismember(RedisKey.RssRefresh, redisMember)
 				if (!exists) {
 					console.log('    ⚪️ Redis.refresh.not.exists', redisMember)
-					await pingRefreshUrls(config.name, config.refreshUrls)
-					await sendNonPodWebhookRaw({
-						username: 'RSS Refresh URLs',
-						webhook: WebhookChannel.ShawnDev,
-						content: `Pinging refresh URLs for ${config.name}`,
-					})
+					// await pingRefreshUrls(config.name, config.refreshUrls)
+					// await sendNonPodWebhookRaw({
+					// 	username: 'RSS Refresh URLs',
+					// 	webhook: WebhookChannel.ShawnDev,
+					// 	content: `Pinging refresh URLs for ${config.name}`,
+					// })
 					redis().sadd(RedisKey.RssRefresh, redisMember)
 				} else {
 					console.log('    🔘 Redis.refresh.exists', redisMember)

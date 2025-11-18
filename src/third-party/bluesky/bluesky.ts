@@ -119,17 +119,17 @@ export const postBleetToBsky = async ({ contentType, items, url, title, desc }: 
 	const record = await formatBleet(agent, { contentType, items, url, title, desc })
 
 	// Post Bleet
-	const post = await agent.post(record)
+	// const post = await agent.post(record)
 
-	log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
-	log.info('post', post)
-	log.info('================')
+	// log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
+	// log.info('post', post)
+	// log.info('================')
 
-	// if (post?.cid) {
-	// 	await addToStarWarsFeed({ cid: post.cid, uri: post.uri, indexedAt: new Date().toISOString() })
-	// }
+	// // if (post?.cid) {
+	// // 	await addToStarWarsFeed({ cid: post.cid, uri: post.uri, indexedAt: new Date().toISOString() })
+	// // }
 
-	return post
+	// return post
 	// } catch (error) {
 	// 	log.error('BLUESKY POST FAILED', error)
 	// 	// captureException(error)

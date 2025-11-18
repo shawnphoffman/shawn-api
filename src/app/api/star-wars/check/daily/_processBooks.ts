@@ -78,15 +78,15 @@ const processItems = async ({ debug }): Promise<string> => {
 			// Discord
 			const discordExists = await redis().sismember(RedisKey.Discord, redisMember)
 			if (!discordExists) {
-				await sendDiscordWebhook(
-					process.env.DISCORD_WEBHOOK_BOOKS,
-					{
-						username: `Books Releasing (${displayDate(tomorrow)})`,
-						content: createMessageForDiscord(c),
-						avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
-					},
-					true
-				)
+				// await sendDiscordWebhook(
+				// 	process.env.DISCORD_WEBHOOK_BOOKS,
+				// 	{
+				// 		username: `Books Releasing (${displayDate(tomorrow)})`,
+				// 		content: createMessageForDiscord(c),
+				// 		avatar_url: 'https://blueharvest.rocks/bots/bh_red@2x.png',
+				// 	},
+				// 	true
+				// )
 				await redis().sadd(RedisKey.Discord, redisMember)
 			} else {
 				log.info('+ Redis.discord.exists', { redisMember })
@@ -97,12 +97,12 @@ const processItems = async ({ debug }): Promise<string> => {
 			if (!blueskyExists) {
 				log.info(`Bleeting book: ${c.title}`)
 
-				await postBleetToBsky({
-					contentType: 'Book',
-					title: c.title,
-					items: createMessageForBsky(c),
-					url: c.url,
-				})
+				// await postBleetToBsky({
+				// 	contentType: 'Book',
+				// 	title: c.title,
+				// 	items: createMessageForBsky(c),
+				// 	url: c.url,
+				// })
 
 				await redis().sadd(RedisKey.Bluesky, redisMember)
 			} else {

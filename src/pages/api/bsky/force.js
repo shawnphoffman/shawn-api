@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 	}
 
 	try {
-		await postBleetToBsky({ contentType: type, title: title, items: content, url })
+		// await postBleetToBsky({ contentType: type, title: title, items: content, url })
 		// postBleet({ contentType: 'ContentType', items: 'TEST (composite) #StorWors', url: scrape })
 
 		// const imageUrl = await getOgImageUrl(scrape)

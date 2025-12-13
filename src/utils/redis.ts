@@ -15,6 +15,7 @@ export const RedisKey = {
 	TestOvercast: 'test:overcast',
 	//
 	FetchCache: 'fetch:cache',
+	BskyThrottle: 'bsky:throttle:handle',
 }
 
 let redis: Redis | null = null

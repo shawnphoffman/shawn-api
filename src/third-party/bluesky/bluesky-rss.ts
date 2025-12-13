@@ -3,6 +3,7 @@ import { BskyAgent, RichText } from '@atproto/api'
 
 import { EpisodeType } from '@/getters/rss-feed/recent'
 import { fetchRemoteImageBuffer } from '@/utils/imageUtils'
+import { getHandleDelay, recordHandleMentions } from '@/utils/blueskyThrottle'
 
 import { ImageBlob, manualUploadBlobToBsky } from './bluesky'
 
@@ -33,8 +34,21 @@ export const postRssBleet = async ({ name, item, homepage, handle, hashtags, ima
 		// Generate Bleet
 		const record = await formatRssBleet(agent, { name, item, homepage, handle, hashtags, imageOverride })
 
+		// Check if we need to delay posting to avoid spamming handles
+		const handles = handle || []
+		const delay = await getHandleDelay(handles)
+		if (delay > 0) {
+			console.log(`Delaying Bluesky post by ${delay}ms to respect handle throttling`, { handles, delay })
+			await new Promise(resolve => setTimeout(resolve, delay))
+		}
+
 		// Post Bleet
 		const post = await agent.post(record)
+
+		// Record that we mentioned these handles
+		if (handles.length > 0) {
+			await recordHandleMentions(handles)
+		}
 
 		console.log(`Bleeting: ${name} - ${item.title}`)
 		console.log(post)
@@ -88,7 +102,7 @@ ${hashtags.join(' ')}`
 							},
 						],
 					},
-			  ]
+				]
 			: []),
 		...(rt.facets || []),
 	]

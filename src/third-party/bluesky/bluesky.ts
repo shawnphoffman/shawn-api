@@ -3,6 +3,7 @@ import { BskyAgent, RichText } from '@atproto/api'
 import { log } from 'next-axiom'
 
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from '@/utils/imageUtils'
+import { getHandleDelay, recordHandleMentions } from '@/utils/blueskyThrottle'
 
 // import { addToStarWarsFeed } from './shawnbot'
 
@@ -12,6 +13,7 @@ type PostBleetProps = {
 	url?: string
 	title: string
 	desc?: string
+	handle?: string[]
 }
 
 const username = process.env.BSKY_USERNAME
@@ -103,7 +105,7 @@ ${websiteTarget}`
 // TODO - Check bsky for existing bleet
 //
 
-export const postBleetToBsky = async ({ contentType, items, url, title, desc }: PostBleetProps) => {
+export const postBleetToBsky = async ({ contentType, items, url, title, desc, handle }: PostBleetProps) => {
 	// Login
 	const loginResponse = await agent.login({
 		identifier: username!,
@@ -118,8 +120,21 @@ export const postBleetToBsky = async ({ contentType, items, url, title, desc }: 
 	// Generate Bleet
 	const record = await formatBleet(agent, { contentType, items, url, title, desc })
 
+	// Check if we need to delay posting to avoid spamming handles
+	const handles = handle || []
+	const delay = await getHandleDelay(handles)
+	if (delay > 0) {
+		log.info(`Delaying Bluesky post by ${delay}ms to respect handle throttling`, { handles, delay })
+		await new Promise(resolve => setTimeout(resolve, delay))
+	}
+
 	// Post Bleet
 	const post = await agent.post(record)
+
+	// Record that we mentioned these handles
+	if (handles.length > 0) {
+		await recordHandleMentions(handles)
+	}
 
 	log.info(`Bleeting: ${contentType || 'NO TYPE'}`)
 	log.info('post', post)

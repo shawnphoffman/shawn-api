@@ -1,7 +1,7 @@
 import { kv } from '@vercel/kv'
 import { NextResponse } from 'next/server'
 
-import { goodpodsSource, leaderboardsToAwards, GoodpodsPodcastSchema } from '@/lib/podcast-data/sources/goodpods'
+import { GoodpodsPodcastSchema,goodpodsSource, leaderboardsToAwards } from '@/lib/podcast-data/sources/goodpods'
 import { fetchInTiers } from '@/lib/podcast-data/tier'
 import { KvPrefix } from '@/utils/kv'
 

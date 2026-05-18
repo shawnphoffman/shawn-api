@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-import { goodpodsSource, leaderboardsToAwards, GoodpodsPodcastSchema } from '@/lib/podcast-data/sources/goodpods'
 import { listPodcastsForSync, upsertAward } from '@/lib/podcast-data/sanity'
+import { GoodpodsPodcastSchema,goodpodsSource, leaderboardsToAwards } from '@/lib/podcast-data/sources/goodpods'
 import { fetchInTiers } from '@/lib/podcast-data/tier'
 
 export const dynamic = 'force-dynamic'

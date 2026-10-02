@@ -6,4 +6,5 @@ export const KvPrefix = {
 	Scrape1: 'shawn:scrape1',
 	Scrape2: 'shawn:scrape2',
 	ScrapeOld: 'shawn:scrape-old',
+	ScrapeResult: 'shawn:scrape-result',
 }

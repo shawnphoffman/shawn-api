@@ -16,8 +16,9 @@ export const maxDuration = 300
  * upserts each leaderboard as a Sanity award (`source: 'goodpods'`).
  *
  * Auth: in production (Vercel cron), Vercel sends `Authorization: Bearer
- * $CRON_SECRET` (auto-assigned). In dev / manual triggers, set
- * `CRON_SECRET` and pass `?secret=...` or the Authorization header.
+ * $CRON_SECRET`. In dev / manual triggers, set `CRON_SECRET` and pass
+ * `?secret=...` or the Authorization header. Without `CRON_SECRET` set,
+ * every request is rejected.
  *
  * Triggered hourly by the crons entry in vercel.json.
  */
@@ -25,7 +26,10 @@ export async function GET(request: NextRequest) {
 	const secret = process.env.CRON_SECRET
 	const auth = request.headers.get('authorization')
 	const querySecret = request.nextUrl.searchParams.get('secret')
-	const authorized = !secret || auth === `Bearer ${secret}` || querySecret === secret
+	if (!secret) {
+		return NextResponse.json({ error: 'CRON_SECRET is not configured' }, { status: 500 })
+	}
+	const authorized = auth === `Bearer ${secret}` || querySecret === secret
 	if (!authorized) {
 		return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 	}

@@ -1,3 +1,4 @@
+import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { type NextRequest, NextResponse } from 'next/server'
 import { log } from 'next-axiom'
 
@@ -22,6 +23,16 @@ const ProxyEndpoints = [
 export async function POST(req: NextRequest) {
 	//
 	const bodyText = await req.text()
+
+	// Only relay requests Sanity signed; the sites check the same signature with the same secret
+	const secret = process.env.SANITY_REVALIDATE_SECRET
+	if (!secret) {
+		return NextResponse.json({ error: 'SANITY_REVALIDATE_SECRET is not configured' }, { status: 500 })
+	}
+	const signature = req.headers.get(SIGNATURE_HEADER_NAME)
+	if (!signature || !(await isValidSignature(bodyText, signature, secret))) {
+		return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
+	}
 
 	try {
 		log.info('API Sanity Webhook Body', { body: JSON.parse(bodyText) })

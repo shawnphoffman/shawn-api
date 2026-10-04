@@ -16,6 +16,8 @@
 		"@atproto/api": "^0.12.2",
 		"@googleapis/youtube": "^14.0.0",
 		"@podverse/podcast-feed-parser": "^1.1.1",
+		"@sanity/client": "^7.11.2",
+		"@sanity/webhook": "^4.0.4",
 		"@upstash/qstash": "^2.4.3",
 		"@upstash/redis": "^1.35.4",
 		"@vercel/analytics": "^1.2.2",
@@ -36,8 +38,7 @@
 		"react-dom": "^18.3.1",
 		"sharp": "^0.32.0",
 		"typescript": "^5.7.2",
-		"zod": "^3.23.8",
-		"@sanity/client": "^7.11.2"
+		"zod": "^3.23.8"
 	},
 	"devDependencies": {
 		"@shawnphoffman/eslint-config": "^1.0.4",

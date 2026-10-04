@@ -9,6 +9,30 @@
 // HEADER
 // x-hub-signature-256
 
+import { createHmac, timingSafeEqual } from 'crypto'
+
+// GitHub signs the raw bytes, so the body parser has to stay off
+export const config = {
+	api: {
+		bodyParser: false,
+	},
+}
+
+async function readRawBody(req) {
+	const chunks = []
+	for await (const chunk of req) {
+		chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
+	}
+	return Buffer.concat(chunks)
+}
+
+function isValidGitHubSignature(rawBody, signature, secret) {
+	if (!signature) return false
+	const expected = Buffer.from(`sha256=${createHmac('sha256', secret).update(rawBody).digest('hex')}`)
+	const received = Buffer.from(signature)
+	return expected.length === received.length && timingSafeEqual(expected, received)
+}
+
 async function sendWebhook(url, content) {
 	var myHeaders = new Headers()
 	myHeaders.append('Content-Type', 'application/json')
@@ -30,7 +54,26 @@ export default async function handler(req, res) {
 	// 	origin: [/shawn\.party$/],
 	// })
 
-	const body = req.body
+	const secret = process.env.WEBHOOKS_GITHUB_BH_SECRET
+	if (!secret) {
+		res.status(500).json({ error: 'WEBHOOKS_GITHUB_BH_SECRET is not configured' })
+		return
+	}
+
+	const rawBody = await readRawBody(req)
+	if (!isValidGitHubSignature(rawBody, req.headers['x-hub-signature-256'], secret)) {
+		res.status(401).json({ error: 'Invalid signature' })
+		return
+	}
+
+	let body
+	try {
+		body = JSON.parse(rawBody.toString('utf8'))
+	} catch {
+		res.status(400).json({ error: 'Invalid JSON' })
+		return
+	}
+
 	console.log('')
 	console.log('WEBHOOK BODY')
 	console.log({ body })

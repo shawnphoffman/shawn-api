@@ -30,15 +30,16 @@ async function fetchWithCache({ url, options, cacheMinutes = 10 }: FetchProps) {
 
 export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10, redisCache = false }: FetchProps) {
 	let value: any
-	const redisKey = `${RedisKey.FetchCache}:${encodeURIComponent(url.toString())}`
+	// Same key for both stores, and for reads and writes
+	const cacheKey = `${RedisKey.FetchCache}:${encodeURIComponent(url.toString())}`
 	if (!redisCache) {
-		value = cacheData.get(redisKey)
+		value = cacheData.get(cacheKey)
 		if (value) {
 			console.log('🔷 MEM CACHED', url)
 			return value
 		}
 	} else {
-		value = await redis().get(RedisKey.FetchCache)
+		value = await redis().get<string>(cacheKey)
 		if (value) {
 			console.log('🔷 REDIS CACHED', url)
 			return value
@@ -49,11 +50,17 @@ export async function fetchHtmlWithCache({ url, options, cacheMinutes = 10, redi
 	const res = await fetch(url, options)
 	const data = await res.text()
 
-	if (redisCache) {
-		// @ts-expect-error true/never
-		await redis().set(redisKey, data, { ex: cacheMinutes * 60, keepTtl: true })
+	// Never cache an error page (rate limits, outages) for the full cache window
+	if (!res.ok) {
+		console.log('🔶 NOT CACHING', res.status, url)
+		return data
 	}
-	cacheData.put(url, data, cacheMinutes * 1000 * 60)
+
+	if (redisCache) {
+		await redis().set(cacheKey, data, { ex: cacheMinutes * 60 })
+	} else {
+		cacheData.put(cacheKey, data, cacheMinutes * 1000 * 60)
+	}
 	return data
 }
 

@@ -3,11 +3,14 @@ import { withAxiom } from 'next-axiom'
 import redis, { RedisKey } from '@/utils/redis'
 
 const apiKey = process.env.PURPLE_API_KEY
-const sensorUrl = 'https://api.purpleair.com/v1/sensors/151596?fields=name,confidence,altitude,temperature,humidity,voc,pm2.5,pm2.5_cf_1'
+const sensorUrl =
+	'https://api.purpleair.com/v1/sensors/151596?fields=name,confidence,altitude,temperature,humidity,voc,pm2.5,pm2.5_cf_1,pm2.5_cf_1_a,pm2.5_cf_1_b'
 
 // Ask PurpleAir at most once a minute across all instances; keep the last reading for a day as a fallback
 const FRESH_SECONDS = 60
 const KEEP_SECONDS = 60 * 60 * 24
+// The AQI is the average of the corrected readings in this window, which smooths the sensor's 2-minute jitter
+const WINDOW_SECONDS = 10 * 60
 
 type PurpleResponse = {
 	time_stamp: number
@@ -15,16 +18,30 @@ type PurpleResponse = {
 	sensor: Record<string, any>
 }
 
+// One sensor reading: cf=1 PM2.5 from each laser channel plus relative humidity
+type Sample = {
+	t: number
+	a: number
+	b: number
+	rh: number
+}
+
 type CachedReading = {
 	checkedAt: number
 	data: PurpleResponse
+	samples?: Sample[]
 }
 
 type PurpleOutput = {
 	aqi: number | string | undefined
-	// PM2.5 the AQI was calculated from: EPA-corrected when the sensor reports cf=1 and humidity
+	// PM2.5 the AQI was calculated from: the average of EPA-corrected readings over the window
 	pm25: number
 	corrected: boolean
+	// Readings averaged into pm25; 0 means it fell back to the latest single reading
+	samples: number
+	windowMinutes: number
+	// Whether the latest reading's two channels agree, per EPA's cleaning rule
+	channelsAgree: boolean | undefined
 	aqiUncorrected: number | string | undefined
 	raw: any
 }
@@ -48,6 +65,50 @@ function correctPM(cf1: number, rh: number): number {
 
 	// Clean air with high humidity can push the linear fit slightly below zero
 	return Math.max(0, pm)
+}
+
+/**
+ * EPA data cleaning for PurpleAir (Barkjohn et al. 2021): a reading is kept only when its two laser channels agree
+ * within 5 µg/m³ or within 70% relative difference. A failing laser usually shows up as one channel reading high.
+ */
+function channelsAgree({ a, b }: Sample): boolean {
+	const diff = Math.abs(a - b)
+	const mean = (a + b) / 2
+	return diff <= 5 || (mean > 0 && diff / mean < 0.7)
+}
+
+function toSample(data: PurpleResponse): Sample | null {
+	const { sensor } = data
+	const a = sensor['pm2.5_cf_1_a']
+	const b = sensor['pm2.5_cf_1_b']
+	const rh = sensor.humidity
+	if (typeof a !== 'number' || typeof b !== 'number' || typeof rh !== 'number') return null
+	return { t: data.data_time_stamp, a, b, rh }
+}
+
+// Adds each distinct reading once and keeps only those inside the window ending at the newest reading
+function updateSamples(samples: Sample[], readings: PurpleResponse[], newestTime: number): Sample[] {
+	const byTime = new Map(samples.map(sample => [sample.t, sample]))
+	for (const reading of readings) {
+		const sample = toSample(reading)
+		if (sample) byTime.set(sample.t, sample)
+	}
+	return [...byTime.values()].filter(sample => sample.t > newestTime - WINDOW_SECONDS).sort((x, y) => x.t - y.t)
+}
+
+function smoothedPM(reading: CachedReading): { pm25: number; corrected: boolean; samples: number } {
+	const good = (reading.samples ?? []).filter(channelsAgree)
+	if (good.length > 0) {
+		const total = good.reduce((sum, sample) => sum + correctPM((sample.a + sample.b) / 2, sample.rh), 0)
+		return { pm25: total / good.length, corrected: true, samples: good.length }
+	}
+
+	// No clean readings in the window: PurpleAir's own cf=1 average already excludes a channel it has downgraded
+	const { sensor } = reading.data
+	if (typeof sensor['pm2.5_cf_1'] === 'number' && typeof sensor.humidity === 'number') {
+		return { pm25: correctPM(sensor['pm2.5_cf_1'], sensor.humidity), corrected: true, samples: 0 }
+	}
+	return { pm25: sensor['pm2.5'], corrected: false, samples: 0 }
 }
 
 async function fetchSensor(): Promise<PurpleResponse> {
@@ -85,15 +146,15 @@ async function writeCache(reading: CachedReading) {
 }
 
 /**
- * Returns the newest sensor reading, shared across every instance through Redis.
+ * Returns the newest sensor reading plus the recent readings window, shared across every instance through Redis.
  * PurpleAir's API can answer with an older reading after a newer one, so an older reading never replaces a newer one.
  */
-async function getSensorData(): Promise<PurpleResponse> {
+async function getSensorData(): Promise<CachedReading> {
 	const cached = await readCache()
 	const now = Math.floor(Date.now() / 1000)
 
 	if (cached && now - cached.checkedAt < FRESH_SECONDS) {
-		return cached.data
+		return cached
 	}
 
 	let fresh: PurpleResponse
@@ -103,13 +164,19 @@ async function getSensorData(): Promise<PurpleResponse> {
 		if (!cached) throw error
 		// Serve the last reading and wait a full interval before asking PurpleAir again
 		console.error('PurpleAir fetch failed, serving cached reading:', error)
-		await writeCache({ checkedAt: now, data: cached.data })
-		return cached.data
+		const kept = { ...cached, checkedAt: now }
+		await writeCache(kept)
+		return kept
 	}
 
 	const newest = cached && cached.data.data_time_stamp > fresh.data_time_stamp ? cached.data : fresh
-	await writeCache({ checkedAt: now, data: newest })
-	return newest
+	const reading = {
+		checkedAt: now,
+		data: newest,
+		samples: updateSamples(cached?.samples ?? [], [fresh, newest], newest.data_time_stamp),
+	}
+	await writeCache(reading)
+	return reading
 }
 
 /**
@@ -181,19 +248,19 @@ function aqiFromPM(pm: number): number | '-' | undefined {
  */
 export const GET = withAxiom(async () => {
 	try {
-		const data = await getSensorData()
-
-		const { sensor } = data
-		const rawPm25 = sensor['pm2.5']
-		const cf1 = sensor['pm2.5_cf_1']
-		const corrected = typeof cf1 === 'number' && typeof sensor.humidity === 'number'
-		const pm25 = corrected ? correctPM(cf1, sensor.humidity) : rawPm25
+		const reading = await getSensorData()
+		const { data } = reading
+		const { pm25, corrected, samples } = smoothedPM(reading)
+		const latest = toSample(data)
 
 		const responseData: PurpleOutput = {
 			aqi: aqiFromPM(pm25),
 			pm25: Math.round(pm25 * 10) / 10,
 			corrected,
-			aqiUncorrected: aqiFromPM(rawPm25),
+			samples,
+			windowMinutes: WINDOW_SECONDS / 60,
+			channelsAgree: latest ? channelsAgree(latest) : undefined,
+			aqiUncorrected: aqiFromPM(data.sensor['pm2.5']),
 			raw: data,
 		}
 

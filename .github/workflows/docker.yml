@@ -1,14 +1,10 @@
 # GitHub Actions workflow for building and publishing Docker images
-# This workflow automatically builds a Docker image and pushes it to GitHub Container Registry (GHCR)
-# when code is pushed to the main branch or manually triggered
+# Manual only: the Mac mini now builds its own image through a Dockhand git stack
+# (see docker-compose.yml). Kept as a fallback that publishes to GHCR on demand.
 name: Build and Publish Docker Image
 
 # Define when this workflow should run
 on:
-  # Trigger on pushes to the main branch
-  push:
-    branches:
-      - main
   # Allow manual triggering from the GitHub Actions UI
   workflow_dispatch:
 

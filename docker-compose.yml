@@ -1,3 +1,11 @@
+# Run by Dockhand as a git stack on the Mac mini, which builds the image from
+# this repo. Settings come from the stack's .env:
+#   CONTAINER_NAME        container and network name (default shawn-api; Cronicle calls http://shawn-api:3000)
+#   SHAWN_API_HOST_PORT   port on the Mac mini (default 3010)
+#   NPM_TOKEN             GitHub token with read:packages, for the private @shawnphoffman packages
+# The service is called "app" rather than shawn-api so that a second copy of
+# this stack (for testing) never answers to the name Cronicle calls.
+
 x-common: &common
   restart: unless-stopped
   logging:
@@ -5,23 +13,27 @@ x-common: &common
     options:
       max-size: "10m"
       max-file: "3"
-  networks:
-    - mac-mini-shared
 
 networks:
   mac-mini-shared:
     external: true
 
+secrets:
+  npm_token:
+    environment: NPM_TOKEN
+
 services:
-  shawn-api:
-    image: ghcr.io/shawnphoffman/shawn-api:latest
-    container_name: shawn-api
+  app:
+    build:
+      context: .
+      secrets:
+        - npm_token
+    image: ${CONTAINER_NAME:-shawn-api}:local
+    container_name: ${CONTAINER_NAME:-shawn-api}
     <<: *common
+    networks:
+      - mac-mini-shared
     env_file:
       - .env
     ports:
       - ${SHAWN_API_HOST_PORT:-3010}:3000
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
-      - "com.centurylinklabs.watchtower.scope=shawn"
-      - "com.centurylinklabs.watchtower.restart=true"

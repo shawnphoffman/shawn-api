@@ -5,3 +5,6 @@ npm-debug.log
 README.md
 .next
 .git
+# Dockhand writes the stack's secrets to .env next to this file; keep them out of the image
+.env
+.env*

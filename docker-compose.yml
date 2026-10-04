@@ -29,6 +29,8 @@ services:
       secrets:
         - npm_token
     image: ${CONTAINER_NAME:-shawn-api}:local
+    # Built here from the repo, never pulled from a registry
+    pull_policy: build
     container_name: ${CONTAINER_NAME:-shawn-api}
     <<: *common
     networks:

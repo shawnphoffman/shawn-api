@@ -3,6 +3,7 @@ import { Redis } from '@upstash/redis'
 export const RedisKey = {
 	Discord: 'api:discord',
 	Bluesky: 'api:bsky',
+	TahomePurple: 'api:tahome:purple',
 	//
 	RssDiscord: 'rss:discord',
 	RssBluesky: 'rss:bsky',

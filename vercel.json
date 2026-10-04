@@ -3,5 +3,11 @@
 		"pages/api/podcast-data/**/*": {
 			"maxDuration": 60
 		}
-	}
+	},
+	"crons": [
+		{
+			"path": "/api/podcast-data/sync-awards",
+			"schedule": "0 * * * *"
+		}
+	]
 }

@@ -9,8 +9,8 @@ const webhookIdFriends = process.env.DISCORD_WEBHOOK_ID_FRIENDS!
 const webhookTokenFriends = process.env.DISCORD_WEBHOOK_TOKEN_FRIENDS!
 const webhookIdDev = process.env.DEV_WEBHOOK_ID!
 const webhookTokenDev = process.env.DEV_WEBHOOK_TOKEN!
-const webhookIdYouTube = process.env.WEBHOOK_ID_YOUTUBE!
-const webhookTokenYouTube = process.env.WEBHOOK_TOKEN_YOUTUBE!
+const webhookIdYouTube = process.env.DISCORD_WEBHOOK_ID_YOUTUBE!
+const webhookTokenYouTube = process.env.DISCORD_WEBHOOK_TOKEN_YOUTUBE!
 const webhookIdShawnDev = process.env.DISCORD_WEBHOOK_ID_SHAWN_DEV!
 const webhookTokenShawnDev = process.env.DISCORD_WEBHOOK_TOKEN_SHAWN_DEV!
 

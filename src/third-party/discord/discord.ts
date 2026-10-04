@@ -8,6 +8,7 @@ export const crossPostMessage = async (channelId: string, messageId: string) => 
 			headers: {
 				Authorization: `Bot ${botToken}`,
 			},
+			signal: AbortSignal.timeout(15000),
 		}
 		const resp = await fetch(url, options)
 		const json = await resp.json()
@@ -29,6 +30,7 @@ export const sendDiscordWebhook = async (url, content, crossPost) => {
 		headers: myHeaders,
 		method: 'POST',
 		body: JSON.stringify(content),
+		signal: AbortSignal.timeout(15000),
 	}
 
 	const response = await fetch(`${url}?wait=true`, requestOptions)
@@ -37,6 +39,10 @@ export const sendDiscordWebhook = async (url, content, crossPost) => {
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)
+	// Throw so the caller does not record a message Discord refused as sent
+	if (!response.ok) {
+		throw new Error(`Discord webhook failed: ${response.status} ${response.statusText}`)
+	}
 	try {
 		const json = await response.json()
 		if (crossPost) {

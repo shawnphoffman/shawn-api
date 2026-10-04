@@ -11,6 +11,7 @@ export const isYouTubeShort = async (videoId: string) => {
 	const resp = await fetch(url, {
 		method: 'HEAD',
 		redirect: 'manual',
+		signal: AbortSignal.timeout(15000),
 	})
 	// console.log('isYouTubeShort', resp)
 

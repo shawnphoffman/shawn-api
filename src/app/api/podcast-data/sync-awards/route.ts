@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+import { guardJob } from '@/lib/jobs/guard'
 import { listPodcastsForSync, upsertAward } from '@/lib/podcast-data/sanity'
 import { GoodpodsPodcastSchema,goodpodsSource, leaderboardsToAwards } from '@/lib/podcast-data/sources/goodpods'
 import { fetchInTiers } from '@/lib/podcast-data/tier'
@@ -15,24 +16,15 @@ export const maxDuration = 300
  * fetches its current Goodpods leaderboards via the tiered fetcher, and
  * upserts each leaderboard as a Sanity award (`source: 'goodpods'`).
  *
- * Auth: in production (Vercel cron), Vercel sends `Authorization: Bearer
- * $CRON_SECRET`. In dev / manual triggers, set `CRON_SECRET` and pass
- * `?secret=...` or the Authorization header. Without `CRON_SECRET` set,
- * every request is rejected.
+ * Auth: the shared job guard. Vercel cron sends `Authorization: Bearer
+ * $CRON_SECRET` on its own; manual triggers send the same header. Without
+ * `CRON_SECRET` set, every request is rejected.
  *
  * Triggered hourly by the crons entry in vercel.json.
  */
 export async function GET(request: NextRequest) {
-	const secret = process.env.CRON_SECRET
-	const auth = request.headers.get('authorization')
-	const querySecret = request.nextUrl.searchParams.get('secret')
-	if (!secret) {
-		return NextResponse.json({ error: 'CRON_SECRET is not configured' }, { status: 500 })
-	}
-	const authorized = auth === `Bearer ${secret}` || querySecret === secret
-	if (!authorized) {
-		return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-	}
+	const rejected = guardJob(request, 'sync-awards')
+	if (rejected) return rejected
 
 	const start = Date.now()
 	const now = new Date().toISOString()

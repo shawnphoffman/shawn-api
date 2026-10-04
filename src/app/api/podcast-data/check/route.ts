@@ -1,114 +1,81 @@
-import { NextRequest } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
 import { podcastFeeds } from '@/config/feeds/podcasts'
 import { rssFeeds } from '@/config/feeds/rss'
 import { youtubeFeeds } from '@/config/feeds/youtube'
+import { guardJob } from '@/lib/jobs/guard'
+import { withJobLock } from '@/lib/jobs/lock'
 
 import processFeeds from './_processFeeds'
+import { FeedResult, newFeedResult, recordError } from './_result'
 import processRssFeeds from './_processRssFeeds'
 import processYoutubeFeeds from './_processYouTubeFeeds'
 
-// export const dynamic = 'force-dynamic'
-// export const runtime = 'nodejs'
-// export const revalidate = false
-// export const maxDuration = 60
+export const dynamic = 'force-dynamic'
+export const maxDuration = 300
 
-const encoder = new TextEncoder()
+// Longer than any normal run, so a run that dies does not block the next one for long
+const LOCK_SECONDS = 600
 
-async function* makeIterator({ debug }) {
-	// performance.mark('shawn:pod:start')
-
-	// START
-	yield encoder.encode(`<h1>🚀 Starting...</h1><hr />`)
-
-	// DEBUG
-	if (debug) {
-		await new Promise(resolve => setTimeout(resolve, 5000))
-		yield encoder.encode(`<h1>⏳ Fake Wait</h1><hr />`)
+// A feed that throws outside its own deliveries still gets a result, so the other feeds keep going
+async function runFeed(name: string, check: () => Promise<FeedResult>): Promise<FeedResult> {
+	try {
+		return await check()
+	} catch (error) {
+		const result = newFeedResult(name)
+		recordError(result, `${name} failed`, error)
+		return result
 	}
-
-	// PROCESS PODCASTS
-	for (const podcast of podcastFeeds) {
-		// performance.mark(`shawn:pod:${podcast?.name}:start`)
-
-		yield encoder.encode(`<h2>🎙️ Processing: ${podcast?.name}</h2>`)
-
-		const recentItems = await processFeeds({ debug, config: podcast })
-		yield encoder.encode(`<h3>✅ Episodes:</h3>${recentItems}<hr />`)
-
-		// performance.mark(`shawn:pod:${podcast?.name}:end`)
-		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
-	}
-
-	// PROCESS RSS FEEDS
-	for (const rssFeed of rssFeeds) {
-		// performance.mark(`shawn:pod:${podcast?.name}:start`)
-
-		yield encoder.encode(`<h2>🎙️ Processing: ${rssFeed?.name}</h2>`)
-
-		const recentItems = await processRssFeeds({ debug, config: rssFeed })
-		yield encoder.encode(`<h3>✅ Items:</h3>${recentItems}<hr />`)
-
-		// performance.mark(`shawn:pod:${podcast?.name}:end`)
-		// performance.measure(`shawn:pod:${podcast?.name}`, `shawn:pod:${podcast?.name}:start`, `shawn:pod:${podcast?.name}:end`)
-	}
-
-	// PROCESS YOUTUBE FEEDS
-	for (const youtubeFeed of youtubeFeeds) {
-		// performance.mark(`shawn:yt:${youtubeFeed?.name}:start`)
-
-		yield encoder.encode(`<h2>🎙️ Processing: ${youtubeFeed?.name}</h2>`)
-		const recentItems = await processYoutubeFeeds({ debug, config: youtubeFeed })
-
-		yield encoder.encode(`<h3>✅ Items:</h3>${recentItems}<hr />`)
-
-		// performance.mark(`shawn:yt:${youtubeFeed?.name}:end`)
-		// performance.measure(`shawn:yt:${youtubeFeed?.name}`, `shawn:yt:${youtubeFeed?.name}:start`, `shawn:yt:${youtubeFeed?.name}:end`)
-	}
-
-	// performance.mark('shawn:pod:end')
-
-	// FINISH
-	yield encoder.encode(`<h1>🏁 Finished!</h1>`)
-
-	// performance.measure('shawn:pod', 'shawn:pod:start', 'shawn:pod:end')
-
-	// yield encoder.encode(`\n\n📊 Performance\n`)
-	// for (const entry of performance.getEntries()) {
-	// 	if (entry.name.startsWith('shawn:')) {
-	// 		if (entry.entryType === 'measure') {
-	// 			yield encoder.encode(`  - 📏 ${entry.name.replace('shawn:pod:', '').padEnd(30, '.')}: ${entry.duration}ms\n`)
-	// 		}
-	// 		performance.clearMarks(entry.name)
-	// 		performance.clearMeasures(entry.name)
-	// 	}
-	// }
 }
 
+/**
+ * GET /api/podcast-data/check
+ *
+ * Checks every podcast, RSS and YouTube feed and posts new items to Discord,
+ * Bluesky, Overcast and the sites' refresh URLs, recording each delivery in
+ * Redis so it happens once. Called by Cronicle on the Mac mini.
+ *
+ * Returns a JSON summary: 200 when everything worked, 500 when any feed or
+ * delivery failed, 409 when another run is still going. `?debug=true` runs
+ * the checks without posting anything.
+ */
 export async function GET(req: NextRequest) {
-	// Basic
-	const { searchParams } = new URL(req.url)
-	const debug = searchParams.get('debug') === 'true'
+	const rejected = guardJob(req, 'podcast-check')
+	if (rejected) return rejected
 
-	// Processors
-	// const iterator = makeIterator({ debug: false })
-	const iterator = makeIterator({ debug })
+	const debug = req.nextUrl.searchParams.get('debug') === 'true'
 
-	// Response Stream
-	const stream = new ReadableStream({
-		async pull(controller) {
-			const { value, done } = await iterator.next()
-			if (done) {
-				controller.close()
-			} else {
-				controller.enqueue(value)
-			}
-		},
+	const run = await withJobLock('podcast-check', LOCK_SECONDS, async () => {
+		const results: FeedResult[] = []
+		for (const config of podcastFeeds) {
+			results.push(await runFeed(config.name, () => processFeeds({ debug, config })))
+		}
+		for (const config of rssFeeds) {
+			results.push(await runFeed(config.name, () => processRssFeeds({ debug, config })))
+		}
+		for (const config of youtubeFeeds) {
+			results.push(await runFeed(config.name, () => processYoutubeFeeds({ debug, config })))
+		}
+		return results
 	})
 
-	return new Response(stream, {
-		headers: {
-			'Content-Type': 'text/html; charset=utf-8',
+	if (run.locked) {
+		return NextResponse.json({ error: 'Another podcast check is still running' }, { status: 409 })
+	}
+
+	const results = run.result
+	const errors = results.flatMap(r => r.errors.map(e => `${r.feed}: ${e}`))
+	const sent = results.flatMap(r => r.sent.map(s => `${r.feed}: ${s}`))
+
+	return NextResponse.json(
+		{
+			ok: errors.length === 0,
+			debug,
+			feeds: results.length,
+			sent,
+			errors,
+			results,
 		},
-	})
+		{ status: errors.length === 0 ? 200 : 500 }
+	)
 }

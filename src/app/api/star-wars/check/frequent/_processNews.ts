@@ -78,6 +78,8 @@ async function processItems({ debug }) {
 		}
 	} catch (error) {
 		console.error('    🔴 Error bleeting message', error)
+		// Rethrow so the job reports the failure instead of a 200
+		throw error
 	}
 
 	return createOutput(news)

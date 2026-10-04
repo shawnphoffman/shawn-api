@@ -1,3 +1,5 @@
+import { checkJobRequest } from '@/lib/jobs/guard'
+
 import { getChallenges } from '../challenges'
 
 // [Official SF6 Site](https://www.streetfighter.com/6/buckler/reward/challenge)
@@ -45,6 +47,7 @@ async function sendWebhook(url, content) {
 		headers: myHeaders,
 		method: 'POST',
 		body: JSON.stringify(content),
+		signal: AbortSignal.timeout(15000),
 	}
 
 	const response = await fetch(url, requestOptions)
@@ -52,23 +55,30 @@ async function sendWebhook(url, content) {
 	console.log('WEBHOOK RESPONSE')
 	console.log(`Status: ${response.status}`)
 	console.log(`Status Text: ${response.statusText}`)
-	try {
-		const json = await response.json()
-		return json
-	} catch (e) {
-		console.error('Error parsing response', e)
-	}
+
+	// Discord answers 204 with no body unless ?wait=true, so the status is the signal
+	return response.ok
 }
 
 async function handler(req, res) {
+	const rejection = checkJobRequest('sf6-daily', req.headers.authorization)
+	if (rejection) {
+		res.status(rejection.status).json({ error: rejection.error })
+		return
+	}
+
 	const challenges = await getChallenges()
 
 	if (challenges.length) {
-		await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
+		const accepted = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {
 			username: `Street Fighter 6 Challenges`,
 			content: challenges.map(formatChallenge).join('\n'),
 			avatar_url: 'https://blueharvest.rocks/bots/bh_pink@2x.png',
 		})
+		if (!accepted) {
+			res.status(500).json({ success: false, error: 'Discord did not accept the challenges message', challenges })
+			return
+		}
 	}
 
 	res.status(200).json({

@@ -97,6 +97,8 @@ const processItems = async ({ debug }): Promise<string> => {
 		}
 	} catch (error) {
 		log.error('Error bleeting message', error)
+		// Rethrow so the job reports the failure instead of a 200
+		throw error
 	}
 
 	return createOutput(outComics)

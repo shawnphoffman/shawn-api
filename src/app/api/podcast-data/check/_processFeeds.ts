@@ -1,5 +1,3 @@
-import { log } from 'next-axiom'
-
 import { PodFeedConfig } from '@/config/feeds/types'
 import { getPodcastFeed } from '@/getters/rss-feed/recent'
 import { postRssBleet } from '@/third-party/bluesky/bluesky-rss'
@@ -7,127 +5,81 @@ import { sendNonPodWebhookRaw, sendRssWebhook } from '@/third-party/discord/disc
 import WebhookChannel from '@/third-party/discord/webhookChannels'
 import pingOvercast from '@/third-party/notifiers/overcast'
 import { pingRefreshUrls } from '@/third-party/notifiers/urls'
-import redis, { RedisKey } from '@/utils/redis'
+import { RedisKey } from '@/utils/redis'
+
+import { deliver, FeedResult, newFeedResult, recordError } from './_result'
 
 // =================
 // PODCASTS
 // =================
 
-//
-// FORMATTERS
-//
-// const formatNewsForBsky = (newsItem: NewsItem) => {
-// 	return `${newsItem.title}
-
-// ${newsItem.desc}
-
-// #StarWars #StarWarsNews`
-// }
-const createOutput = (episodes: any[]) => {
-	return `<ul>${episodes.map(c => `<li>⭐ ${c.title}</li>`).join('')}</ul>`
-}
-
-//
-// PROCESSOR
-//
 type ProcessItemsProps = { debug: boolean; config: PodFeedConfig }
-async function processItems({ debug, config }: ProcessItemsProps) {
+async function processItems({ debug, config }: ProcessItemsProps): Promise<FeedResult> {
+	const result = newFeedResult(config.name)
 	const { meta: podcast, episodes } = await getPodcastFeed(config.url)
 
 	if (!podcast) {
-		return `<i>❌ No podcast feed found for "${config.url}"</i>`
+		recordError(result, `No podcast feed found for "${config.url}"`)
+		return result
 	}
 
 	console.log(`🎧 Processing podcast: ${podcast?.title}`)
 
-	if (!episodes.length) {
-		return `<i>No recent episodes for "${podcast.title}"</i>`
+	if (debug) {
+		console.log(`🗣️`, podcast)
 	}
-
-	try {
+	for (const episode of episodes) {
+		result.items.push(episode.title)
 		if (debug) {
-			console.log(`🗣️`, podcast)
+			console.log(`🎙️`, episode)
+			continue
 		}
-		for (const episode of episodes) {
-			if (debug) {
-				console.log(`🎙️`, episode)
-			}
 
-			const redisMember = `${config.event}:${episode.guid || episode.link}`
+		const redisMember = `${config.event}:${episode.guid || episode.link}`
+		const image = episode.imageURL || podcast.imageURL
 
-			const image = episode.imageURL || podcast.imageURL
-
-			if (debug) {
-				continue
-			}
-
-			// Post to Discord?
-			if (config.channel) {
-				const exists = await redis().sismember(RedisKey.RssDiscord, redisMember)
-				if (!exists) {
-					console.log('    ⚪️ Redis.discord.not.exists', redisMember)
-					await sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: config.channel, homepage: config.homepage })
-					redis().sadd(RedisKey.RssDiscord, redisMember)
-				} else {
-					console.log('    🔘 Redis.discord.exists', redisMember)
-				}
-			}
-
-			// Post to BlueSky?
-			if (config.bluesky) {
-				const exists = await redis().sismember(RedisKey.RssBluesky, redisMember)
-				if (!exists) {
-					console.log('    ⚪️ Redis.bluesky.not.exists', redisMember)
-
-					await postRssBleet({
-						name: config.name,
-						item: episode,
-						homepage: config.homepage,
-						handle: config.bskyHandle,
-						hashtags: config.hashtags,
-						imageOverride: episode.imageURL ? undefined : podcast.imageURL,
-					})
-
-					redis().sadd(RedisKey.RssBluesky, redisMember)
-				} else {
-					console.log('    🔘 Redis.bluesky.exists', redisMember)
-				}
-			}
-
-			// Ping Overcast?
-			if (config.ping !== false) {
-				const exists = await redis().sismember(RedisKey.RssOvercast, redisMember)
-				if (!exists) {
-					console.log('    ⚪️ Redis.overcast.not.exists', redisMember)
-					await pingOvercast(config.url)
-					redis().sadd(RedisKey.RssOvercast, redisMember)
-				} else {
-					console.log('    🔘 Redis.overcast.exists', redisMember)
-				}
-			}
-
-			// Ping Refresh URLs?
-			if (config.refreshUrls?.length) {
-				const exists = await redis().sismember(RedisKey.RssRefresh, redisMember)
-				if (!exists) {
-					console.log('    ⚪️ Redis.refresh.not.exists', redisMember)
-					await pingRefreshUrls(config.name, config.refreshUrls)
-					await sendNonPodWebhookRaw({
-						username: 'RSS Refresh URLs',
-						webhook: WebhookChannel.ShawnDev,
-						content: `Pinging refresh URLs for ${config.name}`,
-					})
-					redis().sadd(RedisKey.RssRefresh, redisMember)
-				} else {
-					console.log('    🔘 Redis.refresh.exists', redisMember)
-				}
-			}
+		// Post to Discord?
+		if (config.channel) {
+			const channel = config.channel
+			await deliver(result, 'Discord', RedisKey.RssDiscord, redisMember, () =>
+				sendRssWebhook({ name: config.name, item: episode, avatar: image, webhook: channel, homepage: config.homepage })
+			)
 		}
-	} catch (error) {
-		log.error('Error processing message', error)
+
+		// Post to BlueSky?
+		if (config.bluesky) {
+			await deliver(result, 'Bluesky', RedisKey.RssBluesky, redisMember, () =>
+				postRssBleet({
+					name: config.name,
+					item: episode,
+					homepage: config.homepage,
+					handle: config.bskyHandle,
+					hashtags: config.hashtags,
+					imageOverride: episode.imageURL ? undefined : podcast.imageURL,
+				})
+			)
+		}
+
+		// Ping Overcast?
+		if (config.ping !== false) {
+			await deliver(result, 'Overcast', RedisKey.RssOvercast, redisMember, () => pingOvercast(config.url))
+		}
+
+		// Ping Refresh URLs?
+		if (config.refreshUrls?.length) {
+			const refreshUrls = config.refreshUrls
+			await deliver(result, 'Refresh URLs', RedisKey.RssRefresh, redisMember, async () => {
+				await pingRefreshUrls(config.name, refreshUrls)
+				await sendNonPodWebhookRaw({
+					username: 'RSS Refresh URLs',
+					webhook: WebhookChannel.ShawnDev,
+					content: `Pinging refresh URLs for ${config.name}`,
+				})
+			})
+		}
 	}
 
-	return createOutput(episodes)
+	return result
 }
 
 export default processItems

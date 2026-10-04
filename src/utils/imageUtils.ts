@@ -14,6 +14,7 @@ export const fetchRemoteImageBuffer = async imgUrl => {
 	// FETCH
 	const options = {
 		method: 'GET',
+		signal: AbortSignal.timeout(20000),
 	}
 	const fimg = await fetch(imgUrl, options)
 	const fimgb = await fimg.arrayBuffer()
@@ -67,6 +68,7 @@ export const getOgImageUrl = async url => {
 	const res = await fetch(url, {
 		method: 'GET',
 		next: { revalidate: 600 },
+		signal: AbortSignal.timeout(20000),
 	})
 	const data = await res.text()
 

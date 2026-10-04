@@ -61,6 +61,7 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType;
 			method: 'GET',
 			// next: { revalidate: 60 }, // 10 minutes
 			cache: 'no-store',
+			signal: AbortSignal.timeout(20000),
 		})
 		const data = await res.text()
 		const podcast = await podcastFeedParser.getPodcastFromFeed(data)
@@ -120,6 +121,7 @@ export async function getRssFeed(url: string): Promise<{ feed?: FeedType; items:
 			method: 'GET',
 			// next: { revalidate: 60 }, // 10 minutes
 			cache: 'no-store',
+			signal: AbortSignal.timeout(20000),
 		})
 		const data = await res.text()
 		const parser = new XMLParser(options)
@@ -188,6 +190,7 @@ export async function getYouTubeFeed(url: string): Promise<{ feed?: YouTubeFeedT
 			method: 'GET',
 			// next: { revalidate: 60 }, // 10 minutes
 			cache: 'no-store',
+			signal: AbortSignal.timeout(20000),
 		})
 		const data = await res.text()
 		const parser = new XMLParser(options)

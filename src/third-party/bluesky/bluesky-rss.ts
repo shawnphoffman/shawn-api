@@ -5,14 +5,8 @@ import { EpisodeType } from '@/getters/rss-feed/recent'
 import { fetchRemoteImageBuffer } from '@/utils/imageUtils'
 import { getHandleDelay, recordHandleMentions } from '@/utils/blueskyThrottle'
 
+import { getBskyAgent } from './agent'
 import { ImageBlob, manualUploadBlobToBsky } from './bluesky'
-
-const username = process.env.BSKY_USERNAME
-const password = process.env.BSKY_PASSWORD
-
-const agent = new BskyAgent({
-	service: 'https://bsky.social',
-})
 
 const websiteTarget = `Check out their website...`
 
@@ -20,45 +14,34 @@ const websiteTarget = `Check out their website...`
 // TODO - Check bsky for existing bleet
 //
 
+// Throws when the post fails, so the caller does not record it as sent
 export const postRssBleet = async ({ name, item, homepage, handle, hashtags, imageOverride }: BleetArgs) => {
-	// Login
-	const loginResponse = await agent.login({
-		identifier: username!,
-		password: password!,
-	})
-	if (!loginResponse.success) {
-		console.error('BLUESKY LOGIN FAILED')
+	const agent = await getBskyAgent()
+
+	// Generate Bleet
+	const record = await formatRssBleet(agent, { name, item, homepage, handle, hashtags, imageOverride })
+
+	// Check if we need to delay posting to avoid spamming handles
+	const handles = handle || []
+	const delay = await getHandleDelay(handles)
+	if (delay > 0) {
+		console.log(`Delaying Bluesky post by ${delay}ms to respect handle throttling`, { handles, delay })
+		await new Promise(resolve => setTimeout(resolve, delay))
 	}
 
-	try {
-		// Generate Bleet
-		const record = await formatRssBleet(agent, { name, item, homepage, handle, hashtags, imageOverride })
+	// Post Bleet
+	const post = await agent.post(record)
 
-		// Check if we need to delay posting to avoid spamming handles
-		const handles = handle || []
-		const delay = await getHandleDelay(handles)
-		if (delay > 0) {
-			console.log(`Delaying Bluesky post by ${delay}ms to respect handle throttling`, { handles, delay })
-			await new Promise(resolve => setTimeout(resolve, delay))
-		}
-
-		// Post Bleet
-		const post = await agent.post(record)
-
-		// Record that we mentioned these handles
-		if (handles.length > 0) {
-			await recordHandleMentions(handles)
-		}
-
-		console.log(`Bleeting: ${name} - ${item.title}`)
-		console.log(post)
-		console.log('================')
-
-		return post
-	} catch (error) {
-		console.error('BLUESKY POST FAILED', error)
-		return null
+	// Record that we mentioned these handles
+	if (handles.length > 0) {
+		await recordHandleMentions(handles)
 	}
+
+	console.log(`Bleeting: ${name} - ${item.title}`)
+	console.log(post)
+	console.log('================')
+
+	return post
 }
 
 const formatRssBleet = async (
@@ -109,14 +92,19 @@ ${hashtags.join(' ')}`
 
 	let thumb: ImageBlob | undefined
 
+	// The thumbnail is optional; post without one rather than not at all
 	const image = imageOverride ? imageOverride : item.imageURL
 	if (image) {
-		const buffer = await fetchRemoteImageBuffer(image)
+		try {
+			const buffer = await fetchRemoteImageBuffer(image)
 
-		const blob = await manualUploadBlobToBsky(agent, buffer)
+			const blob = await manualUploadBlobToBsky(agent, buffer)
 
-		if (blob) {
-			thumb = blob
+			if (blob) {
+				thumb = blob
+			}
+		} catch (error) {
+			console.error('Bluesky thumbnail skipped', image, error)
 		}
 	}
 

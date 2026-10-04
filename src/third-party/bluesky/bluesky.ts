@@ -5,6 +5,7 @@ import { log } from 'next-axiom'
 import { fetchRemoteImageBuffer, getContentType, getOgImageUrl } from '@/utils/imageUtils'
 import { getHandleDelay, recordHandleMentions } from '@/utils/blueskyThrottle'
 
+import { getBskyAgent } from './agent'
 // import { addToStarWarsFeed } from './shawnbot'
 
 type PostBleetProps = {
@@ -15,13 +16,6 @@ type PostBleetProps = {
 	desc?: string
 	handle?: string[]
 }
-
-const username = process.env.BSKY_USERNAME
-const password = process.env.BSKY_PASSWORD
-
-const agent = new BskyAgent({
-	service: 'https://bsky.social',
-})
 
 const websiteTarget = `Click here for more...`
 
@@ -78,19 +72,24 @@ ${websiteTarget}`
 			: undefined,
 	}
 
+	// The thumbnail is optional; post without one rather than not at all
 	if (url) {
-		const imageUrl = await getOgImageUrl(url)
-		if (imageUrl) {
-			const buffer = await fetchRemoteImageBuffer(imageUrl)
+		try {
+			const imageUrl = await getOgImageUrl(url)
+			if (imageUrl) {
+				const buffer = await fetchRemoteImageBuffer(imageUrl)
 
-			const mimetype = getContentType(imageUrl)
+				const mimetype = getContentType(imageUrl)
 
-			const blob = await manualUploadBlobToBsky(agent, buffer, mimetype)
+				const blob = await manualUploadBlobToBsky(agent, buffer, mimetype)
 
-			if (blob) {
-				// @ts-expect-error thumb!
-				record.embed.external.thumb = blob
+				if (blob) {
+					// @ts-expect-error thumb!
+					record.embed.external.thumb = blob
+				}
 			}
+		} catch (error) {
+			log.warn('Bluesky thumbnail skipped', { url, error: String(error) })
 		}
 	}
 
@@ -106,15 +105,7 @@ ${websiteTarget}`
 //
 
 export const postBleetToBsky = async ({ contentType, items, url, title, desc, handle }: PostBleetProps) => {
-	// Login
-	const loginResponse = await agent.login({
-		identifier: username!,
-		password: password!,
-	})
-	if (!loginResponse.success) {
-		log.error('BLUESKY LOGIN FAILED')
-		// captureMessage('BLUESKY LOGIN FAILED', 'error')
-	}
+	const agent = await getBskyAgent()
 
 	// try {
 	// Generate Bleet
@@ -174,16 +165,14 @@ export const manualUploadBlobToBsky = async (agent: BskyAgent, buffer: Buffer, m
 			'Content-Type': mimetype || 'image/jpeg',
 		},
 		body: buffer as BodyInit,
+		signal: AbortSignal.timeout(30000),
 	}
 
-	// try {
 	const resp = await fetch(uploadUrl, options)
+	if (!resp.ok) {
+		throw new Error(`Bluesky blob upload failed: ${resp.status} ${resp.statusText}`)
+	}
 	const json = await resp.json()
 
-	// log.info('MANUAL UPLOAD BLOB', json)
-
 	return json.blob
-	// } catch (error) {
-	// 	return
-	// }
 }

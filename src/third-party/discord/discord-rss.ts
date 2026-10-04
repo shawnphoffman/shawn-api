@@ -44,41 +44,41 @@ type RssDiscordWebhookProps = {
 	homepage?: string
 }
 
+// Throws when Discord does not accept the message, so the caller does not record it as sent
 export const sendRssWebhook = async ({ name, item, avatar, webhook, homepage }: RssDiscordWebhookProps) => {
-	try {
-		const content = `**${name}**
+	const content = `**${name}**
 [*${item.title.trim()}*](${item.link || homepage})`
 
-		const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?wait=true`
+	const url = `https://discord.com/api/webhooks/${webhook.id}/${webhook.token}?wait=true`
 
-		var myHeaders = new Headers()
-		myHeaders.append('Content-Type', 'application/json')
+	var myHeaders = new Headers()
+	myHeaders.append('Content-Type', 'application/json')
 
-		var requestOptions = {
-			headers: myHeaders,
-			method: 'POST',
-			body: JSON.stringify({
-				content,
-				username: `Podcast Bot (${name})`,
-				avatar_url: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
-				flags: 4,
-			}),
-		}
-
-		const response = await fetch(url, requestOptions)
-		const msg = await response.json()
-
-		console.log(`Webhook Success (${item.title})`)
-
-		if (msg && msg.id && msg.channel_id && msg.author?.bot) {
-			await crossPostMessage(msg.channel_id, msg.id)
-		}
-
-		return msg
-	} catch (e) {
-		console.log(`Webhook Error: (${item.title})`)
-		console.error(e)
+	var requestOptions = {
+		headers: myHeaders,
+		method: 'POST',
+		body: JSON.stringify({
+			content,
+			username: `Podcast Bot (${name})`,
+			avatar_url: avatar || 'https://blueharvest.rocks/bots/bh_blue@2x.png',
+			flags: 4,
+		}),
+		signal: AbortSignal.timeout(15000),
 	}
+
+	const response = await fetch(url, requestOptions)
+	if (!response.ok) {
+		throw new Error(`Discord webhook failed for "${item.title}": ${response.status} ${response.statusText}`)
+	}
+	const msg = await response.json()
+
+	console.log(`Webhook Success (${item.title})`)
+
+	if (msg && msg.id && msg.channel_id && msg.author?.bot) {
+		await crossPostMessage(msg.channel_id, msg.id)
+	}
+
+	return msg
 }
 
 type NonPodDiscordWebhookProps = {
@@ -104,6 +104,7 @@ export const sendNonPodWebhookRaw = async ({ username, webhook, content }: NonPo
 				content,
 				username,
 			}),
+			signal: AbortSignal.timeout(15000),
 		}
 
 		await fetch(url, requestOptions)

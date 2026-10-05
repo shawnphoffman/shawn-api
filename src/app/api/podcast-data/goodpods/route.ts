@@ -2,7 +2,7 @@ import { kv } from '@vercel/kv'
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
 
-import { KvPrefix } from '@/utils/kv'
+import { goodpodsCacheKey } from '@/lib/podcast-data/goodpodsId'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
 	}
 
-	const kvUrl = `${KvPrefix.PodGoodpods}:${url}`
+	const kvUrl = goodpodsCacheKey(url)
 	try {
 		const cachedResponse = (await kv.get(kvUrl)) as string | null
 		if (cachedResponse) {

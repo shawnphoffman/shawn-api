@@ -3,6 +3,8 @@ import { z } from 'zod'
 
 import { fetchWithSolver } from '@/lib/scrape/solver'
 
+import { extractGoodpodsPodcastId } from '../goodpodsId'
+
 import { Source } from '../types'
 
 /**
@@ -32,16 +34,9 @@ export type GoodpodsPodcast = z.infer<typeof GoodpodsPodcastSchema>
 // rotates anti-bot heuristics and we need the puppeteer fallback.
 // The podcast id is embedded in the public Goodpods URL as the trailing
 // numeric segment.
-function extractPodcastIdFromUrl(url: string): number | null {
-	// e.g. https://goodpods.com/podcasts/scruffy-looking-podcasters-...-318983
-	const match = url.match(/-(\d+)(?:[/?#]|$)/)
-	if (!match) return null
-	const n = parseInt(match[1], 10)
-	return Number.isFinite(n) ? n : null
-}
 
 async function fetchNative(url: string): Promise<GoodpodsPodcast | null> {
-	const podcastId = extractPodcastIdFromUrl(url)
+	const podcastId = extractGoodpodsPodcastId(url)
 	if (!podcastId) return null
 
 	const apiUrl = `https://v2.goodpods.com/podcast/details?podcast_id=${podcastId}`

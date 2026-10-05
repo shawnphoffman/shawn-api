@@ -1,4 +1,4 @@
-import { verifySignatureAppRouter } from '@upstash/qstash/dist/nextjs'
+import { verifySignatureAppRouter } from '@upstash/qstash/nextjs'
 import { NextRequest, NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'

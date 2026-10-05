@@ -6,8 +6,8 @@ const resolveHandle = vi.fn(async ({ handle }: { handle: string }) => ({ success
 const fakeAgent = { post, resolveHandle, com: { atproto: { identity: { resolveHandle } } } }
 vi.mock('./agent', () => ({ getBskyAgent: async () => fakeAgent }))
 
-const manualUploadBlobToBsky = vi.fn()
-vi.mock('./bluesky', () => ({ manualUploadBlobToBsky: (...a: unknown[]) => manualUploadBlobToBsky(...a) }))
+const uploadImageToBsky = vi.fn()
+vi.mock('./bluesky', () => ({ uploadImageToBsky: (...a: unknown[]) => uploadImageToBsky(...a) }))
 const fetchRemoteImageBuffer = vi.fn()
 vi.mock('@/utils/imageUtils', () => ({ fetchRemoteImageBuffer: (...a: unknown[]) => fetchRemoteImageBuffer(...a) }))
 vi.mock('@/utils/blueskyThrottle', () => ({ getHandleDelay: async () => 0, recordHandleMentions: async () => {} }))
@@ -19,7 +19,7 @@ const item = { title: 'Episode 570: New Stuff', link: 'https://blueharvest.rocks
 beforeEach(() => {
 	post.mockReset().mockResolvedValue({ uri: 'at://did:plc:me/app.bsky.feed.post/1', cid: 'cid1' })
 	fetchRemoteImageBuffer.mockReset().mockResolvedValue(Buffer.from('jpeg'))
-	manualUploadBlobToBsky.mockReset().mockResolvedValue({ $type: 'blob', ref: { $link: 'bafy' }, mimeType: 'image/jpeg', size: 4 })
+	uploadImageToBsky.mockReset().mockResolvedValue({ $type: 'blob', ref: { $link: 'bafy' }, mimeType: 'image/jpeg', size: 4 })
 	vi.spyOn(console, 'log').mockImplementation(() => {})
 	vi.spyOn(console, 'error').mockImplementation(() => {})
 })

@@ -1,6 +1,6 @@
-import { BskyAgent } from '@atproto/api'
+import { AtpAgent } from '@atproto/api'
 
-const agent = new BskyAgent({
+const agent = new AtpAgent({
 	service: 'https://bsky.social',
 })
 
@@ -9,7 +9,7 @@ const agent = new BskyAgent({
  * whenever the session has been dropped (for example after its refresh token
  * expired), instead of creating a new session for every post.
  */
-export async function getBskyAgent(): Promise<BskyAgent> {
+export async function getBskyAgent(): Promise<AtpAgent> {
 	if (!agent.hasSession) {
 		await agent.login({
 			identifier: process.env.BSKY_USERNAME!,

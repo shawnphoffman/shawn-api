@@ -20,7 +20,6 @@ export const fetchRemoteImageBuffer = async imgUrl => {
 	const fimgb = await fimg.arrayBuffer()
 
 	// SHARP RESIZE
-	// @ts-expect-error TODO
 	const resized = await new sharp(fimgb)
 		.resize(POST_IMG_MAX.width, POST_IMG_MAX.height, {
 			fit: sharp.fit.inside,
@@ -29,7 +28,6 @@ export const fetchRemoteImageBuffer = async imgUrl => {
 		.toBuffer()
 
 	// COMPOSITE BLURRY BOI
-	// @ts-expect-error TODO
 	return await new sharp(fimgb)
 		.resize(POST_IMG_MAX.width, POST_IMG_MAX.height)
 		.modulate({ brightness: 0.5 })

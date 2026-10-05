@@ -16,6 +16,8 @@ const processRssFeeds = vi.fn()
 vi.mock('./_processFeeds', () => ({ default: (...a: unknown[]) => processFeeds(...a) }))
 vi.mock('./_processRssFeeds', () => ({ default: (...a: unknown[]) => processRssFeeds(...a) }))
 vi.mock('./_processYouTubeFeeds', () => ({ default: vi.fn() }))
+const getBskyAgent = vi.fn()
+vi.mock('@/third-party/bluesky/agent', () => ({ getBskyAgent: () => getBskyAgent() }))
 
 import { GET } from './route'
 
@@ -69,5 +71,16 @@ describe('GET /api/podcast-data/check', () => {
 	it('passes debug through so nothing is posted', async () => {
 		await call('?debug=true')
 		expect(processFeeds.mock.calls[0][0].debug).toBe(true)
+	})
+
+	it('logs in to Bluesky only on a dry run, and reports a failed login', async () => {
+		getBskyAgent.mockReset().mockResolvedValue({})
+		await call()
+		expect(getBskyAgent).not.toHaveBeenCalled()
+
+		getBskyAgent.mockRejectedValue(new Error('Invalid identifier or password'))
+		const res = await call('?debug=true')
+		expect(res.status).toBe(500)
+		expect((await res.json()).errors).toEqual(['Bluesky login: Bluesky login failed: Invalid identifier or password'])
 	})
 })

@@ -1,4 +1,4 @@
-import { BskyAgent, RichText } from '@atproto/api'
+import { AtpAgent, BlobRef, RichText } from '@atproto/api'
 // import { captureException, captureMessage } from '@sentry/node'
 import { log } from 'next-axiom'
 
@@ -81,7 +81,7 @@ ${websiteTarget}`
 
 				const mimetype = getContentType(imageUrl)
 
-				const blob = await manualUploadBlobToBsky(agent, buffer, mimetype)
+				const blob = await uploadImageToBsky(agent, buffer, mimetype)
 
 				if (blob) {
 					// @ts-expect-error thumb!
@@ -143,36 +143,11 @@ export const postBleetToBsky = async ({ contentType, items, url, title, desc, ha
 	// }
 }
 
-// eslint-disable-next-line no-unused-vars
-
-export interface ImageBlob {
-	$type: 'blob'
-	ref: {
-		$link: string
-	}
-	mimeType: 'image/jpeg'
-	size: number
-}
-
-export const manualUploadBlobToBsky = async (agent: BskyAgent, buffer: Buffer, mimetype?: string) => {
-	const jwt = agent.session?.accessJwt
-	const uploadUrl = 'https://bsky.social/xrpc/com.atproto.repo.uploadBlob'
-
-	const options: RequestInit = {
-		method: 'POST',
-		headers: {
-			Authorization: `Bearer ${jwt}`,
-			'Content-Type': mimetype || 'image/jpeg',
-		},
-		body: buffer as BodyInit,
+// Uploads through the agent, which talks to the account's own server and refreshes its session as needed
+export const uploadImageToBsky = async (agent: AtpAgent, buffer: Buffer, mimetype?: string): Promise<BlobRef> => {
+	const res = await agent.uploadBlob(new Uint8Array(buffer), {
+		encoding: mimetype || 'image/jpeg',
 		signal: AbortSignal.timeout(30000),
-	}
-
-	const resp = await fetch(uploadUrl, options)
-	if (!resp.ok) {
-		throw new Error(`Bluesky blob upload failed: ${resp.status} ${resp.statusText}`)
-	}
-	const json = await resp.json()
-
-	return json.blob
+	})
+	return res.data.blob
 }

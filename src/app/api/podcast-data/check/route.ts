@@ -5,6 +5,7 @@ import { rssFeeds } from '@/config/feeds/rss'
 import { youtubeFeeds } from '@/config/feeds/youtube'
 import { guardJob } from '@/lib/jobs/guard'
 import { withJobLock } from '@/lib/jobs/lock'
+import { getBskyAgent } from '@/third-party/bluesky/agent'
 
 import processFeeds from './_processFeeds'
 import { FeedResult, newFeedResult, recordError } from './_result'
@@ -55,6 +56,15 @@ export async function GET(req: NextRequest) {
 		}
 		for (const config of youtubeFeeds) {
 			results.push(await runFeed(config.name, () => processYoutubeFeeds({ debug, config })))
+		}
+		// A dry run posts nothing, so log in to Bluesky to prove the account and client still work
+		if (debug) {
+			results.push(
+				await runFeed('Bluesky login', async () => {
+					await getBskyAgent()
+					return newFeedResult('Bluesky login')
+				})
+			)
 		}
 		return results
 	})

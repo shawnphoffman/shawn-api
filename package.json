@@ -14,8 +14,8 @@
 		"node": "22.x"
 	},
 	"dependencies": {
-		"@atproto/api": "^0.12.2",
-		"@googleapis/youtube": "^14.0.0",
+		"@atproto/api": "^0.23.0",
+		"@googleapis/youtube": "^40.0.0",
 		"@podverse/podcast-feed-parser": "^1.1.1",
 		"@sanity/client": "^7.11.2",
 		"@sanity/webhook": "^4.0.4",
@@ -25,19 +25,17 @@
 		"@vercel/kv": "^3.0.0",
 		"cheerio": "^1.0.0",
 		"cors": "^2.8.5",
-		"discord.js": "^14.14.1",
-		"dotenv": "^16.4.5",
 		"eslint": "^9.15.0",
-		"eslint-config-next": "^15.1.0",
-		"fast-xml-parser": "^4.5.1",
+		"eslint-config-next": "15.5.27",
+		"fast-xml-parser": "^5.11.2",
 		"memory-cache": "^0.2.0",
-		"next": "15.5.9",
+		"next": "15.5.27",
 		"next-axiom": "^1.1.1",
 		"otplib": "^12.0.1",
 		"puppeteer": "^24.22.3",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
-		"sharp": "^0.32.0",
+		"sharp": "^0.35.5",
 		"typescript": "^5.7.2",
 		"zod": "^3.23.8"
 	},
@@ -52,7 +50,7 @@
 		"vitest": "^3"
 	},
 	"optionalDependencies": {
-		"sharp": "^0.32.0"
+		"sharp": "^0.35.5"
 	},
 	"prettier": "@shawnphoffman/prettier-config"
 }

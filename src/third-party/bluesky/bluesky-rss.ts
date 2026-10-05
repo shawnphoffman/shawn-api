@@ -1,12 +1,12 @@
 import { AppBskyFeedPost } from '@atproto/api'
-import { BskyAgent, RichText } from '@atproto/api'
+import { AtpAgent, BlobRef, RichText } from '@atproto/api'
 
 import { EpisodeType } from '@/getters/rss-feed/recent'
 import { fetchRemoteImageBuffer } from '@/utils/imageUtils'
 import { getHandleDelay, recordHandleMentions } from '@/utils/blueskyThrottle'
 
 import { getBskyAgent } from './agent'
-import { ImageBlob, manualUploadBlobToBsky } from './bluesky'
+import { uploadImageToBsky } from './bluesky'
 
 const websiteTarget = `Check out their website...`
 
@@ -45,7 +45,7 @@ export const postRssBleet = async ({ name, item, homepage, handle, hashtags, ima
 }
 
 const formatRssBleet = async (
-	agent: BskyAgent,
+	agent: AtpAgent,
 	{ name, item, homepage, imageOverride, handle = [], hashtags = [] }: BleetArgs
 ): Promise<BleetResponse> => {
 	const stinger = `New ${name} Content`
@@ -90,7 +90,7 @@ ${hashtags.join(' ')}`
 		...(rt.facets || []),
 	]
 
-	let thumb: ImageBlob | undefined
+	let thumb: BlobRef | undefined
 
 	// The thumbnail is optional; post without one rather than not at all
 	const image = imageOverride ? imageOverride : item.imageURL
@@ -98,7 +98,7 @@ ${hashtags.join(' ')}`
 		try {
 			const buffer = await fetchRemoteImageBuffer(image)
 
-			const blob = await manualUploadBlobToBsky(agent, buffer)
+			const blob = await uploadImageToBsky(agent, buffer)
 
 			if (blob) {
 				thumb = blob
@@ -116,7 +116,7 @@ ${hashtags.join(' ')}`
 			$type: 'app.bsky.embed.external',
 			external: {
 				uri: item.link ? item.link : homepage ? homepage : '',
-				title: item.title,
+				title: item.title ?? '',
 				description: stinger,
 				thumb,
 			},

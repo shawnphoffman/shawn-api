@@ -1,6 +1,6 @@
 import { checkJobRequest } from '@/lib/jobs/guard'
 
-import { getChallenges } from '../challenges'
+import { getChallenges } from '@/lib/sf6/challenges'
 
 // [Official SF6 Site](https://www.streetfighter.com/6/buckler/reward/challenge)
 
@@ -68,6 +68,10 @@ async function handler(req, res) {
 	}
 
 	const challenges = await getChallenges()
+	if (!challenges) {
+		res.status(500).json({ success: false, error: 'Could not read the Street Fighter challenges page' })
+		return
+	}
 
 	if (challenges.length) {
 		const accepted = await sendWebhook(process.env.DISCORD_WEBHOOK_BOT_SF6, {

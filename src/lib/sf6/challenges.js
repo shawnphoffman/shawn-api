@@ -1,6 +1,5 @@
 import * as cheerio from 'cheerio'
 
-import Cors from '@/utils/cors'
 import { fetchHtmlWithCache } from '@/utils/fetchWithCache'
 
 const dataUrl = 'https://www.streetfighter.com/6/buckler/reward/challenge'
@@ -113,19 +112,4 @@ export const getChallenges = async () => {
 		.toArray()
 
 	return challenges
-}
-
-export default async function handler(req, res) {
-	await Cors(req, res, {
-		methods: ['GET', 'OPTIONS'],
-		// origin: [/blueharvest\.rocks$/, /myweirdfoot\.com$/, /localhost/],
-	})
-
-	const challenges = await getChallenges()
-
-	if (!challenges) {
-		return res.status(400).text('Broken')
-	}
-
-	res.status(200).send(challenges)
 }

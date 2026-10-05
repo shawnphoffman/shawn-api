@@ -93,3 +93,25 @@ export async function upsertAward(award: AwardUpsert): Promise<void> {
 	)
 	await tx.commit({ autoGenerateArrayKeys: true })
 }
+
+/**
+ * Expires this podcast's synced Goodpods awards that the latest scrape no
+ * longer lists, by setting expiresAt to now. The sites only show unexpired
+ * awards, so they drop off at once, and the change itself prompts the sites
+ * to refresh. If Goodpods lists the award again, the next upsert slides
+ * expiresAt forward and it shows again. Hand-made awards (any other source)
+ * are never touched. Returns how many awards were expired.
+ */
+export async function expireUnseenAwards(categoryId: string, seenExternalIds: string[], nowIso: string): Promise<number> {
+	const stale = await sanityWriteClient.fetch<{ _id: string }[]>(
+		`*[_type == "award" && source == "goodpods" && category._ref == $categoryId && !(externalId in $seen) && (!defined(expiresAt) || expiresAt > $now)]{ _id }`,
+		{ categoryId, seen: seenExternalIds, now: nowIso }
+	)
+	if (stale.length === 0) return 0
+	const tx = sanityWriteClient.transaction()
+	for (const award of stale) {
+		tx.patch(award._id, p => p.set({ expiresAt: nowIso }))
+	}
+	await tx.commit()
+	return stale.length
+}

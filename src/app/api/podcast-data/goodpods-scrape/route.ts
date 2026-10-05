@@ -1,9 +1,10 @@
 import { kv } from '@vercel/kv'
 import { NextResponse } from 'next/server'
 
-import { GoodpodsPodcastSchema,goodpodsSource, leaderboardsToAwards } from '@/lib/podcast-data/sources/goodpods'
-import { fetchInTiers } from '@/lib/podcast-data/tier'
+import { cacheGoodpods } from '@/lib/podcast-data/goodpodsCache'
 import { goodpodsCacheKey } from '@/lib/podcast-data/goodpodsId'
+import { GoodpodsPodcastSchema, goodpodsSource } from '@/lib/podcast-data/sources/goodpods'
+import { fetchInTiers } from '@/lib/podcast-data/tier'
 
 export const dynamic = 'force-dynamic'
 
@@ -15,9 +16,8 @@ export async function GET(request: Request) {
 		return NextResponse.json({ error: 'URL required' }, { status: 401 })
 	}
 
-	const kvUrl = goodpodsCacheKey(url)
 	try {
-		const cachedResponse = (await kv.get(kvUrl)) as any | null
+		const cachedResponse = (await kv.get(goodpodsCacheKey(url))) as any | null
 		if (cachedResponse) {
 			return NextResponse.json({ ...cachedResponse, url, cached: true })
 		}
@@ -35,23 +35,6 @@ export async function GET(request: Request) {
 		return NextResponse.json({ error: 'All fetch tiers failed' }, { status: 502 })
 	}
 
-	const { data, tier } = result
-	const awards = leaderboardsToAwards(data).map(({ externalId: _externalId, currentPosition: _currentPosition, ...rest }) => rest)
-	const review_average = data.review_average
-	const total_reviews = data.total_reviews
-
-	// Cache even with no awards: the sites' rating route reads review_average from this entry
-	await kv.set(
-		kvUrl,
-		JSON.stringify({
-			awards,
-			review_average,
-			total_reviews,
-		}),
-		{
-			ex: 60 * 60 * 24 * 3,
-		}
-	)
-
-	return NextResponse.json({ awards, url, review_average, total_reviews, tier })
+	const cached = await cacheGoodpods(url, result.data)
+	return NextResponse.json({ ...cached, url, tier: result.tier })
 }

@@ -25,5 +25,7 @@ export interface RssFeedConfig extends FeedConfig {
 	// callback?: (item: FeedItem) => Promise<void>
 }
 export interface YouTubeFeedConfig extends FeedConfig {
+	/** Read through the YouTube Data API first; `url` (the channel's RSS feed) is the fallback */
+	channelId: string
 	isValid?: (item: YouTubeItemType) => boolean
 }

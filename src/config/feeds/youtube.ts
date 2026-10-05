@@ -27,6 +27,7 @@ export const YouTubeSource = {
 export const youtubeFeeds: YouTubeFeedConfig[] = [
 	{
 		name: 'Blue Harvest YouTube',
+		channelId: YouTubeSource.BlueHarvest.channelId,
 		url: YouTubeSource.BlueHarvest.rssFeed,
 		event: 'blue-harvest-youtube',
 		channel: WebhookChannel.YouTube,
@@ -37,6 +38,7 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 	},
 	{
 		name: 'Steele Wars YouTube',
+		channelId: YouTubeSource.SteeleWars.channelId,
 		url: YouTubeSource.SteeleWars.rssFeed,
 		event: 'steele-wars-youtube',
 		channel: WebhookChannel.Friends,
@@ -47,6 +49,7 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 	},
 	{
 		name: 'Star Wars Explained YouTube',
+		channelId: YouTubeSource.StarWarsExplained.channelId,
 		url: YouTubeSource.StarWarsExplained.rssFeed,
 		event: 'sw-explained-youtube',
 		bluesky: true,
@@ -55,6 +58,7 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 	},
 	{
 		name: 'Sith List YouTube',
+		channelId: YouTubeSource.SithList.channelId,
 		url: YouTubeSource.SithList.rssFeed,
 		event: 'sith-list-youtube',
 		channel: WebhookChannel.Friends,
@@ -68,6 +72,7 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 	},
 	{
 		name: 'Star Wars YouTube',
+		channelId: YouTubeSource.StarWarsYouTube.channelId,
 		url: YouTubeSource.StarWarsYouTube.rssFeed,
 		event: 'star-wars-youtube',
 		channel: WebhookChannel.Friends,
@@ -78,6 +83,7 @@ export const youtubeFeeds: YouTubeFeedConfig[] = [
 	},
 	// {
 	// 	name: 'Star Wars Spelt Out YouTube',
+	// 	channelId: YouTubeSource.StarWarsSpeltOut.channelId,
 	// 	url: YouTubeSource.StarWarsSpeltOut.rssFeed,
 	// 	event: 'spelt-out-youtube',
 	// 	bluesky: true,

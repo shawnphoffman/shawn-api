@@ -113,6 +113,8 @@ export async function getPodcastFeed(url: string): Promise<{ meta?: PodcastType;
 
 const options = {
 	ignoreAttributes: false,
+	// Without this a feed with a single item or entry parses to an object instead of a list
+	isArray: (name: string) => name === 'item' || name === 'entry',
 }
 
 export async function getRssFeed(url: string): Promise<{ feed?: FeedType; items: ItemType[] }> {

@@ -7,6 +7,7 @@
 		"build": "next build",
 		"web": "next start",
 		"lint": "next lint",
+		"test": "vitest run",
 		"postinstall": "npm rebuild sharp"
 	},
 	"engines": {
@@ -47,7 +48,8 @@
 		"@types/node": "^22.10.2",
 		"@types/react": "^18.3.12",
 		"@types/react-dom": "^18.3.1",
-		"prettier": "^3.3.3"
+		"prettier": "^3.3.3",
+		"vitest": "^3"
 	},
 	"optionalDependencies": {
 		"sharp": "^0.32.0"

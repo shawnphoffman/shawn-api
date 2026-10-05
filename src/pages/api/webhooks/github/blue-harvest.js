@@ -9,7 +9,7 @@
 // HEADER
 // x-hub-signature-256
 
-import { createHmac, timingSafeEqual } from 'crypto'
+import { isValidGitHubSignature } from '@/lib/webhooks/github'
 
 // GitHub signs the raw bytes, so the body parser has to stay off
 export const config = {
@@ -24,13 +24,6 @@ async function readRawBody(req) {
 		chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
 	}
 	return Buffer.concat(chunks)
-}
-
-function isValidGitHubSignature(rawBody, signature, secret) {
-	if (!signature) return false
-	const expected = Buffer.from(`sha256=${createHmac('sha256', secret).update(rawBody).digest('hex')}`)
-	const received = Buffer.from(signature)
-	return expected.length === received.length && timingSafeEqual(expected, received)
 }
 
 async function sendWebhook(url, content) {

@@ -44,7 +44,7 @@ The poller records every delivery in Redis sets (`rss:discord`, `rss:bsky`, `rss
 
 ### Trying a job without posting
 
-Add `?debug=true` to the podcast check or the frequent Star Wars check (with the bearer token) to run it without posting anything. The podcast dry run also logs in to Bluesky, which proves the account and client still work. The daily Star Wars check has no dry run for its weekly comics section yet, so `?debug=true` there still posts weekly comics.
+Add `?debug=true` to the podcast check or either Star Wars check (with the bearer token) to run it without posting anything or recording anything as sent. The podcast dry run also logs in to Bluesky, which proves the account and client still work.
 
 ### Mac mini settings
 

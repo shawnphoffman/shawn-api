@@ -1,6 +1,8 @@
 import puppeteer from 'puppeteer'
 import { z } from 'zod'
 
+import { fetchWithSolver } from '@/lib/scrape/solver'
+
 import { Source } from '../types'
 
 /**
@@ -92,9 +94,36 @@ async function fetchPuppeteer(url: string): Promise<GoodpodsPodcast | null> {
 	}
 }
 
+/**
+ * Goodpods renders the podcast details into the page's Next.js data, in the
+ * react-query cache, so the page HTML alone is enough. Finds the cached query
+ * whose data has the leaderboard list.
+ */
+export function extractPodcastFromPage(html: string): unknown | null {
+	const match = html.match(/<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/)
+	if (!match) return null
+	let nextData: { props?: { pageProps?: { dehydratedState?: { queries?: { state?: { data?: unknown } }[] } } } }
+	try {
+		nextData = JSON.parse(match[1])
+	} catch {
+		return null
+	}
+	const queries = nextData.props?.pageProps?.dehydratedState?.queries ?? []
+	const podcast = queries.map(q => q.state?.data).find(data => Array.isArray((data as { leaderboard_info_list?: unknown } | undefined)?.leaderboard_info_list))
+	return podcast ?? null
+}
+
+// Cloudflare's bot check stops browserless on Goodpods; the solver gets through
+async function fetchSolver(url: string): Promise<GoodpodsPodcast | null> {
+	const html = await fetchWithSolver(url)
+	if (!html) return null
+	return extractPodcastFromPage(html) as GoodpodsPodcast | null
+}
+
 export const goodpodsSource: Source<GoodpodsPodcast> = {
 	name: 'goodpods',
 	fetchNative,
+	fetchSolver,
 	fetchPuppeteer,
 }
 

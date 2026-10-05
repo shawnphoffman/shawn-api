@@ -40,19 +40,18 @@ export async function GET(request: Request) {
 	const review_average = data.review_average
 	const total_reviews = data.total_reviews
 
-	if (awards.length > 0) {
-		kv.set(
-			kvUrl,
-			JSON.stringify({
-				awards,
-				review_average,
-				total_reviews,
-			}),
-			{
-				ex: 60 * 60 * 24 * 3,
-			}
-		)
-	}
+	// Cache even with no awards: the sites' rating route reads review_average from this entry
+	await kv.set(
+		kvUrl,
+		JSON.stringify({
+			awards,
+			review_average,
+			total_reviews,
+		}),
+		{
+			ex: 60 * 60 * 24 * 3,
+		}
+	)
 
 	return NextResponse.json({ awards, url, review_average, total_reviews, tier })
 }

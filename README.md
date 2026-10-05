@@ -19,7 +19,7 @@ One branch, `main`, deploys to two places from the same code.
 | **Vercel** (`api.shawn.party`) | Answers requests from the podcast sites, giftwrapt and other sites: ratings, Open Graph and scraping, the Sanity relay, webhooks. Runs the hourly awards sync from `vercel.json`. | Every push to `main` |
 | **Mac mini** (Docker) | Runs the scheduled jobs that post to Discord and Bluesky. A Cronicle scheduler on the same machine calls them. | A Dockhand git stack builds `docker-compose.yml` on the mini through a Hawser Edge agent, daily and on demand |
 
-Browser scraping does not depend on where the app runs: every Puppeteer route connects to a remote browser at `PUPPETEER_WSS`.
+Browser scraping does not depend on where the app runs: every Puppeteer route connects to a remote browser at `PUPPETEER_WSS`. Goodpods sits behind a Cloudflare bot check that stops that browser, so on the Mac mini the Goodpods scraper goes through Byparr, a Cloudflare solver that runs as a second service in `docker-compose.yml` (`FLARESOLVERR_URL`). Vercel has no solver, so Goodpods data comes from the Mac mini's scheduled scrapes, which fill the shared cache the sites' rating route reads.
 
 ### Scheduled jobs
 

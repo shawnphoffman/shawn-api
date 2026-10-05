@@ -13,6 +13,7 @@ export async function fetchInTiers<T>(args: { source: Source<T>; url: string; sc
 
 	const tiers = [
 		{ name: 'native' as const, run: source.fetchNative },
+		...(source.fetchSolver ? [{ name: 'solver' as const, run: source.fetchSolver }] : []),
 		{ name: 'puppeteer' as const, run: source.fetchPuppeteer },
 	]
 

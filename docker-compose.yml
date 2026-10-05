@@ -61,6 +61,8 @@ services:
       ENABLED_JOBS: ${ENABLED_JOBS:-}
       FEED_GEN_FORCE_KEY: ${FEED_GEN_FORCE_KEY:-}
       FEED_GEN_URL: ${FEED_GEN_URL:-}
+      # The Byparr service below, which gets Goodpods past Cloudflare's bot check
+      FLARESOLVERR_URL: http://${CONTAINER_NAME:-shawn-api}-byparr:8191
       KV_REST_API_TOKEN: ${KV_REST_API_TOKEN:-}
       KV_REST_API_URL: ${KV_REST_API_URL:-}
       NEXT_PUBLIC_AXIOM_INGEST_ENDPOINT: ${NEXT_PUBLIC_AXIOM_INGEST_ENDPOINT:-}
@@ -84,3 +86,12 @@ services:
       YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-}
     ports:
       - ${SHAWN_API_HOST_PORT:-3010}:3000
+
+  # Cloudflare challenge solver (FlareSolverr-compatible API on port 8191), used
+  # by the Goodpods scraper. Only the app reaches it, over the shared network.
+  byparr:
+    image: ghcr.io/thephaseless/byparr:latest
+    container_name: ${CONTAINER_NAME:-shawn-api}-byparr
+    <<: *common
+    networks:
+      - mac-mini-shared

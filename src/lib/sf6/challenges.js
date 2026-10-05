@@ -31,6 +31,10 @@ export const getChallenges = async () => {
 		console.log(error)
 		return null
 	}
+	return parseChallenges(data)
+}
+
+export const parseChallenges = data => {
 	const $ = cheerio.load(data)
 	// console.log(data)
 	// END CHEERIO BOILERPLATE
@@ -56,9 +60,10 @@ export const getChallenges = async () => {
 			// NOTE Try this instead. Who cares
 			const endDate = cleanDateString.substring(0, 16)
 
-			const rawRewards = $(this).find('[class^=challenge_reward] dd p')
-			const item = rawRewards.clone().children().remove().end().text().trim().replace(/×/g, '') // SHEESH
-			const qty = +rawRewards.find('span').text().trim()
+			// The reward label reads "Kudos × <span>200</span>" in the reward's hover card
+			const rewardLabel = $(this).find('[class^=challenge_reward] [class^=challenge_inner] dt').first()
+			const item = rewardLabel.clone().children().remove().end().text().replace(/×/g, '').trim()
+			const qty = +rewardLabel.find('span').text().trim()
 			const reward = {
 				item,
 				qty: qty,

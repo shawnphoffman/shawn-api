@@ -2,6 +2,8 @@ import 'server-only'
 
 import { createClient } from '@sanity/client'
 
+import { awardDocumentId } from './awardId'
+
 const projectId = process.env.SANITY_PROJECT_ID || 'uc06juhv'
 const dataset = process.env.SANITY_DATASET || 'production'
 const token = process.env.SANITY_API_WRITE_TOKEN
@@ -47,10 +49,9 @@ export type AwardUpsert = {
 }
 
 /**
- * Upsert one award. The _id pattern makes the document deterministic:
- *   award.<source>.<externalId>
- * so re-running the sync against the same Goodpods leaderboard updates
- * in place rather than creating duplicates.
+ * Upsert one award. The _id (see awardDocumentId) is deterministic, so
+ * re-running the sync against the same Goodpods leaderboard updates in place
+ * rather than creating duplicates.
  *
  * `active: true` is set on insert only - we don't force it back to true
  * if an editor manually flipped it off. `lastSeenAt` is always overwritten;
@@ -58,7 +59,7 @@ export type AwardUpsert = {
  * Manual fields (rawHtml, custom name) are preserved via createIfNotExists.
  */
 export async function upsertAward(award: AwardUpsert): Promise<void> {
-	const _id = `award.${award.source}.${award.externalId}`
+	const _id = awardDocumentId(award.source, award.externalId)
 	const tx = sanityWriteClient.transaction()
 	tx.createIfNotExists({
 		_id,

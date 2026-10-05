@@ -7,7 +7,7 @@ import pingOvercast from '@/third-party/notifiers/overcast'
 import { pingRefreshUrls } from '@/third-party/notifiers/urls'
 import { RedisKey } from '@/utils/redis'
 
-import { deliver, FeedResult, newFeedResult, recordError } from './_result'
+import { deliver, FeedResult, markFeedDown, newFeedResult } from './_result'
 
 // =================
 // PODCASTS
@@ -19,7 +19,7 @@ async function processItems({ debug, config }: ProcessItemsProps): Promise<FeedR
 	const { meta: podcast, episodes } = await getPodcastFeed(config.url)
 
 	if (!podcast) {
-		recordError(result, `No podcast feed found for "${config.url}"`)
+		markFeedDown(result, `No podcast feed found for "${config.url}"`)
 		return result
 	}
 

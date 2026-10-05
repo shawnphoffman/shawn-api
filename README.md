@@ -38,6 +38,8 @@ Every job route goes through `src/lib/jobs/guard.ts`:
 
 Job routes answer with JSON: 200 when everything worked, 500 when anything failed, 409 when another run of the same job is still going. Cronicle treats anything but 2xx as a failure and posts it to the ShawnDev Discord channel.
 
+Feeds sometimes go down on their own; YouTube's channel feeds return 404 for hours at a time. So in the podcast check, a feed that will not load is only a warning at first. It fails the job once it has been down for 8 runs in a row (two hours), then about once a day while it stays down, and its count clears as soon as it loads again. The counts live in the Redis hash `job:feed-down`. A failed post is always an error.
+
 ### Posting each item once
 
 The poller records every delivery in Redis sets (`rss:discord`, `rss:bsky`, `rss:overcast`, `rss:refresh`) with members of the form `<event>:<guid>`, and records it only after the post succeeds, so a failed post is retried on the next run. Changing those keys or the member format would make the poller post every recent item again; a test in `_processFeeds.test.ts` pins them.

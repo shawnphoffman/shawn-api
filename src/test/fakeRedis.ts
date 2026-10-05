@@ -5,10 +5,27 @@
 export function createFakeRedis() {
 	const sets = new Map<string, Set<string>>()
 	const values = new Map<string, unknown>()
+	const hashes = new Map<string, Record<string, number>>()
 
 	return {
 		sets,
 		values,
+		hashes,
+		async hgetall(key: string) {
+			return hashes.has(key) ? { ...hashes.get(key)! } : null
+		},
+		async hincrby(key: string, field: string, by: number) {
+			const hash = hashes.get(key) ?? {}
+			hash[field] = (hash[field] ?? 0) + by
+			hashes.set(key, hash)
+			return hash[field]
+		},
+		async hdel(key: string, field: string) {
+			const hash = hashes.get(key)
+			if (!hash || !(field in hash)) return 0
+			delete hash[field]
+			return 1
+		},
 		async sismember(key: string, member: string) {
 			return sets.get(key)?.has(member) ? 1 : 0
 		},

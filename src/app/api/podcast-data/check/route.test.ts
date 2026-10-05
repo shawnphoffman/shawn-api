@@ -1,6 +1,11 @@
 import { NextRequest } from 'next/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { createFakeRedis, FakeRedis } from '@/test/fakeRedis'
+
+let fake: FakeRedis
+vi.mock('@/utils/redis', () => ({ default: () => fake, RedisKey: { FeedDown: 'job:feed-down' } }))
+
 vi.mock('next-axiom', () => ({ log: { info: vi.fn(), warn: vi.fn(), error: vi.fn() } }))
 vi.mock('@/config/feeds/podcasts', () => ({ podcastFeeds: [{ name: 'Pod A' }] }))
 vi.mock('@/config/feeds/rss', () => ({ rssFeeds: [{ name: 'Blog B' }] }))
@@ -22,9 +27,10 @@ vi.mock('@/third-party/bluesky/agent', () => ({ getBskyAgent: () => getBskyAgent
 import { GET } from './route'
 
 const call = (query = '', auth = 'Bearer secret') => GET(new NextRequest(`http://localhost/api/podcast-data/check${query}`, { headers: { authorization: auth } }))
-const clean = (feed: string) => ({ feed, items: [], sent: [], errors: [] })
+const clean = (feed: string) => ({ feed, items: [], sent: [], errors: [], warnings: [] as string[] })
 
 beforeEach(() => {
+	fake = createFakeRedis()
 	locked = false
 	vi.stubEnv('CRON_SECRET', 'secret')
 	vi.stubEnv('ENABLED_JOBS', 'podcast-check')
@@ -60,6 +66,13 @@ describe('GET /api/podcast-data/check', () => {
 		const res = await call()
 		expect(processRssFeeds).toHaveBeenCalledOnce()
 		expect((await res.json()).errors).toEqual(['Pod A: Pod A failed: parser exploded'])
+	})
+
+	it('answers 200 with a warning while a feed is only briefly down', async () => {
+		processRssFeeds.mockResolvedValue({ ...clean('Blog B'), down: 'No rss feed found for "x"' })
+		const res = await call()
+		expect(res.status).toBe(200)
+		expect((await res.json()).warnings).toEqual(['Blog B: No rss feed found for "x" (down 1 run in a row)'])
 	})
 
 	it('responds 409 while another run holds the lock', async () => {

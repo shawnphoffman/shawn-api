@@ -93,10 +93,11 @@ describe('processFeeds', () => {
 		expect(fake.sets.size).toBe(0)
 	})
 
-	it('reports a feed that would not load as an error', async () => {
+	it('marks a feed that would not load as down, not as an error', async () => {
 		getPodcastFeed.mockResolvedValue({ episodes: [] })
 		const result = await processFeeds({ debug: false, config })
-		expect(result.errors).toEqual(['No podcast feed found for "https://feed.example/bh.xml"'])
+		expect(result.down).toBe('No podcast feed found for "https://feed.example/bh.xml"')
+		expect(result.errors).toEqual([])
 	})
 
 	it('does not ping Overcast when the feed opts out', async () => {

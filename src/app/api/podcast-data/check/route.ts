@@ -8,7 +8,7 @@ import { withJobLock } from '@/lib/jobs/lock'
 import { getBskyAgent } from '@/third-party/bluesky/agent'
 
 import processFeeds from './_processFeeds'
-import { FeedResult, newFeedResult, recordError } from './_result'
+import { applyFeedDownPolicy, FeedResult, newFeedResult, recordError } from './_result'
 import processRssFeeds from './_processRssFeeds'
 import processYoutubeFeeds from './_processYouTubeFeeds'
 
@@ -36,8 +36,9 @@ async function runFeed(name: string, check: () => Promise<FeedResult>): Promise<
  * Bluesky, Overcast and the sites' refresh URLs, recording each delivery in
  * Redis so it happens once. Called by Cronicle on the Mac mini.
  *
- * Returns a JSON summary: 200 when everything worked, 500 when any feed or
- * delivery failed, 409 when another run is still going. `?debug=true` runs
+ * Returns a JSON summary: 200 when everything worked, 500 when a delivery
+ * failed or a feed has been down for two hours, 409 when another run is still
+ * going. A feed that is only briefly down shows up under warnings. `?debug=true` runs
  * the checks without posting anything.
  */
 export async function GET(req: NextRequest) {
@@ -66,6 +67,8 @@ export async function GET(req: NextRequest) {
 				})
 			)
 		}
+		// Feeds that would not load only fail the job once they have been down for a while
+		await applyFeedDownPolicy(results, { debug })
 		return results
 	})
 
@@ -76,6 +79,7 @@ export async function GET(req: NextRequest) {
 	const results = run.result
 	const errors = results.flatMap(r => r.errors.map(e => `${r.feed}: ${e}`))
 	const sent = results.flatMap(r => r.sent.map(s => `${r.feed}: ${s}`))
+	const warnings = results.flatMap(r => r.warnings.map(w => `${r.feed}: ${w}`))
 
 	return NextResponse.json(
 		{
@@ -84,6 +88,7 @@ export async function GET(req: NextRequest) {
 			feeds: results.length,
 			sent,
 			errors,
+			warnings,
 			results,
 		},
 		{ status: errors.length === 0 ? 200 : 500 }

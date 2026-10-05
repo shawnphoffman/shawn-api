@@ -18,6 +18,7 @@ export const RedisKey = {
 	FetchCache: 'fetch:cache',
 	BskyThrottle: 'bsky:throttle:handle',
 	JobLock: 'job:lock',
+	FeedDown: 'job:feed-down',
 }
 
 let redis: Redis | null = null

@@ -4,7 +4,7 @@ import { postRssBleet } from '@/third-party/bluesky/bluesky-rss'
 import { isYouTubeScheduled, isYouTubeShort } from '@/third-party/youtube'
 import { RedisKey } from '@/utils/redis'
 
-import { deliver, FeedResult, newFeedResult, recordError } from './_result'
+import { deliver, FeedResult, markFeedDown, newFeedResult } from './_result'
 
 // =================
 // YOUTUBE FEEDS
@@ -17,7 +17,7 @@ async function processItems({ debug, config }: ProcessItemsProps): Promise<FeedR
 	const { feed, items } = await getYouTubeFeed(config.url)
 
 	if (!feed) {
-		recordError(result, `No youtube feed found for "${config.url}"`)
+		markFeedDown(result, `No youtube feed found for "${config.url}"`)
 		return result
 	}
 
@@ -32,7 +32,7 @@ async function processItems({ debug, config }: ProcessItemsProps): Promise<FeedR
 		try {
 			;[isShort, isScheduled] = await Promise.all([isYouTubeShort(item.guid), isYouTubeScheduled(item.guid)])
 		} catch (error) {
-			recordError(result, `Could not check whether ${item.guid} is a short or scheduled`, error)
+			markFeedDown(result, `Could not check whether ${item.guid} is a short or scheduled`, error)
 			continue
 		}
 
